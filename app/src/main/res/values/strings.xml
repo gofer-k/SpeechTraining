@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">SpeechTraining</string>
+    <string name="titleHome">SpeechTraining</string>
+    <string-array name="topics">
+        <item>Work</item>
+        <item>Shopping</item>
+        <item>DailyRoutings</item>
+        <item>Hobby</item>
+    </string-array>
+</resources>
