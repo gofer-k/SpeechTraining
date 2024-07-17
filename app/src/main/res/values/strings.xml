@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">SpeechTraining</string>
     <string name="titleHome">SpeechTraining</string>
+    <string name="training_topic">"Training topic: "</string>
     <string-array name="topics">
         <item>Work</item>
         <item>Shopping</item>
