@@ -5,7 +5,7 @@
     <string-array name="topics">
         <item>Work</item>
         <item>Shopping</item>
-        <item>DailyRoutings</item>
+        <item>DailyRouting</item>
         <item>Hobby</item>
     </string-array>
 </resources>

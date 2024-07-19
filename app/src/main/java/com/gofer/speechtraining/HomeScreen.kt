@@ -1,4 +1,5 @@
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,9 +15,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -35,15 +40,25 @@ import androidx.navigation.compose.rememberNavController
 import com.gofer.speechtraining.R
 import com.gofer.speechtraining.Topic
 import com.gofer.speechtraining.TopicDataState
+import com.gofer.speechtraining.TrainingScreenLabel
 import com.gofer.speechtraining.topicsList
+import com.gofer.speechtraining.ui.theme.PurpleGrey80
 import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen( navController: NavController) {
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-    ) {
+    Scaffold(topBar = {
+        TopAppBar(
+            title = {
+                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    Text(text = TrainingScreenLabel.TrainingList.name)
+                }
+            },
+            colors = topAppBarColors(containerColor = PurpleGrey80)
+        )
+    }) {
         Column {
             Title(
                 Modifier.fillMaxWidth(),
@@ -54,8 +69,7 @@ fun HomeScreen( navController: NavController) {
                 Modifier
                     .width(28.dp)
                     .height(16.dp))
-
-            ConversationsTopics(modifier = Modifier,  navController)
+            ConversationsTopics(modifier = Modifier,  navController = navController)
         }
     }
 }
@@ -85,12 +99,12 @@ fun TopicItem(topic: Topic, modifier: Modifier, onSelectedTopic: (Topic) -> Unit
         .padding(16.dp)
         .clickable {
             onSelectedTopic(topic.copy(isSelected = topic.isSelected.not()))
-            navController.navigate("TrainingScreenLabel.TrainingContents.name/${topic.id}")
+            navController.navigate("${TrainingScreenLabel.TrainingContents.name}?name=${topic.name}")
         },
         contentAlignment = Alignment.Center
     ) {
-            Text(text = topic.name, color = if (topic.isSelected) Color.White else Color.Black)
-        }
+       Text(text = topic.name, color = if (topic.isSelected) Color.White else Color.Black)
+    }
 }
 
 @Composable
@@ -107,7 +121,7 @@ fun ConversationsTopics(modifier: Modifier = Modifier,  navController: NavContro
             if (index != 0) Spacer(Modifier.height(2.dp))
             TopicItem(topic, modifier = modifier,
                 onSelectedTopic = topicListState::onSelectedTopic,
-                navController)
+                navController = navController)
         }
     }
 }
@@ -117,6 +131,6 @@ fun ConversationsTopics(modifier: Modifier = Modifier,  navController: NavContro
 private fun HomeScreenPreview() {
     SpeechTrainingTheme {
        val navController = rememberNavController()
-       HomeScreen(navController)
+       HomeScreen(navController = navController)
     }
 }
