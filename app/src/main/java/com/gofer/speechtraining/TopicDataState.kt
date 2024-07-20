@@ -2,6 +2,7 @@ package com.gofer.speechtraining
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.toMutableStateList
+import com.gofer.speechtraining.src.main.model.Topic
 
 class TopicDataState {
     var topicsList = mutableStateListOf<Topic>()
