@@ -1,7 +1,8 @@
-package com.gofer.speechtraining
+package com.gofer.speechtraining.src.main.model
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringArrayResource
+import com.gofer.speechtraining.R
 
 data class Topic(
     val id: Long = 0L,

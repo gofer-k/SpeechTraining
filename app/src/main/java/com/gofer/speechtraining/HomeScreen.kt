@@ -32,10 +32,10 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.gofer.speechtraining.Topic
+import com.gofer.speechtraining.src.main.model.Topic
 import com.gofer.speechtraining.TopicDataState
 import com.gofer.speechtraining.TrainingScreenLabel
-import com.gofer.speechtraining.topicsList
+import com.gofer.speechtraining.src.main.model.topicsList
 import com.gofer.speechtraining.ui.theme.PurpleGrey80
 import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
 

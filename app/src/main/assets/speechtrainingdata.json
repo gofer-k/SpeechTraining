@@ -1,0 +1,22 @@
+{
+    "SpeechTrainingData": [
+      {
+        "SpeechTrainingItem": [
+          {
+            "lang": "en-us",
+            "Topic":
+            {
+              "id": 0,
+              "name": "",
+              "isSelected": "false"
+            },
+            "phrases": [
+              {
+                "name": ""
+              }
+            ]
+          }
+        ]
+      }
+    ]
+}
