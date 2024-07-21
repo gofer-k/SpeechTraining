@@ -1,22 +1,372 @@
 {
-    "SpeechTrainingData": [
+  "SpeechTrainingItems": [
+    {
+      "lang": "en-us",
+      "topic":
       {
-        "SpeechTrainingItem": [
-          {
-            "lang": "en-us",
-            "Topic":
-            {
-              "id": 0,
-              "name": "",
-              "isSelected": "false"
-            },
-            "phrases": [
-              {
-                "name": ""
-              }
-            ]
-          }
-        ]
-      }
-    ]
+        "id": 0,
+        "name": "Prehab"
+      },
+      "phrases": [
+        {
+          "name": "EE-UW"
+        },
+        {
+          "name": "OW-AW"
+        },
+        {
+          "name": "OW AS IN GO"
+        },
+        {
+          "name": "AW AS IN NOW"
+        },
+        {
+          "name": "SHEILA NEEDs"
+        },
+        {
+          "name": "SHEENA LEADS"
+        },
+        {
+          "name": "SHE SEES CHEESE"
+        },
+        {
+          "name": "DID YOU TELL HIM"
+        },
+        {
+          "name": "DID YOU KNOW IT"
+        },
+        {
+          "name": "DID YOU DO IT"
+        },
+        {
+          "name": "I KIND OF LIKE IT"
+        },
+        {
+          "name": "I LIKE KIND OF MUSIC"
+        },
+        {
+          "name": "I KIND OF NEED TO"
+        },
+        {
+          "name": "I KIND OF FEEL LIKE"
+        },
+        {
+          "name": "I KIND OF FEEL THAT"
+        },
+        {
+          "name": "I KIND OF FEEL IT"
+        },
+        {
+          "name": "I KIND OF FEEL SO"
+        },
+        {
+          "name": "I KIND OF FEEL GOOD"
+        },
+        {
+          "name": "I KIND OF FEEL GREAT"
+        },
+        {
+          "name": "I KIND OF FEEL FINE"
+        },
+        {
+          "name": "I KIND OF FEEL BAD"
+        },
+        {
+          "name": "I KIND OF FEEL SAD"
+        },
+        {
+          "name": "I KIND OF FEEL MAD"
+        },
+        {
+          "name": "I KIND OF FEEL GLAD"
+        },
+        {
+          "name": "I KIND OF FEEL HAPPY"
+        },
+        {
+          "name": "I KIND OF FEEL SICK"
+        },
+        {
+          "name": "I KIND OF FEEL TIRED"
+        },
+        {
+          "name": "I KIND OF FEEL WEAK"
+        },
+        {
+          "name": "I KIND OF FEEL STRONG"
+        },
+        {
+          "name": "I KIND OF FEEL HUNGRY"
+        },
+        {
+          "name": "I KIND OF FEEL THIRSTY"
+        },
+        {
+          "name": "I KIND OF FEEL COLD"
+        },
+        {
+          "name": "I KIND OF FEEL HOT"
+        },
+        {
+          "name": "I KIND OF FEEL WARM"
+        },
+        {
+          "name": "I KIND OF FEEL COOL"
+        },
+        {
+          "name": "I KIND OF FEEL NICE"
+        },
+        {
+          "name": "I KIND OF FEEL PRETTY"
+        },
+        {
+          "name": "I KIND OF FEEL UGLY"
+        },
+        {
+          "name": "I KIND OF FEEL BEAUTIFUL"
+        },
+        {
+          "name": "I KIND OF FEEL HANDSOME"
+        },
+        {
+          "name": "OUT OF HERE"
+        },
+        {
+          "name": "OUT OF THERE"
+        },
+        {
+          "name": "OUT OF NOWHERE"
+        },
+        {
+          "name": "OUT OF THE WAY"
+        },
+        {
+          "name": "OUT OF THE CAR"
+        },
+        {
+          "name": "OUT OF THE ROOM"
+        },
+        {
+          "name": "OUT OF THE BUILDING"
+        },
+        {
+          "name": "OUT OF THE OFFICE"
+        },
+        {
+          "name": "OUT OF THE STORE"
+        },
+        {
+          "name": "OUT OF THE MALL"
+        },
+        {
+          "name": "OUT OF THE PARK"
+        },
+        {
+          "name": "OUT OF THE CITY"
+        },
+        {
+          "name": "OUT OF THE COUNTRY"
+        },
+        {
+          "name": "OUT OF THE WORLD"
+        },
+        {
+          "name": "OUT OF THE UNIVERSE"
+        },
+        {
+          "name": "OUT OF THE GALAXY"
+        },
+        {
+          "name": "OUT OF THE SOLAR SYSTEM"
+        },
+        {
+          "name": "OUT OF THE MILKY WAY"
+        },
+        {
+          "name": "OUT OF THE STAR"
+        },
+        {
+          "name": "OUT OF THE PLANET"
+        },
+        {
+          "name": "OUT OF THE MOON"
+        },
+        {
+          "name": "OUT OF THE SUN"
+        },
+        {
+          "name": "OUT OF THE SKY"
+        },
+        {
+          "name": "OUT OF THE CLOUD"
+        },
+        {
+          "name": "OUT OF THE RAIN"
+        },
+        {
+          "name": "OUT OF THE SNOW"
+        },
+        {
+          "name": "OUT OF THE ICE"
+        },
+        {
+          "name": "OUT OF THE WATER"
+        },
+        {
+          "name": "OUT OF THE AIR"
+        },
+        {
+          "name": "OUT OF THE FIRE"
+        },
+        {
+          "name": "OUT OF THE EARTH"
+        },
+        {
+          "name": "OUT OF THE WIND"
+        },
+        {
+          "name": "OUT OF THE STORM"
+        },
+        {
+          "name": "OUT OF THE HURRICANE"
+        },
+        {
+          "name": "OUT OF MY MIND"
+        },
+        {
+          "name": "AS THIS"
+        },
+        {
+          "name": "AS THAT"
+        },
+        {
+          "name": "AS THESE"
+        },
+        {
+          "name": "AS THOSE"
+        },
+        {
+          "name": "AS HERE"
+        },
+        {
+          "name": "AS SOON AS"
+        },
+        {
+          "name": "AS LONG AS"
+        },
+        {
+          "name": "AS FAR AS"
+        },
+        {
+          "name": "AS GOOD AS"
+        },
+        {
+          "name": "AS IN CAT"
+        }
+      ]
+    },
+    {
+      "lang": "en-us",
+      "topic":
+      {
+        "id": 1,
+        "name": "Greetings"
+      },
+      "phrases": [
+        {
+          "name": "GOOG MORNING"
+        },
+        {
+          "name": "GOOD AFTERNOON"
+        },
+        {
+          "name": "GOOD EVENING"
+        },
+        {
+          "name": "GOOD NIGHT"
+        },
+        {
+          "name": "HOW ARE YOU"
+        },
+        {
+          "name": "HOW DO YOU DO"
+        },
+        {
+          "name": "HOW HAVE YOU BEEN"
+        },
+        {
+          "name": "HOW DO YOU FEEL"
+        },
+        {
+          "name": "HOW DO YOU LIKE IT"
+        },
+        {
+          "name": "HOW DO YOU KNOW"
+        },
+        {
+          "name": "HOW DO YOU THINK"
+        },
+        {
+          "name": "HOW DO YOU UNDERSTAND"
+        },
+        {
+          "name": "HOW DO YOU SEE"
+        },
+        {
+          "name": "HOW DO YOU HEAR"
+        },
+        {
+          "name": "HOW DO YOU SLEEP"
+        },
+        {
+          "name": "HOW DO YOU WAKE UP"
+        },
+        {
+          "name": "NICE TO MEET YOU"
+        },
+        {
+          "name": "NICE TO SEE YOU"
+        },
+        {
+          "name": "NICE TO HEAR YOU"
+        },
+        {
+          "name": "NICE TO TALK TO YOU"
+        },
+        {
+          "name": "NICE TO WORK WITH YOU"
+        },
+        {
+          "name": "NICE TO PLAY WITH YOU"
+        }
+      ]
+    },
+    {
+      "lang": "en-us",
+      "topic":
+      {
+        "id": 2,
+        "name": "Wprk"
+      },
+      "phrases": []
+    },
+    {
+      "lang": "en-us",
+      "topic":
+      {
+        "id": 3,
+        "name": "Daily routines"
+      },
+      "phrases": []
+    },
+    {
+      "lang": "en-us",
+      "topic":
+      {
+        "id": 4,
+        "name": "Hobby"
+      },
+      "phrases": []
+    }
+  ]
 }

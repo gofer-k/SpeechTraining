@@ -7,12 +7,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.gofer.speechtraining.src.main.model.SpeechTrainingDataViewModel
 
 @Composable
-fun AppNavigation() {
+fun AppNavigation(viewModel: SpeechTrainingDataViewModel) {
   val navHostController = rememberNavController()
   NavHost(navController = navHostController, startDestination = TrainingScreenLabel.TrainingList.name) {
-      composable(TrainingScreenLabel.TrainingList.name) { HomeScreen(navController = navHostController) }
+      composable(TrainingScreenLabel.TrainingList.name) { HomeScreen(viewModel, navController = navHostController) }
       composable("${TrainingScreenLabel.TrainingContents.name}?name={name}",
       arguments = listOf(
         navArgument(name = "name") {
