@@ -34,7 +34,7 @@ import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TrainingConfigurantioncreen(
+fun TrainingConfigurationScreen(
   viewModel: SpeechTrainingDataViewModel,
   navController: NavController,
   trainingId: Long,
