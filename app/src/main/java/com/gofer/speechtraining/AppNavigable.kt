@@ -14,16 +14,22 @@ fun AppNavigation(viewModel: SpeechTrainingDataViewModel) {
   val navHostController = rememberNavController()
   NavHost(navController = navHostController, startDestination = TrainingScreenLabel.TrainingList.name) {
       composable(TrainingScreenLabel.TrainingList.name) { HomeScreen(viewModel, navController = navHostController) }
-      composable("${TrainingScreenLabel.TrainingContents.name}?name={name}",
+      composable("${TrainingScreenLabel.TrainingContents.name}?name={name}&topicId={topicId}",
       arguments = listOf(
         navArgument(name = "name") {
           type =  NavType.StringType
           defaultValue = TrainingScreenLabel.TrainingContents.name
+        },
+        navArgument(name = "topicId") {
+          type = NavType.LongType
+          defaultValue = 0
         }
       )
     ) { backStackEntry ->
-      TrainingContentsScreen(
+      TrainingConfigurantionScreen(
+        viewModel,
         navController = navHostController,
+        backStackEntry.arguments?.getLong("topicId") ?: 0,
         backStackEntry.arguments?.getString("name") ?: "default")
     }
   }
