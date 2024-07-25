@@ -13,8 +13,5 @@ class SpeechTrainingDataViewModel (var data: SpeechTrainingData): ViewModel() {
   fun addTrainingTopics() = data.addTopic()
   fun getTrainingTopics() = data.getTrainingTopics()
 
-}
-
-class MyApplication {
-
+  fun getTrainingPhrases(trainingId: Long) = data.getTrainingPhrases(trainingId)
 }

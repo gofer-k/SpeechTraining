@@ -13,7 +13,7 @@ import com.gofer.speechtraining.src.main.model.SpeechTrainingDataViewModel
 fun AppNavigation(viewModel: SpeechTrainingDataViewModel) {
   val navHostController = rememberNavController()
   NavHost(navController = navHostController, startDestination = TrainingScreenLabel.TrainingList.name) {
-      composable(TrainingScreenLabel.TrainingList.name) { HomeScreen(viewModel, navController = navHostController) }
+      composable(TrainingScreenLabel.TrainingList.name) { HomeScreen(viewModel.getTrainingTopics(), navController = navHostController) }
       composable("${TrainingScreenLabel.TrainingContents.name}?name={name}&topicId={topicId}",
       arguments = listOf(
         navArgument(name = "name") {
@@ -26,10 +26,9 @@ fun AppNavigation(viewModel: SpeechTrainingDataViewModel) {
         }
       )
     ) { backStackEntry ->
-      TrainingConfigurantionScreen(
-        viewModel,
+      TrainingConfigurationScreen(
+        viewModel.getTrainingPhrases(backStackEntry.arguments?.getLong("topicId") ?: 0L),
         navController = navHostController,
-        backStackEntry.arguments?.getLong("topicId") ?: 0,
         backStackEntry.arguments?.getString("name") ?: "default")
     }
   }

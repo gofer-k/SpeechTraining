@@ -34,8 +34,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.gofer.speechtraining.TopicDataState
 import com.gofer.speechtraining.TrainingScreenLabel
-import com.gofer.speechtraining.src.main.model.SpeechTrainingData
-import com.gofer.speechtraining.src.main.model.SpeechTrainingDataViewModel
 import com.gofer.speechtraining.src.main.model.Topic
 import com.gofer.speechtraining.ui.theme.PurpleGrey80
 import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
@@ -43,7 +41,7 @@ import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(viewModel: SpeechTrainingDataViewModel, navController: NavController) {
+fun HomeScreen(topics: List<Topic>, navController: NavController) {
     Scaffold(topBar = {
         TopAppBar(
             title = {
@@ -55,7 +53,7 @@ fun HomeScreen(viewModel: SpeechTrainingDataViewModel, navController: NavControl
         )
     }) {
         Column {
-            ConversationsTopics(modifier = Modifier, viewModel, navController = navController)
+            ConversationsTopics(modifier = Modifier, topics, navController = navController)
         }
     }
 }
@@ -70,7 +68,7 @@ fun TopicItem(topic: Topic, modifier: Modifier, onSelectedTopic: (Topic) -> Unit
         .padding(16.dp)
         .clickable {
             onSelectedTopic(topic.copy(isSelected = topic.isSelected.not()))
-            navController.navigate("${TrainingScreenLabel.TrainingContents.name}?name=${topic.name}")
+            navController.navigate("${TrainingScreenLabel.TrainingContents.name}?name=${topic.name}&topicId=${topic.id}")
         },
         contentAlignment = Alignment.Center
     ) {
@@ -81,11 +79,11 @@ fun TopicItem(topic: Topic, modifier: Modifier, onSelectedTopic: (Topic) -> Unit
 @Composable
 fun ConversationsTopics(
     modifier: Modifier = Modifier,
-    viewModel: SpeechTrainingDataViewModel,
+    topics: List<Topic>,
     navController: NavController
 ) {
     val topicListState = remember { TopicDataState() }
-    topicListState.setTopicList(viewModel.getTrainingTopics())
+    topicListState.setTopicList(topics)
 
     LazyColumn(
         modifier = modifier.fillMaxHeight(),
@@ -106,7 +104,7 @@ fun ConversationsTopics(
 private fun HomeScreenPreview() {
     SpeechTrainingTheme {
         val navController = rememberNavController()
-        HomeScreen(viewModel = SpeechTrainingDataViewModel(SpeechTrainingData(listOf())), navController = navController)
+        HomeScreen(topics = listOf(), navController = navController)
     }
 }
 
