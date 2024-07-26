@@ -1,6 +1,7 @@
 package com.gofer.speechtraining
 
 import android.os.Bundle
+import android.speech.tts.TextToSpeech
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -13,17 +14,19 @@ import com.gofer.speechtraining.src.main.model.SpeechTrainingData
 import com.gofer.speechtraining.src.main.model.SpeechTrainingDataViewModel
 import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
 import com.google.gson.Gson
+import java.util.Locale
+
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val trainingAssetDataJson = ReadJSONFromAssets(baseContext, "speechtrainingdata.json" )
         val trainingData = Gson().fromJson(trainingAssetDataJson, SpeechTrainingData::class.java)
-        Log.d("[SpeechTraining model]", "${trainingData.items}")
 
 
-        setContent {
+      setContent {
             SpeechTrainingTheme {
                 val viewModel = viewModel<SpeechTrainingDataViewModel>(
                   factory = object : ViewModelProvider.Factory {
@@ -36,4 +39,10 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+  override fun onDestroy() {
+    super.onDestroy()
+    tts.stop()
+    tts.shutdown()
+  }
 }
