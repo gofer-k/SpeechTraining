@@ -1,4 +1,4 @@
-package com.gofer.speechtraining
+package com.gofer.speechtraining.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.gofer.speechtraining.TrainingScreenLabel
 import com.gofer.speechtraining.src.main.model.Phrase
 import com.gofer.speechtraining.ui.theme.Pink80
 import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
@@ -52,7 +53,7 @@ fun TrainingConfigurationScreen(
     topBar = {
       TopAppBar(title = { 
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-          Text(text = TrainingScreenLabel.TrainingContents.name.plus(trainingTopicName))
+          Text(text = TrainingScreenLabel.TrainingConfiguration.name.plus(trainingTopicName))
         }
       },
       colors = topAppBarColors(containerColor = Pink80)
@@ -73,7 +74,7 @@ fun TrainingConfigurationScreen(
           .clickable {
             selected = selected.not()
             phrase.toggle()
-////            navController.navigate( yo navigable to training screen)
+            navController.navigate("${TrainingScreenLabel.TrainingContents.name}?name={${phrase.name}")
           },
           contentAlignment = Alignment.Center
         ) {

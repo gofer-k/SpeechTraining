@@ -1,20 +1,18 @@
 package com.gofer.speechtraining
 
 import android.os.Bundle
-import android.speech.tts.TextToSpeech
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.gofer.speechtraining.navigation.AppNavigation
 import com.gofer.speechtraining.src.main.model.ReadJSONFromAssets
 import com.gofer.speechtraining.src.main.model.SpeechTrainingData
 import com.gofer.speechtraining.src.main.model.SpeechTrainingDataViewModel
 import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
 import com.google.gson.Gson
-import java.util.Locale
 
 
 class MainActivity : ComponentActivity() {
@@ -42,7 +40,5 @@ class MainActivity : ComponentActivity() {
 
   override fun onDestroy() {
     super.onDestroy()
-    tts.stop()
-    tts.shutdown()
   }
 }
