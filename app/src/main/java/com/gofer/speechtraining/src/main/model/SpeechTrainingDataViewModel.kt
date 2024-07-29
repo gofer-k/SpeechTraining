@@ -12,7 +12,7 @@ class SpeechTrainingDataViewModel (var data: SpeechTrainingData): ViewModel() {
   private val _state = mutableStateOf(Phrase())
   val state: State<Phrase> = _state
 
-  private val tts: TextToSpeech? = null
+  private var tts: TextToSpeech? = null
 
   fun onSpeakTrainingPhrase(phrase: Phrase, context: Context) {
     _state.value = state.value.copy(name = phrase.name, isSelected = phrase.isSelected)
@@ -29,15 +29,13 @@ class SpeechTrainingDataViewModel (var data: SpeechTrainingData): ViewModel() {
           ) {
             Log.d("SpeechTraining", "Initialize TTS language")
           }
-          tts.setSpeechRate(1.0f)
-          tts.speak(_state.value.name.trim(), TextToSpeech.QUEUE_ADD, null, null)
+          it.setSpeechRate(1.0f)
+          it.speak(_state.value.name.trim(), TextToSpeech.QUEUE_ADD, null, null)
         }
       } else {
         Log.d("TextToSpeech", "Initialization Failed")
       }
     }
-    tts.stop()
-    tts.shutdown()
   }
 
   fun addTrainingTopic(trainingItem: SpeechTrainingItem) {
