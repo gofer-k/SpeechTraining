@@ -35,17 +35,20 @@ fun AppNavigation(viewModel: SpeechTrainingDataViewModel) {
         navController = navHostController,
         backStackEntry.arguments?.getString("name") ?: "default")
     }
-    composable("${TrainingScreenLabel.TrainingContents.name}?name={name}",
+    composable("${TrainingScreenLabel.TrainingContents.name}?name={name}&phrases={phrases}",
       arguments = listOf(
         navArgument(name = "name") {
         type = NavType.StringType
         defaultValue = ""
+      },
+      navArgument(name = "phrases") {
+        type = NavType.StringArrayType
       }
     )
     ) { backStackEntry ->
       TrainingScreen(
         trainingTopicName = backStackEntry.arguments?.getString("name") ?: "default",
-        phrases = viewModel.getTrainingPhrases(0)
+        phrases = backStackEntry.arguments?.getStringArray("phrases")?.toList() ?: listOf()
       )
     }
   }
