@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -58,27 +60,40 @@ fun TrainingConfigurationScreen(
       },
       colors = topAppBarColors(containerColor = Pink80)
       )
+    },
+    floatingActionButton = {
+      FloatingActionButton(
+        onClick = {
+          val selectedPhrases = trainingPhrasesState.map { it.name }.toTypedArray()
+          navController.navigate(
+            "${TrainingScreenLabel.TrainingContents.name}?name={${TrainingScreenLabel.TrainingContents.name.plus(trainingTopicName)}&phrases=${selectedPhrases}")
+      }) {
+        Text(text = "Start training")
+      }
     }
-  ) {
-    LazyColumn(modifier = Modifier.fillMaxSize(),
-      verticalArrangement = Arrangement.Top,) {
-      itemsIndexed(trainingPhrasesState) { index, phrase ->
-        if (index != 0) Spacer(Modifier.height(2.dp))
-        var selected by remember { mutableStateOf(false) }
-        Box(modifier = Modifier
-          .shadow(4.dp, shape = MaterialTheme.shapes.small)
-          .fillMaxSize()
-          .clip(MaterialTheme.shapes.small)
-          .background(if (selected) Color("#9233eb".toColorInt()) else MaterialTheme.colorScheme.surface)
-          .padding(16.dp)
-          .clickable {
-            selected = selected.not()
-            phrase.toggle()
-            navController.navigate("${TrainingScreenLabel.TrainingContents.name}?name={${phrase.name}")
-          },
-          contentAlignment = Alignment.Center
-        ) {
-          Text( text = phrase.name, color = if (selected) Color.White else Color.Black)
+  ) { contentPadding ->
+    Column(modifier = Modifier
+      .fillMaxSize()
+      .padding(contentPadding)) {
+      LazyColumn(modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.Top,) {
+        itemsIndexed(trainingPhrasesState) { index, phrase ->
+          if (index != 0) Spacer(Modifier.height(2.dp))
+          var selected by remember { mutableStateOf(false) }
+          Box(modifier = Modifier
+            .shadow(4.dp, shape = MaterialTheme.shapes.small)
+            .fillMaxSize()
+            .clip(MaterialTheme.shapes.small)
+            .background(if (selected) Color("#9233eb".toColorInt()) else MaterialTheme.colorScheme.surface)
+            .padding(16.dp)
+            .clickable {
+              selected = selected.not()
+              phrase.toggle()
+            },
+            contentAlignment = Alignment.Center
+          ) {
+            Text( text = phrase.name, color = if (selected) Color.White else Color.Black)
+          }
         }
       }
     }
@@ -90,6 +105,6 @@ fun TrainingConfigurationScreen(
 private fun TrainingContentsScreenPreview() {
   SpeechTrainingTheme {
     val navController = rememberNavController()
-    TrainingConfigurationScreen(listOf(), navController = navController, "Topic")
+    TrainingConfigurationScreen(listOf(Phrase("one"), Phrase("two"), Phrase("three")), navController = navController, "Topic")
   }
 }
