@@ -64,9 +64,9 @@ fun TrainingConfigurationScreen(
     floatingActionButton = {
       FloatingActionButton(
         onClick = {
-          val selectedPhrases = trainingPhrasesState.map { it.name }.toTypedArray()
+          val selectedPhrases = trainingPhrasesState.filter { it.isSelected }.map { it.name }
           navController.navigate(
-            "${TrainingScreenLabel.TrainingContents.name}?name={${TrainingScreenLabel.TrainingContents.name.plus(trainingTopicName)}&phrases=${selectedPhrases}")
+            "${TrainingScreenLabel.TrainingContents.name}?name=${trainingTopicName}&phrases=${selectedPhrases}")
       }) {
         Text(text = "Start training")
       }

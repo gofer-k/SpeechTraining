@@ -16,13 +16,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.rememberNavController
 import com.gofer.speechtraining.TrainingScreenLabel
 import com.gofer.speechtraining.ui.theme.Pink40
 import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
@@ -34,30 +35,32 @@ fun TrainingScreen(
   trainingTopicName: String,
   phrases: List<String>
 ) {
+  val trainingPhrasesState = remember { phrases.toMutableStateList() }
+
   Scaffold(
     topBar = {
       TopAppBar(title = {
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-          Text(text = TrainingScreenLabel.TrainingConfiguration.name.plus(trainingTopicName))
+          Text(text = TrainingScreenLabel.TrainingContents.name.plus(trainingTopicName))
         }
       },
         colors = TopAppBarDefaults.topAppBarColors(containerColor = Pink40)
       )
     }
-  ) {
+  ) { contentPadding ->
     LazyColumn(modifier = Modifier.fillMaxSize(),
       verticalArrangement = Arrangement.Top,) {
-      items(phrases) { phrase ->
+      items(trainingPhrasesState) { phrase ->
         Box(modifier = Modifier
           .shadow(4.dp, shape = MaterialTheme.shapes.small)
           .fillMaxSize()
           .clip(MaterialTheme.shapes.small)
-          .padding(16.dp)
+          .padding(contentPadding)
           .clickable {
           },
           contentAlignment = Alignment.Center
         ) {
-          Text( text = phrase)
+          Text( text = phrase.trim('[', ']'))
         }
       }
     }
@@ -68,7 +71,6 @@ fun TrainingScreen(
 @Composable
 private fun TrainingScreenPreview() {
   SpeechTrainingTheme {
-    val navController = rememberNavController()
-    TrainingScreen("Topic", listOf())
+    TrainingScreen("Topic", listOf("[one", "two", "three]"))
   }
 }
