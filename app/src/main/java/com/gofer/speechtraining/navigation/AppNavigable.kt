@@ -46,9 +46,12 @@ fun AppNavigation(viewModel: SpeechTrainingDataViewModel) {
       }
     )
     ) { backStackEntry ->
+      val selectedPhrases = backStackEntry.arguments?.getStringArray("phrases")?.toList()
+        .orEmpty().listIterator().next().split(",")
+
       TrainingScreen(
         trainingTopicName = backStackEntry.arguments?.getString("name") ?: "default",
-        phrases = backStackEntry.arguments?.getStringArray("phrases")?.toList() ?: listOf()
+        phrases = selectedPhrases
       )
     }
   }
