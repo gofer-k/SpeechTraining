@@ -9,26 +9,6 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
-//sealed class ThemeColors(
-//    val bacground: Color,
-//    val surafce: Color,
-//    val primary: Color,
-//    val text: Color
-//)  {
-//    object Night: ThemeColors(
-//        bacground = Color.Black,
-//        surafce = dark_btn,
-//        primary = clear_dark,
-//        text = Color.White
-//    )
-//    object Day: ThemeColors(
-//        bacground = light_bg,
-//        surafce = light_btn,
-//        primary = clear_light,
-//        text = Color.Black
-//    )
-//}
-
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
     secondary = PurpleGrey80,
