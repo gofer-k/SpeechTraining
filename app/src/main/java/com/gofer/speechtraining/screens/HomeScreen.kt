@@ -1,5 +1,6 @@
 
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,10 +27,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.graphics.toColorInt
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.gofer.speechtraining.TopicDataState
@@ -64,7 +63,8 @@ fun TopicItem(topic: Topic, modifier: Modifier, onSelectedTopic: (Topic) -> Unit
         .shadow(4.dp, shape = MaterialTheme.shapes.small)
         .fillMaxSize()
         .clip(MaterialTheme.shapes.small)
-        .background(if (topic.isSelected) Color("#9233eb".toColorInt()) else MaterialTheme.colorScheme.surface)
+//        .background(if (topic.isSelected) Color("#9233eb".toColorInt()) else MaterialTheme.colorScheme.surface)
+        .background(if (topic.isSelected) MaterialTheme.colorScheme.inverseOnSurface else MaterialTheme.colorScheme.inverseOnSurface)
         .padding(16.dp)
         .clickable {
             onSelectedTopic(topic.copy(isSelected = topic.isSelected.not()))
@@ -72,7 +72,7 @@ fun TopicItem(topic: Topic, modifier: Modifier, onSelectedTopic: (Topic) -> Unit
         },
         contentAlignment = Alignment.Center
     ) {
-       Text(text = topic.name, color = if (topic.isSelected) Color.White else Color.Black)
+       Text(text = topic.name, color = if (topic.isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary)
     }
 }
 
@@ -99,12 +99,17 @@ fun ConversationsTopics(
     }
 }
 
-@Preview(showBackground = true, name = "Dark Mode")
+@Preview(showBackground = true, name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 private fun HomeScreenPreview() {
     SpeechTrainingTheme {
         val navController = rememberNavController()
-        HomeScreen(topics = listOf(), navController = navController)
+        HomeScreen(
+            topics = listOf(
+                Topic(name = "First"),
+                Topic(name = "Second"),
+                Topic(name = "Third"),
+                Topic(name = "Fourth")), navController = navController)
     }
 }
 
