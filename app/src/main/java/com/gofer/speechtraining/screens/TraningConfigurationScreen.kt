@@ -1,6 +1,7 @@
 package com.gofer.speechtraining.screens
 
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -92,7 +93,7 @@ fun TrainingConfigurationScreen(
             },
             contentAlignment = Alignment.Center
           ) {
-            Text( text = phrase.name, color = if (selected) Color.White else Color.Black)
+            Text( text = phrase.name, color = if (selected) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.secondary)
           }
         }
       }
@@ -100,7 +101,7 @@ fun TrainingConfigurationScreen(
   }
 }
 
-@Preview(showBackground = true, name = "Dark Mode")
+@Preview(showBackground = true, name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun TrainingContentsScreenPreview() {
   SpeechTrainingTheme {
