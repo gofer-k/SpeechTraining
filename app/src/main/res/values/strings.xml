@@ -3,4 +3,5 @@
     <string name="titleHome">SpeechTraining</string>
     <string name="training_configuration">"Training configuration: "</string>
     <string name="training_topic">"Training: "</string>
+    <string name="btn_speak">Speak</string>
 </resources>

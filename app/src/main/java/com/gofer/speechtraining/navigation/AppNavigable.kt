@@ -9,7 +9,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.gofer.speechtraining.TrainingScreenLabel
 import com.gofer.speechtraining.screens.TrainingConfigurationScreen
-import com.gofer.speechtraining.screens.TrainingScreen
 import com.gofer.speechtraining.src.main.model.SpeechTrainingDataViewModel
 
 @Composable
@@ -35,24 +34,25 @@ fun AppNavigation(viewModel: SpeechTrainingDataViewModel) {
         navController = navHostController,
         backStackEntry.arguments?.getString("name") ?: "default")
     }
-    composable("${TrainingScreenLabel.TrainingContents.name}?name={name}&phrases={phrases}",
-      arguments = listOf(
-        navArgument(name = "name") {
-        type = NavType.StringType
-        defaultValue = ""
-      },
-      navArgument(name = "phrases") {
-        type = NavType.StringArrayType
-      }
-    )
-    ) { backStackEntry ->
-      val selectedPhrases = backStackEntry.arguments?.getStringArray("phrases")?.toList()
-        .orEmpty().listIterator().next().split(",")
-
-      TrainingScreen(
-        trainingTopicName = backStackEntry.arguments?.getString("name") ?: "default",
-        phrases = selectedPhrases
-      )
-    }
+    // TODO: configure speaking parameters
+//    composable("${TrainingScreenLabel.TrainingContents.name}?name={name}&phrases={phrases}",
+//      arguments = listOf(
+//        navArgument(name = "name") {
+//        type = NavType.StringType
+//        defaultValue = ""
+//      },
+//      navArgument(name = "phrases") {
+//        type = NavType.StringArrayType
+//      }
+//    )
+//    ) { backStackEntry ->
+//      val selectedPhrases = backStackEntry.arguments?.getStringArray("phrases")?.toList()
+//        .orEmpty().listIterator().next().split(",")
+//
+//      TrainingScreen(
+//        trainingTopicName = backStackEntry.arguments?.getString("name") ?: "default",
+//        phrases = selectedPhrases
+//      )
+//    }
   }
 }
