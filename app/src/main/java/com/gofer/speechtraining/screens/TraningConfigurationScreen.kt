@@ -4,9 +4,11 @@ import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,7 +17,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -32,13 +35,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.gofer.speechtraining.TrainingScreenLabel
+import com.gofer.speechtraining.getTrainingSpeakIcon
 import com.gofer.speechtraining.src.main.model.Phrase
+import com.gofer.speechtraining.src.main.model.TtsViewModel
 import com.gofer.speechtraining.ui.theme.Pink80
 import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
 
@@ -48,9 +55,11 @@ import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
 fun TrainingConfigurationScreen(
   phrases: List<Phrase>,
   navController: NavController,
-  trainingTopicName: String
+  trainingTopicName: String,
+  ttsViewModel: TtsViewModel = TtsViewModel()
 ) {
   val trainingPhrasesState = remember { phrases.toMutableStateList() }
+  val context = LocalContext.current
 
   Scaffold(
     topBar = {
@@ -62,16 +71,17 @@ fun TrainingConfigurationScreen(
       colors = topAppBarColors(containerColor = Pink80)
       )
     },
-    floatingActionButton = {
-      FloatingActionButton(
-        onClick = {
-          val selectedPhrases = trainingPhrasesState.filter { it.isSelected }.map { it.name }
-          navController.navigate(
-            "${TrainingScreenLabel.TrainingContents.name}?name=${trainingTopicName}&phrases=${selectedPhrases}")
-      }) {
-        Text(text = "Start training")
-      }
-    }
+    // TODO: configuration speaking parameters
+//    floatingActionButton = {
+//      FloatingActionButton(
+//        onClick = {
+//          val selectedPhrases = trainingPhrasesState.filter { it.isSelected }.map { it.name }
+//          navController.navigate(
+//            "${TrainingScreenLabel.TrainingContents.name}?name=${trainingTopicName}&phrases=${selectedPhrases}")
+//      }) {
+//        Text(text = "Start training")
+//      }
+//    }
   ) { contentPadding ->
     Column(modifier = Modifier
       .fillMaxSize()
@@ -81,19 +91,29 @@ fun TrainingConfigurationScreen(
         itemsIndexed(trainingPhrasesState) { index, phrase ->
           if (index != 0) Spacer(Modifier.height(2.dp))
           var selected by remember { mutableStateOf(false) }
-          Box(modifier = Modifier
-            .shadow(4.dp, shape = MaterialTheme.shapes.small)
-            .fillMaxSize()
-            .clip(MaterialTheme.shapes.small)
-            .background(if (selected) Color("#9233eb".toColorInt()) else MaterialTheme.colorScheme.surface)
-            .padding(16.dp)
-            .clickable {
-              selected = selected.not()
-              phrase.toggle()
-            },
-            contentAlignment = Alignment.Center
-          ) {
-            Text( text = phrase.name, color = if (selected) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.secondary)
+          Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween) {
+            Box(modifier = Modifier
+              .shadow(4.dp, shape = MaterialTheme.shapes.small)
+              .clip(MaterialTheme.shapes.small)
+              .background(if (selected) Color("#9233eb".toColorInt()) else MaterialTheme.colorScheme.surface)
+              .padding(16.dp)
+              .clickable {
+                selected = selected.not()
+                phrase.toggle()
+              },
+              contentAlignment = Alignment.CenterStart
+            ) {
+              Text( text = phrase.name, color = if (selected) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.secondary)
+            }
+            IconButton(onClick = {
+              ttsViewModel.onSpeakTrainingPhrase(phrase.name, context)
+              }) {
+              Icon(
+                painterResource(id = getTrainingSpeakIcon(isSystemInDarkTheme())),
+                contentDescription = TrainingScreenLabel.TrainingPhraseSpaak.name)
+            }
           }
         }
       }
