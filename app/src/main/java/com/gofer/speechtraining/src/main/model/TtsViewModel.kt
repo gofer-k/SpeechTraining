@@ -13,12 +13,12 @@ class TtsViewModel: ViewModel() {
   private val _state = mutableStateOf(String())
 //  val state: State<String> = _state
 
-  fun onSpeakTrainingPhrase(phrase: String, context: Context) {
+  fun onSpeakTrainingPhrase(phrase: String, context: Context, onFinishedSpeech: (Boolean) -> Unit) {
     _state.value = phrase
 
-    textToSpeak(context)
+    textToSpeak(context, onFinishedSpeech)
   }
-  fun textToSpeak(context: Context) {
+  fun textToSpeak(context: Context, onFinishedSpeech: (Boolean) -> Unit) {
     tts = TextToSpeech(context) { status ->
       if (status == TextToSpeech.SUCCESS) {
         Log.d("TextToSpeech", "Initialization Success")
@@ -31,7 +31,9 @@ class TtsViewModel: ViewModel() {
             Log.d("SpeechTraining", "Initialize TTS language")
           }
           it.setSpeechRate(1.0f)
-          it.speak(_state.value, TextToSpeech.QUEUE_ADD, null, null)
+          if (it.speak(_state.value, TextToSpeech.QUEUE_ADD, null, null) == android.speech.tts.TextToSpeech.SUCCESS) {
+            onFinishedSpeech(it.isSpeaking())
+          }
         }
       } else {
         Log.d("TextToSpeech", "Initialization Failed")

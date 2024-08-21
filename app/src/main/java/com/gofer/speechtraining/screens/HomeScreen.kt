@@ -63,7 +63,6 @@ fun TopicItem(topic: Topic, modifier: Modifier, onSelectedTopic: (Topic) -> Unit
         .shadow(4.dp, shape = MaterialTheme.shapes.small)
         .fillMaxSize()
         .clip(MaterialTheme.shapes.small)
-//        .background(if (topic.isSelected) Color("#9233eb".toColorInt()) else MaterialTheme.colorScheme.surface)
         .background(if (topic.isSelected) MaterialTheme.colorScheme.inverseOnSurface else MaterialTheme.colorScheme.inverseOnSurface)
         .padding(16.dp)
         .clickable {
