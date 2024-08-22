@@ -8,20 +8,22 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.gofer.speechtraining.navigation.AppNavigation
-import com.gofer.speechtraining.src.main.model.ReadJSONFromAssets
 import com.gofer.speechtraining.src.main.model.SpeechTrainingData
 import com.gofer.speechtraining.src.main.model.SpeechTrainingDataViewModel
+import com.gofer.speechtraining.src.main.model.readDataFromSource
+import com.gofer.speechtraining.src.main.model.saveSpeakingTrainingDataToFile
 import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
 import com.google.gson.Gson
 
 
 class MainActivity : ComponentActivity() {
-
+    var trainingData: SpeechTrainingData? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val trainingAssetDataJson = ReadJSONFromAssets(baseContext, "speechtrainingdata.json" )
-        val trainingData = Gson().fromJson(trainingAssetDataJson, SpeechTrainingData::class.java)
+      val path = baseContext.resources.getString(R.string.app_data_source)
+      val trainingAssetDataJson = readDataFromSource(baseContext, path)
+      trainingData = Gson().fromJson(trainingAssetDataJson, SpeechTrainingData::class.java)
 
 
       setContent {
@@ -29,7 +31,7 @@ class MainActivity : ComponentActivity() {
                 val viewModel = viewModel<SpeechTrainingDataViewModel>(
                   factory = object : ViewModelProvider.Factory {
                     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                      return SpeechTrainingDataViewModel(data = trainingData) as T
+                      return SpeechTrainingDataViewModel(data = trainingData!!) as T
                     }
                   }
                 )
@@ -38,7 +40,11 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-  override fun onDestroy() {
-    super.onDestroy()
+  override fun onStop() {
+    super.onStop()
+    trainingData?.let {
+      val path = baseContext.resources.getString(R.string.app_data_source)
+      saveSpeakingTrainingDataToFile(baseContext, path, it)
+    }
   }
 }

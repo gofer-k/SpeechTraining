@@ -3,12 +3,12 @@ package com.gofer.speechtraining
 import androidx.annotation.StringRes
 
 enum class TrainingScreenLabel(@StringRes val title: Int)  {
+  TrainingApp(R.string.app_name),
+  TrainingAppSource(R.string.app_data_source),
   TrainingList(R.string.app_name),
   TrainingConfiguration(R.string.training_configuration),
   TrainingContents(R.string.training_topic),
-  TrainingPhraseSpaak(R.string.btn_speak),
-  TrainingPhraseSpeakIcon(R.drawable.ic_outline_volume_up_24_light),
-  TrainingPhraseSpeakDark(R.drawable.ic_outline_volume_up_24)
+  TrainingPhraseSpeech(R.string.btn_speak)
 }
 
 fun getTrainingSpeakIcon(isDarkTheme: Boolean) = if (isDarkTheme) R.drawable.ic_outline_volume_up_24 else R.drawable.ic_outline_volume_up_24_light
