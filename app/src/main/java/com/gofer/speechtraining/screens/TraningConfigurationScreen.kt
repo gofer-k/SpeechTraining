@@ -118,7 +118,7 @@ fun TrainingConfigurationScreen(
               }) {
                 Icon(
                   painterResource(id = getTrainingSpeakIcon(isSystemInDarkTheme())),
-                  contentDescription = TrainingScreenLabel.TrainingPhraseSpaak.name)
+                  contentDescription = TrainingScreenLabel.TrainingPhraseSpeech.name)
               }
             }
           }
