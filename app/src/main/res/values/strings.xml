@@ -5,4 +5,6 @@
     <string name="training_topic">"Training: "</string>
     <string name="btn_speak">Speak</string>
     <string name="app_data_source">speechtrainingdata.json</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
 </resources>
