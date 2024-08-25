@@ -73,15 +73,9 @@ fun TrainingConfigurationScreen(
       colors = topAppBarColors(containerColor = Pink80)
       )
     },
-    // TODO: configuration speaking parameters
     floatingActionButton = {
-      FloatingActionButton(
-        onClick = {
-//          val selectedPhrases = trainingPhrasesState.filter { it.isSelected }.map { it.name }
-//          navController.navigate(
-//            "${TrainingScreenLabel.TrainingContents.name}?name=${trainingTopicName}&phrases=${selectedPhrases}")
-      }) {
-        IconButton(onClick = { /*TODO*/ }) {
+      FloatingActionButton(onClick = {}) {
+        IconButton(onClick = { navController.navigate(TrainingScreenLabel.TrainingAddPhrase.name) }) {
           Icon(imageVector = Icons.Filled.Add, contentDescription = null )
         }
       }

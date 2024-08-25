@@ -98,9 +98,9 @@ fun ConversationsTopics(
     }
 }
 
-@Preview(showBackground = true, name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(showBackground = true, name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun HomeScreenPreview() {
+internal fun HomeScreenPreview() {
     SpeechTrainingTheme {
         val navController = rememberNavController()
         HomeScreen(
