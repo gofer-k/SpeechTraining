@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.gofer.speechtraining.TrainingScreenLabel
+import com.gofer.speechtraining.screens.AddTrainingDataScreen
 import com.gofer.speechtraining.screens.TrainingConfigurationScreen
 import com.gofer.speechtraining.src.main.model.SpeechTrainingDataViewModel
 
@@ -33,6 +34,9 @@ fun AppNavigation(viewModel: SpeechTrainingDataViewModel) {
         viewModel.getTrainingPhrases(backStackEntry.arguments?.getLong("topicId") ?: 0L),
         navController = navHostController,
         backStackEntry.arguments?.getString("name") ?: "default")
+    }
+    composable(TrainingScreenLabel.TrainingAddPhrase.name) {
+      AddTrainingDataScreen(navController = navHostController)
     }
     // TODO: configure speaking parameters
 //    composable("${TrainingScreenLabel.TrainingContents.name}?name={name}&phrases={phrases}",
