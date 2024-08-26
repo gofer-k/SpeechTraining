@@ -16,8 +16,10 @@ import com.gofer.speechtraining.src.main.model.SpeechTrainingDataViewModel
 fun AppNavigation(viewModel: SpeechTrainingDataViewModel) {
   val navHostController = rememberNavController()
   NavHost(navController = navHostController, startDestination = TrainingScreenLabel.TrainingList.name) {
-      composable(TrainingScreenLabel.TrainingList.name) { HomeScreen(viewModel.getTrainingTopics(), navController = navHostController) }
-      composable("${TrainingScreenLabel.TrainingConfiguration.name}?name={name}&topicId={topicId}",
+      composable(TrainingScreenLabel.TrainingList.name) {
+        HomeScreen(viewModel.getTrainingTopics(), navController = navHostController) }
+      composable(
+        "${TrainingScreenLabel.TrainingConfiguration.name}?name={name}&topicId={topicId}&add_phrase={addPhrase}",
       arguments = listOf(
         navArgument(name = "name") {
           type =  NavType.StringType
@@ -26,17 +28,25 @@ fun AppNavigation(viewModel: SpeechTrainingDataViewModel) {
         navArgument(name = "topicId") {
           type = NavType.LongType
           defaultValue = 0
+        },
+        navArgument(name = "add_phrase") {
+          type = NavType.StringType
+          defaultValue = ""
         }
       )
     )
       { backStackEntry ->
+        // TODO: Add new phrase into view model as well refresh Topic phrases
       TrainingConfigurationScreen(
         viewModel.getTrainingPhrases(backStackEntry.arguments?.getLong("topicId") ?: 0L),
         navController = navHostController,
         backStackEntry.arguments?.getString("name") ?: "default")
     }
-    composable(TrainingScreenLabel.TrainingAddPhrase.name) {
-      AddTrainingDataScreen(navController = navHostController)
+    composable(TrainingScreenLabel.TrainingAddPhrase.name) {backStackEntry ->
+      val topic = backStackEntry.arguments?.getLong("topicId")
+        ?.let { viewModel.getTrainingTopic(it) }
+
+      topic?.let {  AddTrainingDataScreen(navController = navHostController, it) }
     }
     // TODO: configure speaking parameters
 //    composable("${TrainingScreenLabel.TrainingContents.name}?name={name}&phrases={phrases}",

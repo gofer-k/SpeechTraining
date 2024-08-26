@@ -104,7 +104,7 @@ fun TrainingConfigurationScreen(
                 fontWeight = if (phrase.isSelected) FontWeight.Bold else FontWeight.Normal
               )
               IconButton(onClick = {
-                ttsViewModel.onSpeakTrainingPhrase(phrase.name, context,
+                ttsViewModel.onSpeakTrainingPhrase(phrase, context,
                   {
                     phrase.toggle()
                     phraseListState.onSelectedPhrase(phrase)

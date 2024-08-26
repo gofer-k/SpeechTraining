@@ -38,25 +38,30 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.gofer.speechtraining.TrainingScreenLabel
+import com.gofer.speechtraining.src.main.model.Phrase
+import com.gofer.speechtraining.src.main.model.Topic
 import com.gofer.speechtraining.ui.theme.Purple40
 import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun AddTrainingDataScreen(navController: NavController) {
+fun AddTrainingDataScreen(navController: NavController, trainingTopic: Topic) {
+  var phrase by remember { mutableStateOf(Phrase()) }
+
   Scaffold(
     topBar = {
       TopAppBar(
         title = {
           Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-            Text(text = TrainingScreenLabel.TrainingAddPhrase.name)
+            Text(text = stringResource(TrainingScreenLabel.TrainingAddPhrase.title))
           }
         },
         colors = topAppBarColors(containerColor = Purple40))
@@ -64,14 +69,20 @@ fun AddTrainingDataScreen(navController: NavController) {
     bottomBar = {
       BottomAppBar() {
         NavigationBarItem(
-          label = { Text(text = TrainingScreenLabel.TrainingCancel.name) },
+          label = { Text(text = stringResource(TrainingScreenLabel.TrainingCancel.title)) },
           selected = false,
-          onClick = { /*TODO*/ },
+          onClick = {
+            navController.navigate(
+              "${TrainingScreenLabel.TrainingConfiguration.name}?name=${trainingTopic.name}&topicId=${trainingTopic.id}")
+          },
           icon = { Icon(imageVector = Icons.Rounded.ArrowBack, contentDescription = null) })
         NavigationBarItem(
-          label = { Text(text = TrainingScreenLabel.TrainingSave.name) },
+          label = { Text(text = stringResource(TrainingScreenLabel.TrainingSave.title)) },
           selected = false,
-          onClick = { /*TODO*/ },
+          onClick = {
+            navController.navigate(
+              "${TrainingScreenLabel.TrainingConfiguration.name}?name=${trainingTopic.name}&topicId=${trainingTopic.id}&add_phrase=${phrase.name}")
+          },
           icon = { Icon(imageVector = Icons.Rounded.Done, contentDescription = null) })
       }
     }
@@ -80,39 +91,49 @@ fun AddTrainingDataScreen(navController: NavController) {
       modifier = Modifier
         .fillMaxSize()
         .padding(paddingValues = contentPadding)) {
-      Spacer(modifier = Modifier
-        .fillMaxWidth()
-        .padding(vertical = 24.dp))
+      Spacer(
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(vertical = 24.dp)
+      )
       Icon(
         imageVector = Icons.Filled.Build,
         contentDescription = null,
         modifier = Modifier
           .fillMaxWidth()
-          .scale(2.0f))
-      Spacer(modifier = Modifier
-        .fillMaxWidth()
-        .padding(vertical = 48.dp))
+          .scale(2.0f)
+      )
+      Spacer(
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(vertical = 48.dp)
+      )
       TextField(
         modifier = Modifier
           .fillMaxWidth()
           .padding(horizontal = 4.dp),
-        value = TrainingScreenLabel.TrainingEditPhraseText.name,
+        value = stringResource(TrainingScreenLabel.TrainingEditPhraseText.title),
         shape = RoundedCornerShape(24.dp),
         onValueChange = {})
-      Spacer(modifier = Modifier
-        .fillMaxWidth()
-        .padding(vertical = 48.dp))
-      LanguageList(languages = listOf("English", "Polish"))
+      Spacer(
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(vertical = 48.dp)
+      )
+      LanguageList(
+        languages = listOf("English", "Polish"),
+        onSelectedLanguage = { lang: String ->
+          phrase = phrase.copy(name = phrase.name, language = Phrase.toLocale(lang))
+        })
     }
   }
 }
 
 @Composable
-fun LanguageList(languages: List<String>) {
+fun LanguageList(languages: List<String>, onSelectedLanguage: (String) -> Unit) {
   var isExtended by remember { mutableStateOf( false) }
-  var selectedLanguage by remember {
-    mutableStateOf(TrainingScreenLabel.TrainingLanguage.name)
-  }
+  val label = stringResource(TrainingScreenLabel.TrainingLanguage.title)
+  var selectedLanguage by remember { mutableStateOf(label) }
 
   Column(modifier = Modifier
     .fillMaxWidth()
@@ -120,7 +141,11 @@ fun LanguageList(languages: List<String>) {
     Row(
       modifier = Modifier
         .fillMaxWidth()
-        .clickable { isExtended = !isExtended }
+        .clickable {
+          isExtended = !isExtended
+          if (isExtended)
+            onSelectedLanguage(selectedLanguage)
+        }
         .border(
           width = 2.dp,
           color = if (isSystemInDarkTheme()) Color.LightGray else Color.DarkGray
@@ -155,6 +180,6 @@ fun LanguageList(languages: List<String>) {
 internal fun AddTrainingDataScreenPreview() {
   SpeechTrainingTheme {
     val navController = rememberNavController()
-    AddTrainingDataScreen(navController = navController)
+    AddTrainingDataScreen(navController = navController, trainingTopic = Topic())
   }
 }

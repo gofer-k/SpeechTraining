@@ -5,15 +5,13 @@ import android.speech.tts.TextToSpeech
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import java.util.Locale
 
 class TtsViewModel: ViewModel() {
   private var tts: TextToSpeech? = null
 
-  private val _state = mutableStateOf(String())
-//  val state: State<String> = _state
+  private val _state = mutableStateOf(Phrase())
 
-  fun onSpeakTrainingPhrase(phrase: String, context: Context, onFinishedSpeech: (Boolean) -> Unit) {
+  fun onSpeakTrainingPhrase(phrase: Phrase, context: Context, onFinishedSpeech: (Boolean) -> Unit) {
     _state.value = phrase
 
     textToSpeak(context, onFinishedSpeech)
@@ -22,16 +20,15 @@ class TtsViewModel: ViewModel() {
     tts = TextToSpeech(context) { status ->
       if (status == TextToSpeech.SUCCESS) {
         Log.d("TextToSpeech", "Initialization Success")
-        Log.d("TextToSpeech", "Phrase to speak: ${_state.value}")
         tts?.let {
-          val result = it.setLanguage(Locale.US)
+          val result = it.setLanguage(_state.value.language)
           if (result == TextToSpeech.LANG_MISSING_DATA ||
             result == TextToSpeech.LANG_NOT_SUPPORTED
           ) {
             Log.d("SpeechTraining", "Initialize TTS language")
           }
           it.setSpeechRate(1.0f)
-          if (it.speak(_state.value, TextToSpeech.QUEUE_ADD, null, null) == android.speech.tts.TextToSpeech.SUCCESS) {
+          if (it.speak(_state.value.name, TextToSpeech.QUEUE_ADD, null, null) == android.speech.tts.TextToSpeech.SUCCESS) {
             onFinishedSpeech(it.isSpeaking())
           }
         }
