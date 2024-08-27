@@ -80,8 +80,8 @@ fun AddTrainingDataScreen(navController: NavController, trainingTopic: Topic) {
           label = { Text(text = stringResource(TrainingScreenLabel.TrainingSave.title)) },
           selected = false,
           onClick = {
-            navController.navigate(
-              "${TrainingScreenLabel.TrainingConfiguration.name}?name=${trainingTopic.name}&topicId=${trainingTopic.id}&add_phrase=${phrase.name}")
+//            navController.navigate(
+//              "${TrainingScreenLabel.TrainingConfiguration.name}?name=${trainingTopic.name}&topicId=${trainingTopic.id}&add_phrase=${phrase.name}")
           },
           icon = { Icon(imageVector = Icons.Rounded.Done, contentDescription = null) })
       }
