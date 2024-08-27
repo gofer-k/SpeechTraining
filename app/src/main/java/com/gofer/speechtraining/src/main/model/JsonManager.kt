@@ -42,7 +42,7 @@ fun readDataFromSource(context: Context, path: String): String {
 fun saveSpeakingTrainingDataToFile(context: Context, path: String, data: SpeechTrainingData) {
   val json = Gson().toJson(data)
 
-  context.runCatching { openFileOutput(path, Context.MODE_APPEND) }
+  context.runCatching { openFileOutput(path, Context.MODE_PRIVATE) }
     .onSuccess { ios ->
       ios.runCatching {
         write(json.toByteArray())
