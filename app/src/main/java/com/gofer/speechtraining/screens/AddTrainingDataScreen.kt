@@ -113,11 +113,15 @@ fun AddTrainingDataScreen(navController: NavController, trainingTopic: Topic) {
         modifier = Modifier
           .fillMaxWidth()
           .padding(horizontal = 4.dp),
-        value = if (phrase.name.isNotEmpty()) phrase.name else textDefault,
+        value = if (phrase.name.isEmpty()) textDefault else phrase.name ,
         shape = RoundedCornerShape(24.dp),
         onValueChange = {
-          if(it.isNotEmpty()) phrase = phrase.copy(name = it, language = phrase.language)
-          else phrase  = phrase.copy(name = "", language = phrase.language
+          if(it.isEmpty()) {
+            phrase  = phrase.copy(name = "", language = phrase.language)
+          }
+          else {
+            phrase = phrase.copy(name = it, language = phrase.language)
+          }
         })
       Spacer(
         modifier = Modifier
