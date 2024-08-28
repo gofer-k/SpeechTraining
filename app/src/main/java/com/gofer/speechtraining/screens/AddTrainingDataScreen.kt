@@ -3,7 +3,6 @@ package com.gofer.speechtraining.screens
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -13,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -114,7 +114,7 @@ fun AddTrainingDataScreen(navController: NavController, trainingTopic: Topic) {
           .padding(horizontal = 4.dp),
         value = stringResource(TrainingScreenLabel.TrainingEditPhraseText.title),
         shape = RoundedCornerShape(24.dp),
-        onValueChange = {})
+        onValueChange = { })
       Spacer(
         modifier = Modifier
           .fillMaxWidth()
@@ -141,39 +141,40 @@ fun LanguageList(languages: List<String>, onSelectedLanguage: (String) -> Unit) 
     Row(
       modifier = Modifier
         .fillMaxWidth()
+        .height(60.dp)
+        .background(
+          color = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray,
+          shape = RoundedCornerShape(24.dp)
+        )
         .clickable {
           isExtended = !isExtended
           if (isExtended)
             onSelectedLanguage(selectedLanguage)
-        }
-        .border(
-          width = 2.dp,
-          color = if (isSystemInDarkTheme()) Color.LightGray else Color.DarkGray
-        ),
+        },
       verticalAlignment = Alignment.CenterVertically,
       horizontalArrangement = Arrangement.SpaceBetween) {
-      Text(text = selectedLanguage, fontSize = 20.sp)
-      Icon(imageVector = Icons.Default.List, contentDescription = null)
+      Text(modifier = Modifier.padding(horizontal = 12.dp), text = selectedLanguage, fontSize = 20.sp)
+      Icon(modifier = Modifier.padding(end = 12.dp), imageVector = Icons.Default.List, contentDescription = null)
     }
 
     if (isExtended) {
       for (lang in languages) {
-        Box(modifier = Modifier
-          .fillMaxWidth()
-          .background(color = if (isSystemInDarkTheme()) Color.LightGray else Color.DarkGray)) {
-          Row(modifier = Modifier.clickable {
-            selectedLanguage = lang
-          },
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Absolute.SpaceBetween) {
-              Text(text = lang, fontSize = 20.sp, color = if(isSystemInDarkTheme()) Color.DarkGray else Color.LightGray)
-              Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.weight(1f))
+        Box(modifier = Modifier.fillMaxWidth()
+          .background(
+            color = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray,
+            shape = RoundedCornerShape(24.dp))
+          .height(60.dp)
+          .clickable { selectedLanguage = lang }) {
+            Text(text = lang,
+              modifier = Modifier.padding(horizontal = 12.dp).align(alignment = Alignment.Center),
+              fontSize = 20.sp, color = if(isSystemInDarkTheme()) Color.LightGray else Color.DarkGray
+              )
           }
         }
       }
     }
   }
-}
 
 @Preview(showBackground = true, name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
