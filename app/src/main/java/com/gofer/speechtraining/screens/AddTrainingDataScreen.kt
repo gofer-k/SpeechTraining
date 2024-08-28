@@ -55,6 +55,7 @@ import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
 @Composable
 fun AddTrainingDataScreen(navController: NavController, trainingTopic: Topic) {
   var phrase by remember { mutableStateOf(Phrase()) }
+  val textDefault = stringResource(TrainingScreenLabel.TrainingEditPhraseText.title)
 
   Scaffold(
     topBar = {
@@ -112,9 +113,12 @@ fun AddTrainingDataScreen(navController: NavController, trainingTopic: Topic) {
         modifier = Modifier
           .fillMaxWidth()
           .padding(horizontal = 4.dp),
-        value = stringResource(TrainingScreenLabel.TrainingEditPhraseText.title),
+        value = if (phrase.name.isNotEmpty()) phrase.name else textDefault,
         shape = RoundedCornerShape(24.dp),
-        onValueChange = { })
+        onValueChange = {
+          if(it.isNotEmpty()) phrase = phrase.copy(name = it, language = phrase.language)
+          else phrase  = phrase.copy(name = "", language = phrase.language
+        })
       Spacer(
         modifier = Modifier
           .fillMaxWidth()
@@ -160,14 +164,18 @@ fun LanguageList(languages: List<String>, onSelectedLanguage: (String) -> Unit) 
     if (isExtended) {
       for (lang in languages) {
         Spacer(modifier = Modifier.weight(1f))
-        Box(modifier = Modifier.fillMaxWidth()
+        Box(modifier = Modifier
+          .fillMaxWidth()
           .background(
             color = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray,
-            shape = RoundedCornerShape(24.dp))
+            shape = RoundedCornerShape(24.dp)
+          )
           .height(60.dp)
           .clickable { selectedLanguage = lang }) {
             Text(text = lang,
-              modifier = Modifier.padding(horizontal = 12.dp).align(alignment = Alignment.Center),
+              modifier = Modifier
+                .padding(horizontal = 12.dp)
+                .align(alignment = Alignment.Center),
               fontSize = 20.sp, color = if(isSystemInDarkTheme()) Color.LightGray else Color.DarkGray
               )
           }
