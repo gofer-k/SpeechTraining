@@ -45,6 +45,7 @@ import com.gofer.speechtraining.PhraseState
 import com.gofer.speechtraining.TrainingScreenLabel
 import com.gofer.speechtraining.getTrainingSpeakIcon
 import com.gofer.speechtraining.src.main.model.Phrase
+import com.gofer.speechtraining.src.main.model.Topic
 import com.gofer.speechtraining.src.main.model.TtsViewModel
 import com.gofer.speechtraining.ui.theme.Pink80
 import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
@@ -53,9 +54,9 @@ import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TrainingConfigurationScreen(
-  phrases: List<Phrase>,
   navController: NavController,
-  trainingTopicName: String,
+  phrases: List<Phrase>,
+  trainingTopic: Topic,
   ttsViewModel: TtsViewModel = TtsViewModel()
 ) {
 //  val trainingPhrasesState = remember { phrases.toMutableStateList() }
@@ -67,7 +68,7 @@ fun TrainingConfigurationScreen(
     topBar = {
       TopAppBar(title = { 
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-          Text(text = TrainingScreenLabel.TrainingConfiguration.name.plus(trainingTopicName))
+          Text(text = TrainingScreenLabel.TrainingConfiguration.name.plus(trainingTopic.name))
         }
       },
       colors = topAppBarColors(containerColor = Pink80)
@@ -75,7 +76,10 @@ fun TrainingConfigurationScreen(
     },
     floatingActionButton = {
       FloatingActionButton(onClick = {}) {
-        IconButton(onClick = { navController.navigate(TrainingScreenLabel.TrainingAddPhrase.name) }) {
+        IconButton(onClick = {
+          navController.navigate(
+            "${TrainingScreenLabel.TrainingAddPhrase.name}?topicId=${trainingTopic.id}")
+        }) {
           Icon(imageVector = Icons.Filled.Add, contentDescription = null )
         }
       }
@@ -87,7 +91,7 @@ fun TrainingConfigurationScreen(
       Spacer(Modifier.height(2.dp))
       LazyColumn(modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Top,) {
-        itemsIndexed(phraseListState.phraseList) { index, phrase ->
+        itemsIndexed(phraseListState.phraseList) { _, phrase ->
           Box(modifier = Modifier
             .shadow(1.dp, shape = MaterialTheme.shapes.extraSmall)
             .clip(MaterialTheme.shapes.extraSmall)
@@ -104,11 +108,11 @@ fun TrainingConfigurationScreen(
                 fontWeight = if (phrase.isSelected) FontWeight.Bold else FontWeight.Normal
               )
               IconButton(onClick = {
-                ttsViewModel.onSpeakTrainingPhrase(phrase, context,
-                  {
-                    phrase.toggle()
-                    phraseListState.onSelectedPhrase(phrase)
-                  })
+                ttsViewModel.onSpeakTrainingPhrase(phrase, context
+                ) {
+                  phrase.toggle()
+                  phraseListState.onSelectedPhrase(phrase)
+                }
               }) {
                 Icon(
                   painterResource(id = getTrainingSpeakIcon(isSystemInDarkTheme())),
@@ -127,6 +131,8 @@ fun TrainingConfigurationScreen(
 private fun TrainingContentsScreenPreview() {
   SpeechTrainingTheme {
     val navController = rememberNavController()
-    TrainingConfigurationScreen(listOf(Phrase("one"), Phrase("two"), Phrase("three")), navController = navController, "Topic")
+    TrainingConfigurationScreen(navController = navController,
+      listOf(Phrase("one"), Phrase("two"), Phrase("three")),
+      Topic(name = "Topic"))
   }
 }

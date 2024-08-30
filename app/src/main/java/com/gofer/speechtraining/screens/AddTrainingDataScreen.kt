@@ -2,6 +2,7 @@ package com.gofer.speechtraining.screens
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -74,15 +75,27 @@ fun AddTrainingDataScreen(navController: NavController, trainingTopic: Topic) {
           selected = false,
           onClick = {
             navController.navigate(
-              "${TrainingScreenLabel.TrainingConfiguration.name}?name=${trainingTopic.name}&topicId=${trainingTopic.id}")
+              "${TrainingScreenLabel.TrainingConfiguration.name}?topicId=${trainingTopic.id}")
           },
           icon = { Icon(imageVector = Icons.Rounded.ArrowBack, contentDescription = null) })
         NavigationBarItem(
           label = { Text(text = stringResource(TrainingScreenLabel.TrainingSave.title)) },
           selected = false,
           onClick = {
-//            navController.navigate(
-//              "${TrainingScreenLabel.TrainingConfiguration.name}?name=${trainingTopic.name}&topicId=${trainingTopic.id}&add_phrase=${phrase.name}")
+            // TODO: Phrase language is not specified
+            if (phrase.name.isNotBlank()) {
+                phrase.language.runCatching {
+                  isO3Language
+                }.onSuccess {
+                  navController.navigate(
+                    "${TrainingScreenLabel.TrainingConfiguration.name}?topicId=${trainingTopic.id}&addPhrase=${phrase.name}&phraseLang=${phrase.language.isO3Language}")
+                }.onFailure {
+                  Log.e(
+                    "[${TrainingScreenLabel.TrainingApp}]",
+                    "Not expected specified phrase language")
+                }
+            }
+
           },
           icon = { Icon(imageVector = Icons.Rounded.Done, contentDescription = null) })
       }

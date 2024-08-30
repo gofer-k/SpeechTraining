@@ -68,7 +68,7 @@ fun TopicItem(topic: Topic, modifier: Modifier, onSelectedTopic: (Topic) -> Unit
         .padding(16.dp)
         .clickable {
             onSelectedTopic(topic.copy(isSelected = topic.isSelected.not()))
-            navController.navigate("${TrainingScreenLabel.TrainingConfiguration.name}?name=${topic.name}&topicId=${topic.id}")
+            navController.navigate("${TrainingScreenLabel.TrainingConfiguration.name}?topicId=${topic.id}")
         },
         contentAlignment = Alignment.Center
     ) {

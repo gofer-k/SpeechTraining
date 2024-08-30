@@ -19,17 +19,17 @@ fun AppNavigation(viewModel: SpeechTrainingDataViewModel) {
       composable(TrainingScreenLabel.TrainingList.name) {
         HomeScreen(viewModel.getTrainingTopics(), navController = navHostController) }
       composable(
-        "${TrainingScreenLabel.TrainingConfiguration.name}?name={name}&topicId={topicId}&add_phrase={addPhrase}",
+        "${TrainingScreenLabel.TrainingConfiguration.name}?topicId={topicId}&addPhrase={addPhrase}&phraseLang={phraseLang}",
       arguments = listOf(
-        navArgument(name = "name") {
-          type =  NavType.StringType
-          defaultValue = TrainingScreenLabel.TrainingConfiguration.name
-        },
         navArgument(name = "topicId") {
           type = NavType.LongType
           defaultValue = 0
         },
-        navArgument(name = "add_phrase") {
+        navArgument(name = "addPhrase") {
+          type = NavType.StringType
+          defaultValue = ""
+        },
+        navArgument(name = "phraseLang") {
           type = NavType.StringType
           defaultValue = ""
         }
@@ -37,12 +37,21 @@ fun AppNavigation(viewModel: SpeechTrainingDataViewModel) {
     )
       { backStackEntry ->
         // TODO: Add new phrase into view model as well refresh Topic phrases
-      TrainingConfigurationScreen(
-        viewModel.getTrainingPhrases(backStackEntry.arguments?.getLong("topicId") ?: 0L),
-        navController = navHostController,
-        backStackEntry.arguments?.getString("name") ?: "default")
+        val topicId = backStackEntry.arguments?.getLong("topicId") ?: 0L
+
+        viewModel.getTrainingTopic(topicId = topicId)?.let {
+          TrainingConfigurationScreen(navController = navHostController,
+            viewModel.getTrainingPhrases(topicId),
+            it)
+        }
     }
-    composable(TrainingScreenLabel.TrainingAddPhrase.name) {backStackEntry ->
+    composable("${TrainingScreenLabel.TrainingAddPhrase.name}?topicId={topicId}",
+      arguments =  listOf(
+        navArgument(name = "topicId") {
+          type = NavType.LongType
+          defaultValue = 0L
+        })
+    ) { backStackEntry ->
       val topic = backStackEntry.arguments?.getLong("topicId")
         ?.let { viewModel.getTrainingTopic(it) }
 
