@@ -1,13 +1,13 @@
 <resources>
-    <string name="app_name">SpeechTraining</string>
-    <string name="titleHome">SpeechTraining</string>
+    <string name="app_name" translatable="false">SpeechTraining</string>
+    <string name="titleHome" translatable="false">SpeechTraining</string>
     <string name="training_configuration">"Training configuration: "</string>
     <string name="training_topic">"Training: "</string>
     <string name="btn_speak">Speak</string>
-    <string name="app_data_source">speechtrainingdata.json</string>
+    <string name="app_data_source" translatable="false">speechtrainingdata.json</string>
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
     <string name="add_training_phrase">"Add training phrase"</string>
-    <string name="edit_phrase_text">"Phrase text"</string>
+    <string name="edit_phrase_text" translatable="false">"Phrase text"</string>
     <string name="language">Language</string>
 </resources>
