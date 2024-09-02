@@ -37,7 +37,10 @@ fun AppNavigation(viewModel: SpeechTrainingDataViewModel) {
     )
       { backStackEntry ->
         // TODO: Add new phrase into view model as well refresh Topic phrases
-        val topicId = backStackEntry.arguments?.getLong("topicId") ?: 0L
+        val navArgs = backStackEntry.arguments
+        val topicId = navArgs?.getLong("topicId") ?: 0L
+        val addPhraseText = navArgs?.getString("addPhrase") ?: ""
+        val phraseLang = navArgs?.getString("phraseLang") ?: ""
 
         viewModel.getTrainingTopic(topicId = topicId)?.let {
           TrainingConfigurationScreen(navController = navHostController,
@@ -55,27 +58,7 @@ fun AppNavigation(viewModel: SpeechTrainingDataViewModel) {
       val topic = backStackEntry.arguments?.getLong("topicId")
         ?.let { viewModel.getTrainingTopic(it) }
 
-      topic?.let {  AddTrainingDataScreen(navController = navHostController, it) }
+      topic?.let {  AddTrainingDataScreen(navController = navHostController, it, viewModel.availableLanguages) }
     }
-    // TODO: configure speaking parameters
-//    composable("${TrainingScreenLabel.TrainingContents.name}?name={name}&phrases={phrases}",
-//      arguments = listOf(
-//        navArgument(name = "name") {
-//        type = NavType.StringType
-//        defaultValue = ""
-//      },
-//      navArgument(name = "phrases") {
-//        type = NavType.StringArrayType
-//      }
-//    )
-//    ) { backStackEntry ->
-//      val selectedPhrases = backStackEntry.arguments?.getStringArray("phrases")?.toList()
-//        .orEmpty().listIterator().next().split(",")
-//
-//      TrainingScreen(
-//        trainingTopicName = backStackEntry.arguments?.getString("name") ?: "default",
-//        phrases = selectedPhrases
-//      )
-//    }
   }
 }

@@ -45,16 +45,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.gofer.speechtraining.Language
 import com.gofer.speechtraining.TrainingScreenLabel
 import com.gofer.speechtraining.src.main.model.Phrase
 import com.gofer.speechtraining.src.main.model.Topic
 import com.gofer.speechtraining.ui.theme.Purple40
 import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun AddTrainingDataScreen(navController: NavController, trainingTopic: Topic) {
+fun AddTrainingDataScreen(
+  navController: NavController,
+  trainingTopic: Topic,
+  availableLanguages: List<Language>
+) {
   var phrase by remember { mutableStateOf(Phrase()) }
   val textDefault = stringResource(TrainingScreenLabel.TrainingEditPhraseText.title)
 
@@ -88,10 +94,10 @@ fun AddTrainingDataScreen(navController: NavController, trainingTopic: Topic) {
                   isO3Language
                 }.onSuccess {
                   navController.navigate(
-                    "${TrainingScreenLabel.TrainingConfiguration.name}?topicId=${trainingTopic.id}&addPhrase=${phrase.name}&phraseLang=${phrase.language.isO3Language}")
+                    "${TrainingScreenLabel.TrainingConfiguration.name}?topicId=${trainingTopic.id}&addPhrase=${phrase.name}&phraseLang=${phrase.language.language}")
                 }.onFailure {
                   Log.e(
-                    "[${TrainingScreenLabel.TrainingApp}]",
+                    "[${TrainingScreenLabel.TrainingApp.name}]",
                     "Not expected specified phrase language")
                 }
             }
@@ -142,19 +148,19 @@ fun AddTrainingDataScreen(navController: NavController, trainingTopic: Topic) {
           .padding(vertical = 48.dp)
       )
       LanguageList(
-        languages = listOf("English", "Polish"),
-        onSelectedLanguage = { lang: String ->
-          phrase = phrase.copy(name = phrase.name, language = Phrase.toLocale(lang))
+        languages = availableLanguages,
+        onSelectedLanguage = { lang: Locale ->
+          phrase = phrase.copy(name = phrase.name, language = lang)
         })
     }
   }
 }
 
 @Composable
-fun LanguageList(languages: List<String>, onSelectedLanguage: (String) -> Unit) {
+fun LanguageList(languages: List<Language>, onSelectedLanguage: (Locale) -> Unit) {
   var isExtended by remember { mutableStateOf( false) }
   val label = stringResource(TrainingScreenLabel.TrainingLanguage.title)
-  var selectedLanguage by remember { mutableStateOf(label) }
+  var selectedLanguage by remember { mutableStateOf(Language(label = label)) }
 
   Column(modifier = Modifier
     .fillMaxWidth()
@@ -169,12 +175,12 @@ fun LanguageList(languages: List<String>, onSelectedLanguage: (String) -> Unit) 
         )
         .clickable {
           isExtended = !isExtended
-          if (isExtended)
-            onSelectedLanguage(selectedLanguage)
+          if (!isExtended)
+            onSelectedLanguage(selectedLanguage.locale)
         },
       verticalAlignment = Alignment.CenterVertically,
       horizontalArrangement = Arrangement.SpaceBetween) {
-      Text(modifier = Modifier.padding(horizontal = 12.dp), text = selectedLanguage, fontSize = 20.sp)
+      Text(modifier = Modifier.padding(horizontal = 12.dp), text = selectedLanguage.label, fontSize = 20.sp)
       Icon(modifier = Modifier.padding(end = 12.dp), imageVector = Icons.Default.List, contentDescription = null)
     }
 
@@ -189,7 +195,7 @@ fun LanguageList(languages: List<String>, onSelectedLanguage: (String) -> Unit) 
           )
           .height(60.dp)
           .clickable { selectedLanguage = lang }) {
-            Text(text = lang,
+            Text(text = lang.label,
               modifier = Modifier
                 .padding(horizontal = 12.dp)
                 .align(alignment = Alignment.Center),
@@ -206,6 +212,10 @@ fun LanguageList(languages: List<String>, onSelectedLanguage: (String) -> Unit) 
 internal fun AddTrainingDataScreenPreview() {
   SpeechTrainingTheme {
     val navController = rememberNavController()
-    AddTrainingDataScreen(navController = navController, trainingTopic = Topic())
+    AddTrainingDataScreen(
+      navController = navController,
+      trainingTopic = Topic(),
+      availableLanguages = listOf(Language("English", Locale("en")), Language("polish", Locale("pl")))
+    )
   }
 }
