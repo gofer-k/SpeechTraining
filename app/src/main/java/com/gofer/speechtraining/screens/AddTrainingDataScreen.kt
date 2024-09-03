@@ -15,7 +15,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.List
@@ -39,7 +42,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -62,7 +69,7 @@ fun AddTrainingDataScreen(
   availableLanguages: List<Language>
 ) {
   var phrase by remember { mutableStateOf(Phrase()) }
-  val textDefault = stringResource(TrainingScreenLabel.TrainingEditPhraseText.title)
+  val keyBoardController = LocalSoftwareKeyboardController.current
 
   Scaffold(
     topBar = {
@@ -77,7 +84,6 @@ fun AddTrainingDataScreen(
     bottomBar = {
       BottomAppBar() {
         NavigationBarItem(
-          label = { Text(text = stringResource(TrainingScreenLabel.TrainingCancel.title)) },
           selected = false,
           onClick = {
             navController.navigate(
@@ -85,7 +91,6 @@ fun AddTrainingDataScreen(
           },
           icon = { Icon(imageVector = Icons.Rounded.ArrowBack, contentDescription = null) })
         NavigationBarItem(
-          label = { Text(text = stringResource(TrainingScreenLabel.TrainingSave.title)) },
           selected = false,
           onClick = {
             // TODO: Phrase language is not specified
@@ -131,17 +136,26 @@ fun AddTrainingDataScreen(
       TextField(
         modifier = Modifier
           .fillMaxWidth()
-          .padding(horizontal = 4.dp),
-        value = if (phrase.name.isEmpty()) textDefault else phrase.name ,
+          .padding(horizontal = 4.dp)
+          .width(100.dp), // max text width
+        value = phrase.name,
+        label = { Text(text = stringResource(TrainingScreenLabel.TrainingEditPhraseLabel.title))},
+        placeholder = { Text(text = stringResource(TrainingScreenLabel.TrainingEditPhraseText.title))},
+        maxLines = 2, // max visible text lines
         shape = RoundedCornerShape(24.dp),
+        keyboardOptions = KeyboardOptions(
+          capitalization = KeyboardCapitalization.Sentences,
+          keyboardType = KeyboardType.Text,
+          // The action property type have to consistent with keyboardActions type
+          imeAction = ImeAction.Done),
+        keyboardActions = KeyboardActions(
+          onDone = {
+            keyBoardController?.hide()
+          }
+        ),
         onValueChange = {
-          if(it.isEmpty()) {
-            phrase  = phrase.copy(name = "", language = phrase.language)
-          }
-          else {
-            phrase = phrase.copy(name = it, language = phrase.language)
-          }
-        })
+          phrase = phrase.copy(name = it, language = phrase.language)
+         })
       Spacer(
         modifier = Modifier
           .fillMaxWidth()

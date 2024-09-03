@@ -13,6 +13,7 @@ enum class TrainingScreenLabel(@StringRes val title: Int)  {
   TrainingSave(R.string.save),
   TrainingAddPhrase(R.string.add_training_phrase),
   TrainingEditPhraseText(R.string.edit_phrase_text),
+  TrainingEditPhraseLabel(R.string.edit_phrase_label),
   TrainingLanguage(R.string.language)
 }
 
