@@ -8,6 +8,7 @@
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
     <string name="add_training_phrase">"Add training phrase"</string>
-    <string name="edit_phrase_text" translatable="false">"Phrase text"</string>
+    <string name="edit_phrase_text" translatable="false">"Input text"</string>
     <string name="language">Language</string>
+    <string name="edit_phrase_label">"Phrase text"</string>
 </resources>
