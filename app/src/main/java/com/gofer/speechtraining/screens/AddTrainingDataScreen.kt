@@ -174,7 +174,11 @@ fun AddTrainingDataScreen(
 fun LanguageList(languages: List<Language>, onSelectedLanguage: (Locale) -> Unit) {
   var isExtended by remember { mutableStateOf( false) }
   val label = stringResource(TrainingScreenLabel.TrainingLanguage.title)
-  var selectedLanguage by remember { mutableStateOf(Language(label = label)) }
+  var selectedLanguage by remember { mutableStateOf(Language(label)) }
+  val textSize = 20.sp
+  val cornerShape = RoundedCornerShape(24.dp)
+  val itemHeight = 48.dp
+  val textHorizontalPadding = 12.dp
 
   Column(modifier = Modifier
     .fillMaxWidth()
@@ -182,10 +186,10 @@ fun LanguageList(languages: List<Language>, onSelectedLanguage: (Locale) -> Unit
     Row(
       modifier = Modifier
         .fillMaxWidth()
-        .height(60.dp)
+        .height(itemHeight)
         .background(
           color = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray,
-          shape = RoundedCornerShape(24.dp)
+          shape = cornerShape
         )
         .clickable {
           isExtended = !isExtended
@@ -194,27 +198,34 @@ fun LanguageList(languages: List<Language>, onSelectedLanguage: (Locale) -> Unit
         },
       verticalAlignment = Alignment.CenterVertically,
       horizontalArrangement = Arrangement.SpaceBetween) {
-      Text(modifier = Modifier.padding(horizontal = 12.dp), text = selectedLanguage.label, fontSize = 20.sp)
-      Icon(modifier = Modifier.padding(end = 12.dp), imageVector = Icons.Default.List, contentDescription = null)
+      Text(modifier = Modifier.padding(horizontal = textHorizontalPadding),
+        text = selectedLanguage.label,
+        fontSize = textSize)
+      Icon(modifier = Modifier.padding(end = textHorizontalPadding),
+        imageVector = Icons.Default.List,
+        contentDescription = null)
     }
 
     if (isExtended) {
       for (lang in languages) {
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.height(2.dp))
         Box(modifier = Modifier
           .fillMaxWidth()
           .background(
             color = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray,
-            shape = RoundedCornerShape(24.dp)
+            shape = cornerShape
           )
-          .height(60.dp)
-          .clickable { selectedLanguage = lang }) {
-            Text(text = lang.label,
-              modifier = Modifier
-                .padding(horizontal = 12.dp)
-                .align(alignment = Alignment.Center),
-              fontSize = 20.sp, color = if(isSystemInDarkTheme()) Color.LightGray else Color.DarkGray
-              )
+          .height(itemHeight)
+          .clickable {
+            selectedLanguage = lang
+            isExtended = !isExtended
+          }) {
+          Text(text = lang.label,
+            modifier = Modifier
+              .padding(horizontal = textHorizontalPadding)
+              .align(alignment = Alignment.Center),
+            fontSize = textSize,
+            color = if(isSystemInDarkTheme()) Color.LightGray else Color.DarkGray)
           }
         }
       }
