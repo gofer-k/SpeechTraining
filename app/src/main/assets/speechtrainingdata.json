@@ -9,12 +9,6 @@
       },
       "phrases": [
         {
-          "name": "EE-UW"
-        },
-        {
-          "name": "OW-AW"
-        },
-        {
           "name": "OW AS IN GO"
         },
         {
@@ -171,28 +165,7 @@
           "name": "OUT OF THE WORLD"
         },
         {
-          "name": "OUT OF THE UNIVERSE"
-        },
-        {
-          "name": "OUT OF THE GALAXY"
-        },
-        {
-          "name": "OUT OF THE SOLAR SYSTEM"
-        },
-        {
-          "name": "OUT OF THE MILKY WAY"
-        },
-        {
-          "name": "OUT OF THE STAR"
-        },
-        {
-          "name": "OUT OF THE PLANET"
-        },
-        {
           "name": "OUT OF THE MOON"
-        },
-        {
-          "name": "OUT OF THE SUN"
         },
         {
           "name": "OUT OF THE SKY"
@@ -259,9 +232,6 @@
         },
         {
           "name": "AS GOOD AS"
-        },
-        {
-          "name": "AS IN CAT"
         }
       ]
     },
@@ -301,27 +271,6 @@
           "name": "HOW DO YOU LIKE IT"
         },
         {
-          "name": "HOW DO YOU KNOW"
-        },
-        {
-          "name": "HOW DO YOU THINK"
-        },
-        {
-          "name": "HOW DO YOU UNDERSTAND"
-        },
-        {
-          "name": "HOW DO YOU SEE"
-        },
-        {
-          "name": "HOW DO YOU HEAR"
-        },
-        {
-          "name": "HOW DO YOU SLEEP"
-        },
-        {
-          "name": "HOW DO YOU WAKE UP"
-        },
-        {
           "name": "NICE TO MEET YOU"
         },
         {
@@ -338,6 +287,124 @@
         },
         {
           "name": "NICE TO PLAY WITH YOU"
+        }
+      ]
+    },
+    {
+      "lang": "en-us",
+      "topic":
+      {
+        "id": 5,
+        "name": "At a restaurant"
+      },
+      "phrases": [
+        {
+          "name": "Can I have a menu, please?"
+        },
+        {
+          "name": "What appetizers do you have?"
+        },
+        {
+          "name": "What's entree today?"
+        },
+        {
+          "name": "What's side dishes do you have?"
+        },
+        {
+          "name": "Do you have a dessert?"
+        },
+        {
+          "name": "How many courses are in the meal?"
+        },
+        {
+          "name": "Is it a buffet?"
+        },
+        {
+          "name": "What beverages do you serve?"
+        },
+        {
+          "name": "Is this for din-in or takeaway"
+        },
+        {
+          "name": "Is this for din-in or takeout"
+        },
+        {
+          "name": "Can i order this for takeout"
+        },
+        {
+          "name": "Yes, we offer takeaway service."
+        },
+        {
+          "name": "What's the special of the day? "
+        },
+        {
+          "name": "What type of cuisine do you serve? "
+        },
+        {
+          "name": "What are the ingredients in this meal? "
+        },
+        {
+          "name": "Where are the condiments?"
+        },
+        {
+          "name": "They're out there."
+        },
+        {
+          "name": "Can I get some utensils?"
+        },
+        {
+          "name": "Of course, here you go."
+        },
+        {
+          "name": "Can I have a napkin?"
+        },
+        {
+          "name": "Do you have a reservation?"
+        },
+        {
+          "name": "Yes, It's under Smith."
+        },
+        {
+          "name": "How much tip should I leave?"
+        },
+        {
+          "name": "10-15% is the standard."
+        },
+        {
+          "name": "Can I have the bill, please?"
+        },
+        {
+          "name": "Can I have the check, please?"
+        },
+        {
+          "name": "Can I have the receipt?"
+        },
+        {
+          "name": "Sure. Here you go."
+        },
+        {
+          "name": "Sure. Here you are."
+        },
+        {
+          "name": "Sure. Here you is."
+        },
+        {
+          "name": "yYs, help yourself"
+        },
+        {
+          "name": "It's for dine-in"
+        },
+        {
+          "name": "Are you ready to order?"
+        },
+        {
+          "name": "Yes, I'll have"
+        },
+        {
+          "name": "Can we sit in a booth?"
+        },
+        {
+          "name": "Yes, follow me."
         }
       ]
     },
