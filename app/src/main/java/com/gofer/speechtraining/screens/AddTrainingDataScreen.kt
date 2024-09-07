@@ -82,7 +82,7 @@ fun AddTrainingDataScreen(
         colors = topAppBarColors(containerColor = Purple40))
              },
     bottomBar = {
-      BottomAppBar() {
+      BottomAppBar {
         NavigationBarItem(
           selected = false,
           onClick = {
