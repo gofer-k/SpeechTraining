@@ -93,7 +93,6 @@ fun AddTrainingDataScreen(
         NavigationBarItem(
           selected = false,
           onClick = {
-            // TODO: Phrase language is not specified
             if (phrase.name.isNotBlank()) {
                 phrase.language.runCatching {
                   isO3Language
