@@ -27,7 +27,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -70,7 +70,7 @@ fun TrainingConfigurationScreen(
   phraseListState.setPhraseList(phrases)
 
   // Scaffold floating button height
-  var fabHeight by remember { mutableStateOf(0) }
+  var fabHeight by remember { mutableIntStateOf(0) }
   val heightInDp = with(LocalDensity.current) { fabHeight.toDp()}
 
   Scaffold(
@@ -145,7 +145,7 @@ private fun TrainingContentsScreenPreview() {
     val navController = rememberNavController()
     val list = mutableListOf<Phrase>()
     for(i in (0 ..20)) {
-      list.add(Phrase("item ${i}"))
+      list.add(Phrase("item $i"))
     }
     TrainingConfigurationScreen(navController = navController,
       list, Topic(name = "Topic"))
