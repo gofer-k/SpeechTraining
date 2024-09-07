@@ -7,6 +7,6 @@
     <string name="cancel">Anuluj</string>
     <string name="save">Zapisz</string>
     <string name="add_training_phrase">Dodaj fraze do treningu</string>
-    <string name="edit_phrase_text">Tekst frazy</string>
+    <string name="edit_phrase_label">Tekst frazy</string>
     <string name="language">Jezyk</string>
 </resources>
