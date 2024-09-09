@@ -64,7 +64,6 @@ fun TrainingConfigurationScreen(
   trainingTopic: Topic,
   ttsViewModel: TtsViewModel = TtsViewModel()
 ) {
-//  val trainingPhrasesState = remember { phrases.toMutableStateList() }
   val context = LocalContext.current
   val phraseListState = remember { PhraseState() }
   phraseListState.setPhraseList(phrases)
