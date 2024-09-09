@@ -1,6 +1,7 @@
 package com.gofer.speechtraining
 
 import androidx.annotation.StringRes
+import com.gofer.speechtraining.src.main.model.Topic
 
 enum class TrainingScreenLabel(@StringRes val title: Int)  {
   TrainingApp(R.string.app_name),
@@ -18,3 +19,13 @@ enum class TrainingScreenLabel(@StringRes val title: Int)  {
 }
 
 fun getTrainingSpeakIcon(isDarkTheme: Boolean) = if (isDarkTheme) R.drawable.ic_outline_volume_up_24 else R.drawable.ic_outline_volume_up_24_light
+
+fun getTrainingTopicIcon(topic: Topic): Int {
+  return when (topic.name) {
+    "Prehab" -> return R.drawable.topic_prehab
+    "At a restaurant" -> return R.drawable.topic_at_a_restaurant
+    "Work" -> return R.drawable.topic_work
+    "Hobby" -> R.drawable.topic_hobby
+    else -> R.drawable.topic_default
+  }
+}
