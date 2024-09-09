@@ -69,6 +69,7 @@ fun AddTrainingDataScreen(
   availableLanguages: List<Language>
 ) {
   var phrase by remember { mutableStateOf(Phrase()) }
+  val topicId by remember { mutableStateOf(trainingTopic.id) }
   val keyBoardController = LocalSoftwareKeyboardController.current
 
   Scaffold(
@@ -86,8 +87,8 @@ fun AddTrainingDataScreen(
         NavigationBarItem(
           selected = false,
           onClick = {
-            navController.navigate(
-              "${TrainingScreenLabel.TrainingConfiguration.name}?topicId=${trainingTopic.id}")
+            // To prevent cyclist between previous and the current view
+            navController.popBackStack()
           },
           icon = { Icon(imageVector = Icons.Rounded.ArrowBack, contentDescription = null) })
         NavigationBarItem(
@@ -97,8 +98,12 @@ fun AddTrainingDataScreen(
                 phrase.language.runCatching {
                   isO3Language
                 }.onSuccess {
-                  navController.navigate(
-                    "${TrainingScreenLabel.TrainingConfiguration.name}?topicId=${trainingTopic.id}&addPhrase=${phrase.name}&phraseLang=${phrase.language.language}")
+                  // Pass the result arguments to previous view (TrainingConfiguration view)
+                  navController.previousBackStackEntry?.savedStateHandle?.set("topicId", topicId)
+                  navController.previousBackStackEntry?.savedStateHandle?.set("addPhrase", phrase.name)
+                  navController.previousBackStackEntry?.savedStateHandle?.set("phraseLang", phrase.language.language)
+                  // To prevent cyclist between previous and the current view
+                  navController.popBackStack()
                 }.onFailure {
                   Log.e(
                     "[${TrainingScreenLabel.TrainingApp.name}]",
