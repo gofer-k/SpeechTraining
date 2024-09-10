@@ -12,7 +12,9 @@ import com.gofer.speechtraining.TrainingScreenLabel.TrainingAddPhrase
 import com.gofer.speechtraining.TrainingScreenLabel.TrainingList
 import com.gofer.speechtraining.screens.AddTrainingDataScreen
 import com.gofer.speechtraining.screens.TrainingConfigurationScreen
+import com.gofer.speechtraining.src.main.model.Phrase
 import com.gofer.speechtraining.src.main.model.SpeechTrainingDataViewModel
+import com.gofer.speechtraining.toLocale
 
 @Composable
 fun AppNavigation(viewModel: SpeechTrainingDataViewModel) {
@@ -36,6 +38,16 @@ fun AppNavigation(viewModel: SpeechTrainingDataViewModel) {
         val addPhraseText = backStackEntry.savedStateHandle.get<String>("addPhrase")
         val phraseLang = backStackEntry.savedStateHandle.get<String>("phraseLang")
 
+        addPhraseText?.run {
+          phraseLang?.let {
+            toLocale(it)
+          }?.let {
+            viewModel.addTrainingPhrase(topicId, Phrase(name = addPhraseText, language = it))
+          }
+        }
+
+        backStackEntry.savedStateHandle.remove<String>("addPhrase")
+        backStackEntry.savedStateHandle.remove<String>("phraseLang")
         // TODO: Add new phrase into view model as well refresh Topic phrases
         viewModel.getTrainingTopic(topicId = topicId)?.let {
           TrainingConfigurationScreen(navController = navHostController,

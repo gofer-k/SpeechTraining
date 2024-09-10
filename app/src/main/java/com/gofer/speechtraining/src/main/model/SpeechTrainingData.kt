@@ -19,4 +19,9 @@ data class SpeechTrainingData(
 
   fun addTopic() = items.map { it.topic }.toList()
   fun getTrainingTopics() = items.map { it.topic }
+  fun addPhraseTmTopic(trainingId: Long, phrase: Phrase) {
+    items.firstOrNull { it.topic.id == trainingId }?.let {
+      it.addPhrase(phrase)
+    }
+  }
 }

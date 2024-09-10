@@ -35,6 +35,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -69,8 +70,8 @@ fun AddTrainingDataScreen(
   availableLanguages: List<Language>
 ) {
   var phrase by remember { mutableStateOf(Phrase()) }
-  val topicId by remember { mutableStateOf(trainingTopic.id) }
-  val keyBoardController = LocalSoftwareKeyboardController.current
+  val topicId by remember { mutableLongStateOf(trainingTopic.id) }
+//  val keyBoardController = LocalSoftwareKeyboardController.current
 
   Scaffold(
     topBar = {
@@ -120,6 +121,7 @@ fun AddTrainingDataScreen(
       modifier = Modifier
         .fillMaxSize()
         .padding(paddingValues = contentPadding)) {
+      val keyBoardController = LocalSoftwareKeyboardController.current
       Spacer(
         modifier = Modifier
           .fillMaxWidth()
@@ -155,7 +157,7 @@ fun AddTrainingDataScreen(
         keyboardActions = KeyboardActions(
           onDone = {
             keyBoardController?.hide()
-          }
+          },
         ),
         onValueChange = {
           phrase = phrase.copy(name = it, language = phrase.language)
