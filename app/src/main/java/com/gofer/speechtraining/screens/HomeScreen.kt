@@ -23,6 +23,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -67,6 +69,9 @@ internal fun HomeScreen(topics: List<Topic>, navController: NavController) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopicItem(topic: Topic, onSelectedTopic: (Topic) -> Unit, navController: NavController) {
+    val imageResourceId = getTrainingTopicIcon(topic)
+    val imageId by remember {  mutableIntStateOf(imageResourceId) }
+
     Card(
         modifier = Modifier
             .size(width = 100.dp, height = 150.dp)
@@ -98,7 +103,7 @@ fun TopicItem(topic: Topic, onSelectedTopic: (Topic) -> Unit, navController: Nav
                modifier = Modifier
                    .size(width = 80.dp, height = 80.dp)
                    .align(Alignment.CenterHorizontally),
-               painter = painterResource(id = getTrainingTopicIcon(topic)), contentDescription = null)
+               painter = painterResource(id = imageId), contentDescription = null)
             Spacer(modifier = Modifier
                 .fillMaxWidth()
                 .height(4.dp))

@@ -14,4 +14,8 @@ class SpeechTrainingDataViewModel (var data: SpeechTrainingData): ViewModel() {
     _availableLangs.clear()
     _availableLangs.addAll(availableLangs)
   }
+
+  fun addTrainingPhrase(topicId: Long, phrase: Phrase) {
+    data.addPhraseTmTopic(topicId, phrase)
+  }
 }
