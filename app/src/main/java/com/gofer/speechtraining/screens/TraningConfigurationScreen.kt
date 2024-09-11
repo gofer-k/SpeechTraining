@@ -28,6 +28,7 @@ import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -38,6 +39,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextIndent
@@ -70,13 +72,16 @@ fun TrainingConfigurationScreen(
 
   // Scaffold floating button height
   var fabHeight by remember { mutableIntStateOf(0) }
-  val heightInDp = with(LocalDensity.current) { fabHeight.toDp()}
+  val heightInDp = with(LocalDensity.current) { fabHeight.toDp() }
+
+  val topBarTitle = stringResource(id = TrainingScreenLabel.TrainingConfiguration.title).plus(trainingTopic.name)
+  val topBarTitleState by remember { mutableStateOf(topBarTitle) }
 
   Scaffold(
     topBar = {
       TopAppBar(title = { 
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-          Text(text = TrainingScreenLabel.TrainingConfiguration.name.plus(trainingTopic.name))
+          Text(text = topBarTitleState)
         }
       },
       colors = topAppBarColors(containerColor = Pink80)
@@ -98,7 +103,9 @@ fun TrainingConfigurationScreen(
   ) { scaffoldContentPadding ->
     Column(modifier = Modifier
       .fillMaxSize()) {
-      LazyColumn(modifier = Modifier.fillMaxWidth(). padding(scaffoldContentPadding),
+      LazyColumn(modifier = Modifier
+        .fillMaxWidth()
+        .padding(scaffoldContentPadding),
         verticalArrangement = Arrangement.Top,
         contentPadding = PaddingValues(bottom = heightInDp + 16.dp)
       ) {
