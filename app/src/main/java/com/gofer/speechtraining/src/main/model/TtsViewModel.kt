@@ -11,7 +11,7 @@ class TtsViewModel: ViewModel() {
 
   private val _state = mutableStateOf(Phrase())
 
-  fun onSpeakTrainingPhrase(phrase: Phrase, context: Context, onFinishedSpeech: (Boolean) -> Unit) {
+  fun onListenTrainingPhrase(phrase: Phrase, context: Context, onFinishedSpeech: (Boolean) -> Unit) {
     _state.value = phrase
 
     textToSpeak(context, onFinishedSpeech)

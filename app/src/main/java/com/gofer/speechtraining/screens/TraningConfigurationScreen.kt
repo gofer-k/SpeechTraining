@@ -2,6 +2,8 @@ package com.gofer.speechtraining.screens
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,7 +36,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -50,8 +51,10 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.gofer.speechtraining.PhraseState
 import com.gofer.speechtraining.TrainingScreenLabel
+import com.gofer.speechtraining.getTrainingRecordIcon
 import com.gofer.speechtraining.getTrainingSpeakIcon
 import com.gofer.speechtraining.src.main.model.Phrase
+import com.gofer.speechtraining.src.main.model.SttViewModel
 import com.gofer.speechtraining.src.main.model.Topic
 import com.gofer.speechtraining.src.main.model.TtsViewModel
 import com.gofer.speechtraining.ui.theme.Pink80
@@ -64,7 +67,8 @@ fun TrainingConfigurationScreen(
   navController: NavController,
   phrases: List<Phrase>,
   trainingTopic: Topic,
-  ttsViewModel: TtsViewModel = TtsViewModel()
+  ttsViewModel: TtsViewModel = TtsViewModel(),
+  sttViewModel: SttViewModel = SttViewModel()
 ) {
   val context = LocalContext.current
   val phraseListState = remember { PhraseState() }
@@ -111,30 +115,38 @@ fun TrainingConfigurationScreen(
       ) {
         itemsIndexed(phraseListState.phraseList) { _, phrase ->
           Box(modifier = Modifier
-            .shadow(1.dp, shape = MaterialTheme.shapes.extraSmall)
             .clip(MaterialTheme.shapes.extraSmall)
+            .border(BorderStroke(1.dp, MaterialTheme.colorScheme.primary))
            ,contentAlignment = Alignment.CenterStart
           ) {
-            Row(
-              modifier = Modifier.fillMaxWidth(),
-              horizontalArrangement = Arrangement.SpaceBetween) {
+            Column(modifier = Modifier.fillMaxWidth()) {
               Text(
-                modifier = Modifier.align(Alignment.CenterVertically),
+                modifier = Modifier.fillMaxWidth(),
                 text = phrase.name,
                 style = TextStyle(textIndent = TextIndent(firstLine = 8.sp)),
                 fontSize = 20.sp,
-                fontWeight = if (phrase.isSelected) FontWeight.Bold else FontWeight.Normal
-              )
-              IconButton(onClick = {
-                ttsViewModel.onSpeakTrainingPhrase(phrase, context
-                ) {
-                  phrase.toggle()
-                  phraseListState.onSelectedPhrase(phrase)
+                fontWeight = if (phrase.isSelected) FontWeight.Bold else FontWeight.Normal)
+              Row(horizontalArrangement = Arrangement.SpaceBetween) {
+                IconButton(onClick = {
+                    ttsViewModel.onListenTrainingPhrase(phrase, context
+                    ) {
+                      phrase.toggle()
+                      phraseListState.onSelectedPhrase(phrase)
+                    }
+                  }) {
+                  Icon(
+                    painterResource(id = getTrainingSpeakIcon(isSystemInDarkTheme())),
+                    contentDescription = TrainingScreenLabel.TrainingPhraseSpeech.name) }
+                IconButton(onClick = {
+                  sttViewModel.onSpeakTrainingPhrase(phrase, context) {
+                    phrase.toggle()
+                    phraseListState.onSelectedPhrase(phrase)
+                  }
+                }) {
+                  Icon(
+                    painterResource(id = getTrainingRecordIcon(isSystemInDarkTheme())),
+                    contentDescription = null)
                 }
-              }) {
-                Icon(
-                  painterResource(id = getTrainingSpeakIcon(isSystemInDarkTheme())),
-                  contentDescription = TrainingScreenLabel.TrainingPhraseSpeech.name)
               }
             }
           }
