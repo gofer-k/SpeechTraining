@@ -2,6 +2,7 @@ package com.gofer.speechtraining.screens
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -49,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.gofer.speechtraining.PermissionsDialog
 import com.gofer.speechtraining.PhraseState
 import com.gofer.speechtraining.TrainingScreenLabel
 import com.gofer.speechtraining.getTrainingRecordIcon
@@ -80,6 +82,9 @@ fun TrainingConfigurationScreen(
 
   val topBarTitle = stringResource(id = TrainingScreenLabel.TrainingConfiguration.title).plus(trainingTopic.name)
   val topBarTitleState by remember { mutableStateOf(topBarTitle) }
+
+  var isPermission by remember { mutableStateOf(false) }
+  PermissionsDialog {isPermission = it }
 
   Scaffold(
     topBar = {
@@ -138,9 +143,10 @@ fun TrainingConfigurationScreen(
                     painterResource(id = getTrainingSpeakIcon(isSystemInDarkTheme())),
                     contentDescription = TrainingScreenLabel.TrainingPhraseSpeech.name) }
                 IconButton(onClick = {
-                  sttViewModel.onSpeakTrainingPhrase(phrase, context) {
-                    phrase.toggle()
-                    phraseListState.onSelectedPhrase(phrase)
+                  if (isPermission) {
+                    sttViewModel.onSpeakTrainingPhrase(phrase, context, {})
+                  } else {
+                    Toast.makeText(context, "Record audio not availability", Toast.LENGTH_SHORT).show()
                   }
                 }) {
                   Icon(
