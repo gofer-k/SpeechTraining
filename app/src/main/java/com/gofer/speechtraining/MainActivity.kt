@@ -18,34 +18,34 @@ import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
 import com.google.gson.Gson
 
 
+//class MainActivity : ComponentActivity() {
 class MainActivity : ComponentActivity() {
   var trainingData: SpeechTrainingData? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-      val path = baseContext.resources.getString(R.string.app_data_source)
-      val trainingAssetDataJson = readDataFromSource(baseContext, path)
-      trainingData = Gson().fromJson(trainingAssetDataJson, SpeechTrainingData::class.java)
+    super.onCreate(savedInstanceState)
+    enableEdgeToEdge()
+    val path = baseContext.resources.getString(R.string.app_data_source)
+    val trainingAssetDataJson = readDataFromSource(baseContext, path)
+    trainingData = Gson().fromJson(trainingAssetDataJson, SpeechTrainingData::class.java)
 
-     setContent {
-       SpeechTrainingTheme {
-         val viewModel = viewModel<SpeechTrainingDataViewModel>(
-           factory = object : ViewModelProvider.Factory {
-           override fun <T : ViewModel> create(modelClass: Class<T>): T {
+    setContent {
+      SpeechTrainingTheme {
+        val viewModel = viewModel<SpeechTrainingDataViewModel>(
+        factory = object : ViewModelProvider.Factory {
+          override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return SpeechTrainingDataViewModel(data = trainingData!!) as T
-           }
           }
-        )
+        })
 
         val availableLangs = ConfiguredLanguage.entries.filter { lang ->
           LocaleList.current.localeList.any { it.language == lang.lang.locale.language }
         }.map { it.lang }
 
-         viewModel.setAvailableLanguages(availableLangs)
-         AppNavigation(viewModel)
-       }
-     }
+        viewModel.setAvailableLanguages(availableLangs)
+        AppNavigation(viewModel)
+      }
+    }
   }
 
   override fun onStop() {
