@@ -45,6 +45,7 @@ class MainActivity : ComponentActivity() {
         viewModel.setAvailableLanguages(availableLangs)
 
         PermissionsDialog {
+          viewModel.setOrChangePermissionState(NeededPermission.RECORD_AUDIO, it)
           AppNavigation(viewModel)
         }
       }
