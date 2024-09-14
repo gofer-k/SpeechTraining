@@ -9,7 +9,6 @@ class SpeechTrainingDataViewModel (var data: SpeechTrainingData): ViewModel() {
   val availableLanguages: List<Language> = _availableLangs
 
   private val _permissions = mutableListOf<NeededPermission>()
-  val permissions: List<NeededPermission> = _permissions
 
   fun getTrainingTopics() = data.getTrainingTopics()
 
@@ -20,10 +19,13 @@ class SpeechTrainingDataViewModel (var data: SpeechTrainingData): ViewModel() {
     _availableLangs.addAll(availableLangs)
   }
 
-  fun changePermissionState(neededPermission: NeededPermission, state: Boolean) {
+  fun setOrChangePermissionState(neededPermission: NeededPermission, state: Boolean) {
     val index = _permissions.indexOfFirst { it.ordinal == neededPermission.ordinal }
     if (index != -1) {
       _permissions[index].isGranted = state
+    } else {
+      neededPermission.isGranted = state
+      _permissions.add(neededPermission)
     }
   }
   fun isPermissionGranted(neededPermission: NeededPermission): Boolean {
