@@ -43,7 +43,10 @@ class MainActivity : ComponentActivity() {
         }.map { it.lang }
 
         viewModel.setAvailableLanguages(availableLangs)
-        AppNavigation(viewModel)
+
+        PermissionsDialog {
+          AppNavigation(viewModel)
+        }
       }
     }
   }

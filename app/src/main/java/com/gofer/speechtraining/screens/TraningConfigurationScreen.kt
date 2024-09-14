@@ -50,7 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.gofer.speechtraining.PermissionsDialog
+import com.gofer.speechtraining.NeededPermission
 import com.gofer.speechtraining.PhraseState
 import com.gofer.speechtraining.TrainingScreenLabel
 import com.gofer.speechtraining.getTrainingRecordIcon
@@ -69,6 +69,7 @@ fun TrainingConfigurationScreen(
   navController: NavController,
   phrases: List<Phrase>,
   trainingTopic: Topic,
+  onPermissionGranted: (NeededPermission) -> Boolean,
   ttsViewModel: TtsViewModel = TtsViewModel(),
   sttViewModel: SttViewModel = SttViewModel()
 ) {
@@ -82,9 +83,6 @@ fun TrainingConfigurationScreen(
 
   val topBarTitle = stringResource(id = TrainingScreenLabel.TrainingConfiguration.title).plus(trainingTopic.name)
   val topBarTitleState by remember { mutableStateOf(topBarTitle) }
-
-  var isPermission by remember { mutableStateOf(false) }
-  PermissionsDialog {isPermission = it }
 
   Scaffold(
     topBar = {
@@ -143,7 +141,7 @@ fun TrainingConfigurationScreen(
                     painterResource(id = getTrainingSpeakIcon(isSystemInDarkTheme())),
                     contentDescription = TrainingScreenLabel.TrainingPhraseSpeech.name) }
                 IconButton(onClick = {
-                  if (isPermission) {
+                  if (onPermissionGranted(NeededPermission.RECORD_AUDIO)) {
                     sttViewModel.onSpeakTrainingPhrase(phrase, context, {})
                   } else {
                     Toast.makeText(context, "Record audio not availability", Toast.LENGTH_SHORT).show()
@@ -172,6 +170,6 @@ private fun TrainingContentsScreenPreview() {
       list.add(Phrase("item $i"))
     }
     TrainingConfigurationScreen(navController = navController,
-      list, Topic(name = "Topic"))
+      list, Topic(name = "Topic"), onPermissionGranted = {false})
   }
 }
