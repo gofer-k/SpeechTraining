@@ -80,4 +80,5 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.4")
     implementation("androidx.navigation:navigation-fragment-compose:2.8.0-beta06")
     implementation("com.google.code.gson:gson:2.10.1")
+    implementation("com.google.accompanist:accompanist-permissions:0.36.0")
 }

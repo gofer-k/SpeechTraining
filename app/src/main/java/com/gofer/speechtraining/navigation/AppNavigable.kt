@@ -52,7 +52,9 @@ fun AppNavigation(viewModel: SpeechTrainingDataViewModel) {
         viewModel.getTrainingTopic(topicId = topicId)?.let {
           TrainingConfigurationScreen(navController = navHostController,
             viewModel.getTrainingPhrases(topicId),
-            it)
+            it,
+            onPermissionGranted = { neededPermission ->
+              viewModel.isPermissionGranted(neededPermission) })
         }
     }
     composable("${TrainingAddPhrase.name}?topicId={topicId}",
