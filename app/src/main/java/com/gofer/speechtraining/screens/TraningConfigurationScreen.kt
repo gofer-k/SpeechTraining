@@ -56,7 +56,6 @@ import com.gofer.speechtraining.TrainingScreenLabel
 import com.gofer.speechtraining.getTrainingRecordIcon
 import com.gofer.speechtraining.getTrainingSpeakIcon
 import com.gofer.speechtraining.src.main.model.Phrase
-import com.gofer.speechtraining.src.main.model.SttViewModel
 import com.gofer.speechtraining.src.main.model.Topic
 import com.gofer.speechtraining.src.main.model.TtsViewModel
 import com.gofer.speechtraining.ui.theme.Pink80
@@ -70,8 +69,7 @@ fun TrainingConfigurationScreen(
   phrases: List<Phrase>,
   trainingTopic: Topic,
   onPermissionGranted: (NeededPermission) -> Boolean,
-  ttsViewModel: TtsViewModel = TtsViewModel(),
-  sttViewModel: SttViewModel = SttViewModel()
+  ttsViewModel: TtsViewModel = TtsViewModel()
 ) {
   val context = LocalContext.current
   val phraseListState = remember { PhraseState() }
@@ -142,7 +140,7 @@ fun TrainingConfigurationScreen(
                     contentDescription = TrainingScreenLabel.TrainingPhraseSpeech.name) }
                 IconButton(onClick = {
                   if (onPermissionGranted(NeededPermission.RECORD_AUDIO)) {
-                    sttViewModel.onSpeakTrainingPhrase(phrase, context, {})
+                    navController.navigate("SpeakingPhraseScreen?phrase=${phrase.name}&phraseLang=${phrase.language.language}")
                   } else {
                     Toast.makeText(context, "Record audio not availability", Toast.LENGTH_SHORT).show()
                   }

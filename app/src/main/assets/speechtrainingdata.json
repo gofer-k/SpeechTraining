@@ -9,12 +9,6 @@
       },
       "phrases": [
         {
-          "name": "OW AS IN GO"
-        },
-        {
-          "name": "AW AS IN NOW"
-        },
-        {
           "name": "SHEILA NEEDs"
         },
         {
@@ -244,7 +238,7 @@
       },
       "phrases": [
         {
-          "name": "GOOG MORNING"
+          "name": "GOOD MORNING"
         },
         {
           "name": "GOOD AFTERNOON"
@@ -407,33 +401,6 @@
           "name": "Yes, follow me."
         }
       ]
-    },
-    {
-      "lang": "en-us",
-      "topic":
-      {
-        "id": 2,
-        "name": "Work"
-      },
-      "phrases": []
-    },
-    {
-      "lang": "en-us",
-      "topic":
-      {
-        "id": 3,
-        "name": "Daily routines"
-      },
-      "phrases": []
-    },
-    {
-      "lang": "en-us",
-      "topic":
-      {
-        "id": 4,
-        "name": "Hobby"
-      },
-      "phrases": []
     }
   ]
 }
