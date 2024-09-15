@@ -11,6 +11,7 @@ import com.gofer.speechtraining.TrainingScreenLabel
 import com.gofer.speechtraining.TrainingScreenLabel.TrainingAddPhrase
 import com.gofer.speechtraining.TrainingScreenLabel.TrainingList
 import com.gofer.speechtraining.screens.AddTrainingDataScreen
+import com.gofer.speechtraining.screens.SpeakingPhraseScreen
 import com.gofer.speechtraining.screens.TrainingConfigurationScreen
 import com.gofer.speechtraining.src.main.model.Phrase
 import com.gofer.speechtraining.src.main.model.SpeechTrainingDataViewModel
@@ -68,6 +69,33 @@ fun AppNavigation(viewModel: SpeechTrainingDataViewModel) {
         ?.let { viewModel.getTrainingTopic(it) }
 
       topic?.let {  AddTrainingDataScreen(navController = navHostController, it, viewModel.availableLanguages) }
+    }
+    composable("SpeakingPhraseScreen?phrase={phrase}&phraseLang={phraseLang}",
+      arguments = listOf(
+        navArgument("phrase"){
+          type = NavType.StringType
+          defaultValue = ""
+        },
+        navArgument("phraseLang") {
+          type = NavType.StringType
+          defaultValue = ""
+        }
+      )
+    ) { backStackEntry ->
+      backStackEntry.arguments?.let {
+        val name = it.getString("phrase")
+        val lang = it.getString("phraseLang")
+
+        name?.let { namePhrase ->
+          lang?.let {
+            toLocale(it)
+          }?.let { locale ->
+            SpeakingPhraseScreen(
+              navController = navHostController,
+              phrase = Phrase(name = namePhrase, language = locale))
+          }
+        }
+      }
     }
   }
 }

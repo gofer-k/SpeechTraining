@@ -44,10 +44,10 @@ class MainActivity : ComponentActivity() {
 
         viewModel.setAvailableLanguages(availableLangs)
 
-        PermissionsDialog {
-          viewModel.setOrChangePermissionState(NeededPermission.RECORD_AUDIO, it)
+//        PermissionsDialog {
+          viewModel.setOrChangePermissionState(NeededPermission.RECORD_AUDIO, true)
           AppNavigation(viewModel)
-        }
+//        }
       }
     }
   }
