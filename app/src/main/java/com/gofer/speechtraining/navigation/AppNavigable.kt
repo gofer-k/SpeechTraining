@@ -1,6 +1,6 @@
 package com.gofer.speechtraining.navigation
 
-import HomeScreen
+import TrainingListsScreen
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -10,6 +10,7 @@ import androidx.navigation.navArgument
 import com.gofer.speechtraining.TrainingScreenLabel
 import com.gofer.speechtraining.TrainingScreenLabel.TrainingAddPhrase
 import com.gofer.speechtraining.TrainingScreenLabel.TrainingList
+import com.gofer.speechtraining.screens.AddTopicScreen
 import com.gofer.speechtraining.screens.AddTrainingDataScreen
 import com.gofer.speechtraining.screens.SpeakingPhraseScreen
 import com.gofer.speechtraining.screens.TrainingContentScreen
@@ -22,7 +23,7 @@ fun AppNavigation(viewModel: SpeechTrainingDataViewModel) {
   val navHostController = rememberNavController()
   NavHost(navController = navHostController, startDestination = TrainingList.name) {
       composable(TrainingList.name) {
-        HomeScreen(viewModel.getTrainingTopics(), navController = navHostController) }
+        TrainingListsScreen(viewModel.getTrainingTopics(), navController = navHostController) }
       composable("${TrainingScreenLabel.TrainingConfiguration.name}?topicId={topicId}",
         // Navigable view with forward argument
         arguments = listOf(
@@ -47,9 +48,11 @@ fun AppNavigation(viewModel: SpeechTrainingDataViewModel) {
           }
         }
 
+        // TODO: add topic at runtime
+
         backStackEntry.savedStateHandle.remove<String>("addPhrase")
         backStackEntry.savedStateHandle.remove<String>("phraseLang")
-        // TODO: Add new phrase into view model as well refresh Topic phrases
+
         viewModel.getTrainingTopic(topicId = topicId)?.let {
           TrainingContentScreen(navController = navHostController,
             viewModel.getTrainingPhrases(topicId),
@@ -96,6 +99,9 @@ fun AppNavigation(viewModel: SpeechTrainingDataViewModel) {
           }
         }
       }
+    }
+    composable("AddTrainingTopic") {
+      AddTopicScreen(navController = navHostController)
     }
   }
 }

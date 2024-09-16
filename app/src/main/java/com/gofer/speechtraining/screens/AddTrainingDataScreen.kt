@@ -146,7 +146,7 @@ fun AddTrainingDataScreen(
           .width(100.dp), // max text width
         value = phrase.name,
         label = { Text(text = stringResource(TrainingScreenLabel.TrainingEditPhraseLabel.title))},
-        placeholder = { Text(text = stringResource(TrainingScreenLabel.TrainingEditPhraseText.title))},
+        placeholder = { Text(text = stringResource(TrainingScreenLabel.TrainingInputText.title))},
         maxLines = 2, // max visible text lines
         shape = RoundedCornerShape(24.dp),
         keyboardOptions = KeyboardOptions(
