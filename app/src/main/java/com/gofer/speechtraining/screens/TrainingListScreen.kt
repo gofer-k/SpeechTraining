@@ -14,10 +14,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.AddCircle
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -48,22 +53,33 @@ import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun HomeScreen(topics: List<Topic>, navController: NavController) {
-    Scaffold(topBar = {
-        TopAppBar(
-            title = {
-                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    Text(text = stringResource(id = TrainingScreenLabel.TrainingList.title))
-                }
-            },
-            colors = topAppBarColors(containerColor = PurpleGrey80)
-        )
-    }) {paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues)) {
-            Spacer(modifier = Modifier.height(24.dp))
-            ConversationsTopics(topics,navController = navController)
-        }
+internal fun TrainingListsScreen(topics: List<Topic>, navController: NavController) {
+  Scaffold(
+    topBar = {
+      TopAppBar(
+        title = {
+            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                Text(text = stringResource(id = TrainingScreenLabel.TrainingList.title))
+            }
+        },
+        colors = topAppBarColors(containerColor = PurpleGrey80)
+    )},
+    bottomBar = {
+      BottomAppBar {
+        NavigationBarItem(
+          selected = false,
+          onClick = {
+            navController.navigate("AddTrainingTopic")
+          },
+          icon = { Icon(imageVector = Icons.Rounded.AddCircle, contentDescription = null) })
+      }
     }
+  ) {paddingValues ->
+    Column(modifier = Modifier.padding(paddingValues)) {
+      Spacer(modifier = Modifier.height(24.dp))
+      ConversationsTopics(topics,navController = navController)
+    }
+  }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -74,8 +90,8 @@ fun TopicItem(topic: Topic, onSelectedTopic: (Topic) -> Unit, navController: Nav
 
     Card(
         modifier = Modifier
-            .size(width = 100.dp, height = 150.dp)
-            .padding(8.dp),
+          .size(width = 100.dp, height = 150.dp)
+          .padding(8.dp),
         colors = CardDefaults.cardColors(),
         elevation =
         CardDefaults.elevatedCardElevation(
@@ -97,16 +113,16 @@ fun TopicItem(topic: Topic, onSelectedTopic: (Topic) -> Unit, navController: Nav
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier
-                .fillMaxWidth()
-                .height(4.dp))
+              .fillMaxWidth()
+              .height(4.dp))
             Image(
                modifier = Modifier
-                   .size(width = 80.dp, height = 80.dp)
-                   .align(Alignment.CenterHorizontally),
+                 .size(width = 80.dp, height = 80.dp)
+                 .align(Alignment.CenterHorizontally),
                painter = painterResource(id = imageId), contentDescription = null)
             Spacer(modifier = Modifier
-                .fillMaxWidth()
-                .height(4.dp))
+              .fillMaxWidth()
+              .height(4.dp))
         }
     }
 }
@@ -132,10 +148,10 @@ fun ConversationsTopics(topics: List<Topic>, navController: NavController
 
 @Preview(showBackground = true, name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-internal fun HomeScreenPreview() {
+internal fun TrainingListsScreenPreview() {
     SpeechTrainingTheme {
         val navController = rememberNavController()
-        HomeScreen(
+        TrainingListsScreen(
             topics = listOf(
                 Topic(name = "First"),
                 Topic(name = "Second"),

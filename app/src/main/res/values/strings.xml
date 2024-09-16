@@ -11,4 +11,6 @@
     <string name="edit_phrase_text" translatable="false">"Input text"</string>
     <string name="language">Language</string>
     <string name="edit_phrase_label">"Phrase text"</string>
+    <string name="add_training_topic">Add training topic</string>
+    <string name="edit_topic_label">Topic name text</string>
 </resources>
