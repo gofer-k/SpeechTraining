@@ -12,7 +12,7 @@ import com.gofer.speechtraining.TrainingScreenLabel.TrainingAddPhrase
 import com.gofer.speechtraining.TrainingScreenLabel.TrainingList
 import com.gofer.speechtraining.screens.AddTrainingDataScreen
 import com.gofer.speechtraining.screens.SpeakingPhraseScreen
-import com.gofer.speechtraining.screens.TrainingConfigurationScreen
+import com.gofer.speechtraining.screens.TrainingContentScreen
 import com.gofer.speechtraining.src.main.model.Phrase
 import com.gofer.speechtraining.src.main.model.SpeechTrainingDataViewModel
 import com.gofer.speechtraining.toLocale
@@ -51,7 +51,7 @@ fun AppNavigation(viewModel: SpeechTrainingDataViewModel) {
         backStackEntry.savedStateHandle.remove<String>("phraseLang")
         // TODO: Add new phrase into view model as well refresh Topic phrases
         viewModel.getTrainingTopic(topicId = topicId)?.let {
-          TrainingConfigurationScreen(navController = navHostController,
+          TrainingContentScreen(navController = navHostController,
             viewModel.getTrainingPhrases(topicId),
             it,
             onPermissionGranted = { neededPermission ->

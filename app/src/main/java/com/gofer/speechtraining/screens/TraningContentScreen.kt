@@ -64,7 +64,7 @@ import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TrainingConfigurationScreen(
+fun TrainingContentScreen(
   navController: NavController,
   phrases: List<Phrase>,
   trainingTopic: Topic,
@@ -160,14 +160,14 @@ fun TrainingConfigurationScreen(
 
 @Preview(showBackground = true, name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun TrainingContentsScreenPreview() {
+private fun TrainingContentScreenPreview() {
   SpeechTrainingTheme {
     val navController = rememberNavController()
     val list = mutableListOf<Phrase>()
     for(i in (0 ..20)) {
       list.add(Phrase("item $i"))
     }
-    TrainingConfigurationScreen(navController = navController,
+    TrainingContentScreen(navController = navController,
       list, Topic(name = "Topic"), onPermissionGranted = {false})
   }
 }
