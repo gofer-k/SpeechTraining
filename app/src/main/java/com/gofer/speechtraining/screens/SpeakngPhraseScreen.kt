@@ -57,6 +57,7 @@ fun SpeakingPhraseScreen(phrase: Phrase, navController: NavHostController) {
 
 
   val originPhrase = phrase.name.lowercase().replaceFirstChar { if (it.isLowerCase()) it.titlecase(phrase.language) else it.toString() }
+  val withoutSuffixedOriginText = filterSuffixCharacters(originPhrase, listOf('.', ',', '?', '!'))
 
   Scaffold(
     topBar = {
@@ -101,9 +102,17 @@ fun SpeakingPhraseScreen(phrase: Phrase, navController: NavHostController) {
       Spacer(modifier = Modifier.padding(16.dp))
       Text(text = phrase.name, color = Color.Gray)
       Text(speechText.value,
-        color = if (initialText.value || originPhrase.equals(speechText.value))Color.Green else Color.Red)
+        color =
+          if (initialText.value
+            || withoutSuffixedOriginText.equals(speechText.value)) {
+          Color.Green
+        } else Color.Red)
     }
   }
+}
+
+fun filterSuffixCharacters(word: String, suffixes: List<Char>): String {
+    return word.filterNot { char -> suffixes.any { char == it } }
 }
 
 @Composable
