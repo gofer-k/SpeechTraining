@@ -33,6 +33,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -71,7 +72,7 @@ internal fun TrainingListsScreen(topics: List<Topic>, navController: NavControll
           onClick = {
             navController.navigate("AddTrainingTopic")
           },
-          icon = { Icon(imageVector = Icons.Rounded.AddCircle, contentDescription = null) })
+          icon = { Icon(imageVector = Icons.Rounded.AddCircle, contentDescription = null,  Modifier.scale(2.0f)) })
       }
     }
   ) {paddingValues ->
@@ -117,9 +118,9 @@ fun TopicItem(topic: Topic, onSelectedTopic: (Topic) -> Unit, navController: Nav
               .height(4.dp))
             Image(
                modifier = Modifier
-                 .size(width = 80.dp, height = 80.dp)
-                 .align(Alignment.CenterHorizontally),
-               painter = painterResource(id = imageId), contentDescription = null)
+                 .align(Alignment.CenterHorizontally)
+                 .padding(horizontal = 8.dp, vertical = 2.dp),
+              painter = painterResource(id = imageId), contentDescription = null)
             Spacer(modifier = Modifier
               .fillMaxWidth()
               .height(4.dp))

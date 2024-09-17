@@ -11,4 +11,7 @@
     <string name="language">Jezyk</string>
     <string name="add_training_topic">Dodaj temat treningu</string>
     <string name="edit_topic_label">Tekst tematu treningu</string>
+    <string name="speaking_phrase">Fraza mowy</string>
+    <string name="topic_image">Ikona tematu</string>
+    <string name="topic_custom_image">Wybierz ikone</string>
 </resources>

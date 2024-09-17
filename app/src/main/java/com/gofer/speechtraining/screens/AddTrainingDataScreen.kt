@@ -71,7 +71,6 @@ fun AddTrainingDataScreen(
 ) {
   var phrase by remember { mutableStateOf(Phrase()) }
   val topicId by remember { mutableLongStateOf(trainingTopic.id) }
-//  val keyBoardController = LocalSoftwareKeyboardController.current
 
   Scaffold(
     topBar = {
