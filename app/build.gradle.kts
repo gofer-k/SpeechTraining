@@ -81,4 +81,5 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-compose:2.8.0-beta06")
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("com.google.accompanist:accompanist-permissions:0.36.0")
+    implementation("io.coil-kt:coil-compose:2.7.0")
 }

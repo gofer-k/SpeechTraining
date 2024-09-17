@@ -1,6 +1,8 @@
 package com.gofer.speechtraining.screens
 
 import android.content.res.Configuration
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,6 +17,7 @@ import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBarItem
@@ -22,8 +25,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -31,15 +36,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.gofer.speechtraining.ImagePicker
 import com.gofer.speechtraining.TrainingScreenLabel
+import com.gofer.speechtraining.getDefaultTopicIcon
+import com.gofer.speechtraining.ui.theme.Purple40
 import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
 import java.net.URL
 
@@ -48,8 +58,8 @@ import java.net.URL
 fun AddTopicScreen(navController: NavController) {
   var topicName by remember { mutableStateOf("") }
   val topicImageUrl by remember { mutableStateOf(URL("file://")) }
+  val defaultTopicIcon by remember { mutableIntStateOf(getDefaultTopicIcon()) }
 
-  // TODO: add topic image
   Scaffold(
    topBar = {
      TopAppBar(
@@ -59,7 +69,9 @@ fun AddTopicScreen(navController: NavController) {
            contentAlignment = Alignment.Center) {
            Text(text = stringResource(TrainingScreenLabel.TrainingAddTopic.title))
          }
-       })
+       },
+       colors = TopAppBarDefaults.topAppBarColors(containerColor = Purple40)
+     )
    },
     bottomBar = {
       BottomAppBar {
@@ -81,7 +93,9 @@ fun AddTopicScreen(navController: NavController) {
     }) { contentPadding ->
    Column(modifier = Modifier
      .fillMaxWidth()
-     .padding(contentPadding)) {
+     .padding(contentPadding),
+     horizontalAlignment = Alignment.CenterHorizontally,
+     verticalArrangement = Arrangement.Center) {
      val keyBoardController = LocalSoftwareKeyboardController.current
      Spacer(
        modifier = Modifier
@@ -96,14 +110,14 @@ fun AddTopicScreen(navController: NavController) {
      Spacer(
        modifier = Modifier
          .fillMaxWidth()
-         .padding(vertical = 48.dp))
+         .padding(vertical = 32.dp))
      TextField(
        modifier = Modifier
          .fillMaxWidth()
          .padding(horizontal = 4.dp)
          .width(100.dp), // max text width
        value = topicName,
-       label = { Text(text = stringResource(TrainingScreenLabel.TrainingEditTopicLabel.title))},
+       label = { Text(text = stringResource(TrainingScreenLabel.TrainingEditPhraseLabel.title))},
        placeholder = { Text(text = stringResource(TrainingScreenLabel.TrainingInputText.title))},
        maxLines = 2, // max visible text lines
        shape = RoundedCornerShape(24.dp),
@@ -121,13 +135,24 @@ fun AddTopicScreen(navController: NavController) {
      Spacer(
        modifier = Modifier
          .fillMaxWidth()
-         .padding(vertical = 48.dp)
-     )
+         .padding(vertical = 32.dp))
+     Text(text = stringResource(id = TrainingScreenLabel.TrainingTopicImage.title), fontSize = 20.sp)
+     Image(
+       modifier = Modifier.padding(vertical = 4.dp),
+       painter = painterResource(id = defaultTopicIcon),
+       contentDescription = null)
+     Button(
+       modifier = Modifier.padding(vertical = 4.dp),
+       onClick = {
+       }) {
+       Text(text = stringResource(id = TrainingScreenLabel.TrainingTopicImageCustomize.title))
+       ImagePicker()
+     }
    }
   }
 }
 
-@Preview(showBackground = true, name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(showBackground = true, name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun AddTopicScreenPreview() {
   SpeechTrainingTheme {

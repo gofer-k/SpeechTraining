@@ -13,4 +13,7 @@
     <string name="edit_phrase_label">"Phrase text"</string>
     <string name="add_training_topic">Add training topic</string>
     <string name="edit_topic_label">Topic name text</string>
+    <string name="speaking_phrase">Speaking phrase</string>
+    <string name="topic_image">Topic image</string>
+    <string name="topic_custom_image">Choose custom icon</string>
 </resources>
