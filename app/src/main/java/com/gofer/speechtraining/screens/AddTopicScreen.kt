@@ -1,7 +1,6 @@
 package com.gofer.speechtraining.screens
 
 import android.content.res.Configuration
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,7 +16,6 @@ import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBarItem
@@ -28,7 +26,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -36,19 +33,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.gofer.speechtraining.ImagePicker
 import com.gofer.speechtraining.TrainingScreenLabel
-import com.gofer.speechtraining.getDefaultTopicIcon
 import com.gofer.speechtraining.ui.theme.Purple40
 import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
 import java.net.URL
@@ -58,7 +52,6 @@ import java.net.URL
 fun AddTopicScreen(navController: NavController) {
   var topicName by remember { mutableStateOf("") }
   val topicImageUrl by remember { mutableStateOf(URL("file://")) }
-  val defaultTopicIcon by remember { mutableIntStateOf(getDefaultTopicIcon()) }
 
   Scaffold(
    topBar = {
@@ -135,18 +128,9 @@ fun AddTopicScreen(navController: NavController) {
      Spacer(
        modifier = Modifier
          .fillMaxWidth()
-         .padding(vertical = 32.dp))
-     Text(text = stringResource(id = TrainingScreenLabel.TrainingTopicImage.title), fontSize = 20.sp)
-     Image(
-       modifier = Modifier.padding(vertical = 4.dp),
-       painter = painterResource(id = defaultTopicIcon),
-       contentDescription = null)
-     Button(
-       modifier = Modifier.padding(vertical = 4.dp),
-       onClick = {
-       }) {
-       Text(text = stringResource(id = TrainingScreenLabel.TrainingTopicImageCustomize.title))
-       ImagePicker()
+         .padding(vertical = 16.dp))
+     ImagePicker(modifier = Modifier.padding(8.dp)) {
+       Text(text = it.path ?: "Default image source")
      }
    }
   }
