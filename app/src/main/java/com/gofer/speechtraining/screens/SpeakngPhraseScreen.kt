@@ -56,6 +56,8 @@ fun SpeakingPhraseScreen(phrase: Phrase, navController: NavHostController) {
       val result = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
       speechText.value = result?.get(0) ?: "No speech detected."
       initialText.value = false
+
+      // EXTRA_CONFIDENCE_SCORES
     } else {
       speechText.value = "[Speech recognition failed.]"
     }
@@ -107,6 +109,9 @@ fun SpeakingPhraseScreen(phrase: Phrase, navController: NavHostController) {
         )
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, phrase.language)
         intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Go on then, say something.")
+
+        // REQUEST_WORD_CONFIDENCE"
+
         launcher.launch(intent)
       }) {
         Text("Start speech recognition")

@@ -1,7 +1,6 @@
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,6 +18,7 @@ import androidx.compose.material.icons.rounded.AddCircle
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -28,11 +28,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -44,9 +45,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.gofer.speechtraining.TopicDataState
 import com.gofer.speechtraining.TrainingScreenLabel
-import com.gofer.speechtraining.getTrainingTopicIcon
+import com.gofer.speechtraining.getDefaultTopicIcon
 import com.gofer.speechtraining.src.main.model.Topic
 import com.gofer.speechtraining.ui.theme.PurpleGrey80
 import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
@@ -78,18 +80,18 @@ internal fun TrainingListsScreen(topics: List<Topic>, navController: NavControll
   ) {paddingValues ->
     Column(modifier = Modifier.padding(paddingValues)) {
       Spacer(modifier = Modifier.height(24.dp))
-      ConversationsTopics(topics,navController = navController)
+      ConversationsTopics(navController = navController, topics)
     }
   }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopicItem(topic: Topic, onSelectedTopic: (Topic) -> Unit, navController: NavController) {
-    val imageResourceId = getTrainingTopicIcon(topic)
-    val imageId by remember {  mutableIntStateOf(imageResourceId) }
-
-    Card(
+fun TopicItem(navController: NavController,
+              topic: Topic,
+              onSelectedTopic: (Topic) -> Unit,
+              onImageLoading: (Boolean) -> Unit) {
+  Card(
         modifier = Modifier
           .size(width = 100.dp, height = 150.dp)
           .padding(8.dp),
@@ -116,11 +118,19 @@ fun TopicItem(topic: Topic, onSelectedTopic: (Topic) -> Unit, navController: Nav
             Spacer(modifier = Modifier
               .fillMaxWidth()
               .height(4.dp))
-            Image(
-               modifier = Modifier
-                 .align(Alignment.CenterHorizontally)
-                 .padding(horizontal = 8.dp, vertical = 2.dp),
-              painter = painterResource(id = imageId), contentDescription = null)
+            AsyncImage(
+              model = topic.imageUri,
+              contentDescription = stringResource(id = TrainingScreenLabel.TrainingTopicImage.title),
+              placeholder = painterResource(id = getDefaultTopicIcon()),
+              modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(horizontal = 8.dp, vertical = 4.dp),
+              onLoading = {
+                onImageLoading(true)
+              },
+              onSuccess = {
+                onImageLoading(false)
+              })
             Spacer(modifier = Modifier
               .fillMaxWidth()
               .height(4.dp))
@@ -129,22 +139,39 @@ fun TopicItem(topic: Topic, onSelectedTopic: (Topic) -> Unit, navController: Nav
 }
 
 @Composable
-fun ConversationsTopics(topics: List<Topic>, navController: NavController
-) {
-    val topicListState = remember { TopicDataState() }
-    topicListState.setTopicList(topics)
+fun ConversationsTopics(navController: NavController, topics: List<Topic>) {
+  val topicListState = remember { TopicDataState() }
+  topicListState.setTopicList(topics)
 
+  val loadingCounter = remember { mutableStateOf(topics.size) }
+
+  LaunchedEffect(key1 = topics.size) {}
+
+  Box(contentAlignment = Alignment.Center){
     LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
-        contentPadding = PaddingValues(16.dp)
+      modifier = Modifier.alpha(if (loadingCounter.value > 0) 0f else 1f),
+      columns = GridCells.Fixed(2),
+      contentPadding = PaddingValues(16.dp)
     ) {
-        itemsIndexed(topicListState.topicsList) { index, topic ->
-            TopicItem(
-                topic, onSelectedTopic = topicListState::onSelectedTopic,
-                navController = navController
-            )
-        }
+      itemsIndexed(topicListState.topicsList) { index, topic ->
+        TopicItem(
+          navController = navController,
+          topic,
+          onSelectedTopic = topicListState::onSelectedTopic,
+          onImageLoading = { loadingState ->
+            if (loadingState == false) {
+              --loadingCounter.value
+            }
+          }
+        )
+      }
     }
+    if (loadingCounter.value > 0) {
+      CircularProgressIndicator(modifier = Modifier
+        .fillMaxSize()
+        .scale(0.5f), strokeWidth = 4.dp)
+    }
+  }
 }
 
 @Preview(showBackground = true, name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)

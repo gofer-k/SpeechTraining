@@ -20,7 +20,7 @@ import com.google.gson.Gson
 
 //class MainActivity : ComponentActivity() {
 class MainActivity : ComponentActivity() {
-  var trainingData: SpeechTrainingData? = null
+  private var trainingData: SpeechTrainingData? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
         val viewModel = viewModel<SpeechTrainingDataViewModel>(
         factory = object : ViewModelProvider.Factory {
           override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return SpeechTrainingDataViewModel(data = trainingData!!) as T
+            return SpeechTrainingDataViewModel(applicationContext.packageName, data = trainingData!!) as T
           }
         })
 
@@ -43,11 +43,8 @@ class MainActivity : ComponentActivity() {
         }.map { it.lang }
 
         viewModel.setAvailableLanguages(availableLangs)
-
-//        PermissionsDialog {
-          viewModel.setOrChangePermissionState(NeededPermission.RECORD_AUDIO, true)
-          AppNavigation(viewModel)
-//        }
+        viewModel.setOrChangePermissionState(NeededPermission.RECORD_AUDIO, true)
+        AppNavigation(viewModel)
       }
     }
   }

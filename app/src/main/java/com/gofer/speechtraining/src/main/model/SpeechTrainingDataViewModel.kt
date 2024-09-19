@@ -1,22 +1,47 @@
 package com.gofer.speechtraining.src.main.model
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import com.gofer.speechtraining.Language
 import com.gofer.speechtraining.NeededPermission
 
-class SpeechTrainingDataViewModel (var data: SpeechTrainingData): ViewModel() {
-  private var _availableLangs = mutableListOf<Language>()
-  val availableLanguages: List<Language> = _availableLangs
+class SpeechTrainingDataViewModel
+  (val packageName: String, var data: SpeechTrainingData): ViewModel() {
+  private var _availableLanguages = mutableListOf<Language>()
+  val availableLanguages: List<Language> = _availableLanguages
 
   private val _permissions = mutableListOf<NeededPermission>()
 
-  fun getTrainingTopics() = data.getTrainingTopics()
+  init {
+    data.items.asIterable().forEach {
+      it.topic.imageUri = resolveImageUriFromResource(it.topic)
+    }
+  }
+  private fun resolveImageUriFromResource(topic: Topic): Uri? {
+    val path = "android.resource://$packageName/drawable"
+    val fileUrl = when (topic.name) {
+      "Prehab" -> "topic_prehab"
+      "At a restaurant" -> "topic_at_a_restaurant"
+      "Work" -> "topic_work"
+      "Hobby" -> "topic_hobby"
+      else -> "topic_default"
+    }
+    return Uri.parse("$path/$fileUrl")
+  }
 
+  fun getTrainingTopics() = data.getTrainingTopics()
   fun getTrainingTopic(topicId: Long) = data.getTrainingTopicById(topicId)
+
+  fun addTopic(trainingItem: SpeechTrainingItem) {
+    data.addTrainingItem(trainingItem)
+  }
   fun getTrainingPhrases(trainingId: Long) = data.getTrainingPhrases(trainingId)
-  fun setAvailableLanguages(availableLangs: List<Language>) {
-    _availableLangs.clear()
-    _availableLangs.addAll(availableLangs)
+  fun addTrainingPhrase(topicId: Long, phrase: Phrase) {
+    data.addPhraseTmTopic(topicId, phrase)
+  }
+  fun setAvailableLanguages(availableLanguages: List<Language>) {
+    _availableLanguages.clear()
+    _availableLanguages.addAll(availableLanguages)
   }
 
   fun setOrChangePermissionState(neededPermission: NeededPermission, state: Boolean) {
@@ -30,9 +55,5 @@ class SpeechTrainingDataViewModel (var data: SpeechTrainingData): ViewModel() {
   }
   fun isPermissionGranted(neededPermission: NeededPermission): Boolean {
     return _permissions.firstOrNull { neededPermission.ordinal == it.ordinal }?.isGranted == true
-  }
-
-  fun addTrainingPhrase(topicId: Long, phrase: Phrase) {
-    data.addPhraseTmTopic(topicId, phrase)
   }
 }
