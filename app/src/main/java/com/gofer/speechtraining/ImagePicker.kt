@@ -39,14 +39,14 @@ fun ImagePicker(modifier: Modifier = Modifier, content: @Composable()(imageUri: 
     Button(modifier = modifier.padding(vertical = 4.dp), onClick = { launcher.launch("image/*") }) {
       Text(stringResource(id = TrainingScreenLabel.TrainingTopicImageCustomize.title))
     }
-    pickedImageUri?.let {
-      AsyncImage(
-        model = pickedImageUri ?: stringResource(id = defaultTopicIcon),
-        contentDescription = stringResource(id = TrainingScreenLabel.TrainingTopicImage.title),
-        placeholder = painterResource(id = defaultTopicIcon),
-        modifier = modifier.fillMaxWidth())
+    pickedImageUri?.let {AsyncImage(
+      model = pickedImageUri ?: stringResource(id = defaultTopicIcon),
+      contentDescription = stringResource(id = TrainingScreenLabel.TrainingTopicImage.title),
+      placeholder = painterResource(id = defaultTopicIcon),
+      modifier = modifier.fillMaxWidth())
     } ?: Image(painter = painterResource(id = defaultTopicIcon), contentDescription = null)
   }
+
   content(pickedImageUri ?: Uri.parse(stringResource(id = defaultTopicIcon)))
 }
 
