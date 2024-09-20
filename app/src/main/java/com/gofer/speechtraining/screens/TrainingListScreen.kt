@@ -18,7 +18,6 @@ import androidx.compose.material.icons.rounded.AddCircle
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -28,7 +27,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -91,7 +89,11 @@ fun TopicItem(navController: NavController,
               topic: Topic,
               onSelectedTopic: (Topic) -> Unit,
               onImageLoading: (Boolean) -> Unit) {
+  val navUri = remember {
+    "${TrainingScreenLabel.TrainingConfiguration.name}?topicId=${topic.id}"
+  }
   Card(
+
         modifier = Modifier
           .size(width = 100.dp, height = 150.dp)
           .padding(8.dp),
@@ -102,8 +104,7 @@ fun TopicItem(navController: NavController,
             pressedElevation = 18.dp),
         onClick = {
           onSelectedTopic(topic.copy(isSelected = topic.isSelected.not()))
-          navController.navigate(
-            "${TrainingScreenLabel.TrainingConfiguration.name}?topicId=${topic.id}") }) {
+          navController.navigate(navUri) }) {
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
@@ -145,7 +146,7 @@ fun ConversationsTopics(navController: NavController, topics: List<Topic>) {
 
   val loadingCounter = remember { mutableStateOf(topics.size) }
 
-  LaunchedEffect(key1 = topics.size) {}
+//  LaunchedEffect(key1 = topics.size) {}
 
   Box(contentAlignment = Alignment.Center){
     LazyVerticalGrid(
@@ -166,11 +167,7 @@ fun ConversationsTopics(navController: NavController, topics: List<Topic>) {
         )
       }
     }
-    if (loadingCounter.value > 0) {
-      CircularProgressIndicator(modifier = Modifier
-        .fillMaxSize()
-        .scale(0.5f), strokeWidth = 4.dp)
-    }
+//00
   }
 }
 
