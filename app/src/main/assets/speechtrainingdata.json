@@ -5,7 +5,8 @@
       "topic":
       {
         "id": 0,
-        "name": "Prehab"
+        "name": "Prehab",
+        "imageUri": "topic_prehab"
       },
       "phrases": [
         {
@@ -234,7 +235,8 @@
       "topic":
       {
         "id": 1,
-        "name": "Greetings"
+        "name": "Greetings",
+        "imageUri": "topic_greetings"
       },
       "phrases": [
         {
@@ -289,7 +291,8 @@
       "topic":
       {
         "id": 5,
-        "name": "At a restaurant"
+        "name": "At a restaurant",
+        "imageUri": "topic_at_a_restaurant"
       },
       "phrases": [
         {

@@ -24,6 +24,7 @@ class SpeechTrainingDataViewModel
       "At a restaurant" -> "topic_at_a_restaurant"
       "Work" -> "topic_work"
       "Hobby" -> "topic_hobby"
+      "Greetings" -> "topic_greetings"
       else -> "topic_default"
     }
     return Uri.parse("$path/$fileUrl")
