@@ -35,6 +35,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -46,6 +48,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import com.gofer.speechtraining.TopicDataState
 import com.gofer.speechtraining.TrainingScreenLabel
 import com.gofer.speechtraining.getDefaultTopicIcon
@@ -94,6 +98,8 @@ fun TopicItem(navController: NavController,
   val navUri = remember {
     "${TrainingScreenLabel.TrainingConfiguration.name}?topicId=${topic.id}"
   }
+  val topicUri = remember { topic.imageUri }
+
   Card(
 
         modifier = Modifier
@@ -116,13 +122,21 @@ fun TopicItem(navController: NavController,
                 style = TextStyle(
                     textIndent = TextIndent(firstLine = 8.sp),
                     color = MaterialTheme.colorScheme.primary),
-                fontSize = 20.sp,
+                fontSize = 18.sp,
                 fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier
               .fillMaxWidth()
               .height(4.dp))
             AsyncImage(
-              model = topic.imageUri,
+              model = topicUri?.let {
+                ImageRequest
+                  .Builder(LocalContext.current)
+                  .data(topic.imageUri)
+                  .crossfade(true)
+                  .memoryCachePolicy(CachePolicy.READ_ONLY)
+                  .build()
+              },
+              contentScale = ContentScale.Crop,
               contentDescription = stringResource(id = TrainingScreenLabel.TrainingTopicImage.title),
               placeholder = painterResource(id = getDefaultTopicIcon()),
               modifier = Modifier
