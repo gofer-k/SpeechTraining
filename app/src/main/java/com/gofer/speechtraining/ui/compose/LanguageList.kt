@@ -1,5 +1,6 @@
 package com.gofer.speechtraining.ui.compose
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -25,10 +26,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gofer.speechtraining.Language
 import com.gofer.speechtraining.TrainingScreenLabel
+import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
 import java.util.Locale
 
 @Composable
@@ -38,13 +41,14 @@ fun LanguageList(languages: List<Language>, onSelectedLanguage: (Locale) -> Unit
   var selectedLanguage by remember { mutableStateOf(Language(label)) }
   val textSize = 20.sp
   val cornerShape = RoundedCornerShape(24.dp)
-  val itemHeight = 32.dp//48.dp
+  val itemHeight = 40.dp//48.dp
   val textHorizontalPadding = 12.dp
   val backGroundColder = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
 
   Column(modifier = Modifier
     .fillMaxWidth()
-    .padding(64.dp)) {
+    .padding(horizontal = 64.dp))
+  {
     Row(
       modifier = Modifier
         .fillMaxWidth()
@@ -91,5 +95,13 @@ fun LanguageList(languages: List<Language>, onSelectedLanguage: (Locale) -> Unit
         }
       }
     }
+  }
+}
+
+@Preview(showBackground = true, name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+internal fun LanguageList() {
+  SpeechTrainingTheme {
+    LanguageList(listOf(), onSelectedLanguage = {})
   }
 }
