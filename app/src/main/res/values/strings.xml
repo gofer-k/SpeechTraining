@@ -16,4 +16,5 @@
     <string name="speaking_phrase">Speaking phrase</string>
     <string name="topic_image">Topic image</string>
     <string name="topic_custom_image">Choose custom icon</string>
+    <string name="trainings_language_label">Trainings language</string>
 </resources>
