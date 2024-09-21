@@ -12,7 +12,7 @@ data class SpeechTrainingData(
   fun getTrainingTopicById(trainingId: Long) = items.firstOrNull { it.topic.id == trainingId }?.topic
 
   fun addTrainingItem(trainingItem: SpeechTrainingItem) {
-    items.plus(trainingItem)
+    items = items.plus(trainingItem)
   }
 
   fun getTrainingTopics() = items.map { it.topic }

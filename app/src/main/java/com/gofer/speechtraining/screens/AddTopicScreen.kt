@@ -45,13 +45,12 @@ import com.gofer.speechtraining.ImagePicker
 import com.gofer.speechtraining.TrainingScreenLabel
 import com.gofer.speechtraining.ui.theme.Purple40
 import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
-import java.net.URL
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTopicScreen(navController: NavController) {
   var topicName by remember { mutableStateOf("") }
-  val topicImageUrl by remember { mutableStateOf(URL("file://")) }
+  var topicImageUrl by remember { mutableStateOf("") }
 
   Scaffold(
    topBar = {
@@ -77,7 +76,9 @@ fun AddTopicScreen(navController: NavController) {
           onClick = {
             if (topicName.isNotBlank()) {
               navController.previousBackStackEntry?.savedStateHandle?.set("addTopic", topicName)
-              navController.previousBackStackEntry?.savedStateHandle?.set("addTopicImageUrl", topicImageUrl.toString())
+              navController.previousBackStackEntry?.savedStateHandle?.set("addTopicImageUrl",
+                topicImageUrl
+              )
               navController.popBackStack()
             }
           },
@@ -130,7 +131,7 @@ fun AddTopicScreen(navController: NavController) {
          .fillMaxWidth()
          .padding(vertical = 16.dp))
      ImagePicker(modifier = Modifier.padding(8.dp)) {
-       Text(text = it.path ?: "Default image source")
+       topicImageUrl = it.toString()
      }
    }
   }
