@@ -37,7 +37,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -49,13 +48,16 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
+import coil.request.ErrorResult
 import coil.request.ImageRequest
+import coil.request.SuccessResult
 import com.gofer.speechtraining.TopicDataState
 import com.gofer.speechtraining.TrainingScreenLabel
 import com.gofer.speechtraining.getDefaultTopicIcon
 import com.gofer.speechtraining.src.main.model.Topic
 import com.gofer.speechtraining.ui.theme.PurpleGrey80
 import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
+import kotlinx.coroutines.Dispatchers
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -89,7 +91,7 @@ internal fun TrainingListsScreen(topics: List<Topic>, navController: NavControll
   }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalStdlibApi::class)
 @Composable
 fun TopicItem(navController: NavController,
               topic: Topic,
@@ -101,7 +103,6 @@ fun TopicItem(navController: NavController,
   val topicUri = remember { topic.imageUri }
 
   Card(
-
         modifier = Modifier
           .size(width = 100.dp, height = 150.dp)
           .padding(8.dp),
@@ -116,41 +117,58 @@ fun TopicItem(navController: NavController,
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            Text(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                text = topic.name,
-                style = TextStyle(
-                    textIndent = TextIndent(firstLine = 8.sp),
-                    color = MaterialTheme.colorScheme.primary),
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier
+          // Build an ImageRequest with Coil
+          val listener = object : ImageRequest.Listener {
+            override fun onError(request: ImageRequest, result: ErrorResult) {
+              super.onError(request, result)
+            }
+
+            override fun onSuccess(request: ImageRequest, result: SuccessResult) {
+              super.onSuccess(request, result)
+            }
+          }
+          val uriString = topicUri?.toString()
+          val placeholder =getDefaultTopicIcon()
+          val imageRequest = ImageRequest.Builder(LocalContext.current)
+              .data(topicUri)
+              .listener(listener)
+              .dispatcher(Dispatchers.IO)
+              .memoryCacheKey(uriString)
+              .diskCacheKey(uriString)
+              .placeholder(placeholder)
+              .error(placeholder)
+              .fallback(placeholder)
+              .diskCachePolicy(CachePolicy.ENABLED)
+              .memoryCachePolicy(CachePolicy.ENABLED)
+              .build()
+
+          Text(
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            text = topic.name,
+            style = TextStyle(
+                textIndent = TextIndent(firstLine = 8.sp),
+                color = MaterialTheme.colorScheme.primary),
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold)
+          Spacer(modifier = Modifier
               .fillMaxWidth()
               .height(4.dp))
-            AsyncImage(
-              model = topicUri?.let {
-                ImageRequest
-                  .Builder(LocalContext.current)
-                  .data(topic.imageUri)
-                  .crossfade(true)
-                  .memoryCachePolicy(CachePolicy.READ_ONLY)
-                  .build()
-              },
-              contentScale = ContentScale.Crop,
-              contentDescription = stringResource(id = TrainingScreenLabel.TrainingTopicImage.title),
-              placeholder = painterResource(id = getDefaultTopicIcon()),
-              modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(horizontal = 8.dp, vertical = 4.dp),
-              onLoading = {
-                onImageLoading(true)
-              },
-              onSuccess = {
-                onImageLoading(false)
-              })
-            Spacer(modifier = Modifier
-              .fillMaxWidth()
-              .height(4.dp))
+          AsyncImage(
+            model = imageRequest,
+            contentScale = ContentScale.Crop,
+            contentDescription = stringResource(id = TrainingScreenLabel.TrainingTopicImage.title),
+            modifier = Modifier
+              .align(Alignment.CenterHorizontally)
+              .padding(horizontal = 8.dp, vertical = 4.dp),
+            onLoading = {
+              onImageLoading(true)
+            },
+            onSuccess = {
+              onImageLoading(false)
+            })
+          Spacer(modifier = Modifier
+            .fillMaxWidth()
+            .height(4.dp))
         }
     }
 }
@@ -186,7 +204,7 @@ fun ConversationsTopics(navController: NavController, topics: List<Topic>) {
     if (loadingCounter.value > 0) {
       CircularProgressIndicator(modifier = Modifier
         .fillMaxSize()
-        .scale(0.5f), strokeWidth = 4.dp)
+        .scale(0.25f), strokeWidth = 8.dp)
     }
   }
 }
