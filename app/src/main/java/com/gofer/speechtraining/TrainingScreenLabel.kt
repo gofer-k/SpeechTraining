@@ -17,7 +17,8 @@ enum class TrainingScreenLabel(@StringRes val title: Int)  {
   TrainingAddTopic(R.string.add_training_topic),
   TrainingEditTopicLabel(R.string.edit_topic_label),
   TrainingTopicImage(R.string.topic_image),
-  TrainingTopicImageCustomize(R.string.topic_custom_image)
+  TrainingTopicImageCustomize(R.string.topic_custom_image),
+  TrainingLanguageLabel(R.string.trainings_language_label)
 }
 
 fun getTrainingSpeakIcon(isDarkTheme: Boolean) = if (isDarkTheme) R.drawable.ic_outline_volume_up_24 else R.drawable.ic_outline_volume_up_24_light

@@ -1,14 +1,20 @@
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -29,13 +35,20 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -51,10 +64,12 @@ import coil.request.CachePolicy
 import coil.request.ErrorResult
 import coil.request.ImageRequest
 import coil.request.SuccessResult
+import com.gofer.speechtraining.Language
 import com.gofer.speechtraining.TopicDataState
 import com.gofer.speechtraining.TrainingScreenLabel
 import com.gofer.speechtraining.getDefaultTopicIcon
 import com.gofer.speechtraining.src.main.model.Topic
+import com.gofer.speechtraining.ui.compose.LanguageList
 import com.gofer.speechtraining.ui.theme.PurpleGrey80
 import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
 import kotlinx.coroutines.Dispatchers
@@ -62,8 +77,33 @@ import kotlinx.coroutines.Dispatchers
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun TrainingListsScreen(topics: List<Topic>, navController: NavController) {
+internal fun TrainingListsScreen(
+  navController: NavController,
+  topics: List<Topic>,
+  availableLanguages: List<Language>
+) {
+  val label = stringResource(TrainingScreenLabel.TrainingLanguage.title)
+  var selectedLanguage by remember { mutableStateOf(Language(label)) }
+
+  val bottomBarHeight = remember { mutableStateOf(0f) }
+  val bottomBarOffsetHeightPx = remember { mutableStateOf(0f) }
+  val showBottomBar = remember { mutableStateOf(true) }
+
+  val nestedScrollConnection = remember {
+    object : NestedScrollConnection {
+      override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+        val delta = available.y
+        val newOffset = bottomBarOffsetHeightPx.value + delta
+        bottomBarOffsetHeightPx.value = newOffset.coerceIn(-bottomBarHeight.value, 0f)
+        showBottomBar.value = newOffset >= 0f
+        return Offset.Zero
+      }
+    }
+  }
+
   Scaffold(
+    modifier = Modifier.nestedScroll(nestedScrollConnection),
+    contentWindowInsets = WindowInsets.safeDrawing,
     topBar = {
       TopAppBar(
         title = {
@@ -74,19 +114,39 @@ internal fun TrainingListsScreen(topics: List<Topic>, navController: NavControll
         colors = topAppBarColors(containerColor = PurpleGrey80)
     )},
     bottomBar = {
-      BottomAppBar {
-        NavigationBarItem(
-          selected = false,
-          onClick = {
-            navController.navigate("AddTrainingTopic")
-          },
-          icon = { Icon(imageVector = Icons.Rounded.AddCircle, contentDescription = null,  Modifier.scale(2.0f)) })
+      AnimatedVisibility(
+        visible = showBottomBar.value,
+        enter = slideInVertically(
+          initialOffsetY = { it },
+          animationSpec = tween(durationMillis = 150)),
+        exit = slideOutVertically(
+          targetOffsetY = { it },
+          animationSpec = tween(durationMillis = 150)) ) {
+        BottomAppBar {
+          NavigationBarItem(
+            modifier = Modifier.onGloballyPositioned { coordinates ->
+                bottomBarHeight.value = coordinates.size.height.toFloat()},
+            selected = false,
+            onClick = {
+              navController.navigate("AddTrainingTopic")
+            },
+            icon = {
+              Icon(
+                imageVector = Icons.Rounded.AddCircle,
+                contentDescription = null,
+                Modifier.scale(2.0f)) })
+        }
       }
     }
   ) {paddingValues ->
     Column(modifier = Modifier.padding(paddingValues)) {
       Spacer(modifier = Modifier.height(24.dp))
       ConversationsTopics(navController = navController, topics)
+      Text(modifier = Modifier.align(Alignment.CenterHorizontally),
+        text = stringResource(id = TrainingScreenLabel.TrainingLanguageLabel.title))
+      LanguageList(languages = availableLanguages) {
+        selectedLanguage = Language(label = it.language, locale = it)
+      }
     }
   }
 }
@@ -151,8 +211,8 @@ fun TopicItem(navController: NavController,
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold)
           Spacer(modifier = Modifier
-              .fillMaxWidth()
-              .height(4.dp))
+            .fillMaxWidth()
+            .height(4.dp))
           AsyncImage(
             model = imageRequest,
             contentScale = ContentScale.Crop,
@@ -215,11 +275,14 @@ internal fun TrainingListsScreenPreview() {
     SpeechTrainingTheme {
         val navController = rememberNavController()
         TrainingListsScreen(
-            topics = listOf(
-                Topic(name = "First"),
-                Topic(name = "Second"),
-                Topic(name = "Third"),
-                Topic(name = "Fourth")), navController = navController)
+          navController = navController,
+          topics = listOf(
+            Topic(name = "First"),
+              Topic(name = "Second"),
+              Topic(name = "Third"),
+              Topic(name = "Fourth")),
+          availableLanguages = listOf()
+        )
     }
 }
 
