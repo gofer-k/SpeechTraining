@@ -182,8 +182,9 @@ fun LanguageList(languages: List<Language>, onSelectedLanguage: (Locale) -> Unit
   var selectedLanguage by remember { mutableStateOf(Language(label)) }
   val textSize = 20.sp
   val cornerShape = RoundedCornerShape(24.dp)
-  val itemHeight = 48.dp
+  val itemHeight = 32.dp//48.dp
   val textHorizontalPadding = 12.dp
+  val backGroundColder = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
 
   Column(modifier = Modifier
     .fillMaxWidth()
@@ -193,7 +194,7 @@ fun LanguageList(languages: List<Language>, onSelectedLanguage: (Locale) -> Unit
         .fillMaxWidth()
         .height(itemHeight)
         .background(
-          color = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray,
+          color = backGroundColder,
           shape = cornerShape
         )
         .clickable {
@@ -217,7 +218,7 @@ fun LanguageList(languages: List<Language>, onSelectedLanguage: (Locale) -> Unit
         Box(modifier = Modifier
           .fillMaxWidth()
           .background(
-            color = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray,
+            color = backGroundColder,
             shape = cornerShape
           )
           .height(itemHeight)
