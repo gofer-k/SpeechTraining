@@ -22,7 +22,17 @@ import com.gofer.speechtraining.toLocale
 fun AppNavigation(viewModel: SpeechTrainingDataViewModel) {
   val navHostController = rememberNavController()
   NavHost(navController = navHostController, startDestination = TrainingList.name) {
-      composable(TrainingList.name) {
+      composable(TrainingList.name) {backStackEntry ->
+        val newTopicName = backStackEntry.savedStateHandle.get<String>("addTopic")
+        val newTopicImageUri = backStackEntry.savedStateHandle.get<String>("addTopicImageUrl")
+        backStackEntry.savedStateHandle.remove<String>("addTopic")
+        backStackEntry.savedStateHandle.remove<String>("addTopic")
+
+        newTopicName?.let { name ->
+          newTopicImageUri?.let { uri ->
+            viewModel.addSpeechTrainingItem(topicName = name, topicImageUri = uri)
+          }
+        }
         TrainingListsScreen(viewModel.getTrainingTopics(), navController = navHostController) }
       composable("${TrainingScreenLabel.TrainingConfiguration.name}?topicId={topicId}",
         // Navigable view with forward argument
@@ -47,9 +57,6 @@ fun AppNavigation(viewModel: SpeechTrainingDataViewModel) {
             viewModel.addTrainingPhrase(topicId, Phrase(name = addPhraseText, language = it))
           }
         }
-
-        // TODO: add topic at runtime
-
         backStackEntry.savedStateHandle.remove<String>("addPhrase")
         backStackEntry.savedStateHandle.remove<String>("phraseLang")
 

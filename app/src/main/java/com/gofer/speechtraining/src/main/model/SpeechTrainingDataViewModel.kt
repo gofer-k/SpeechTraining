@@ -32,9 +32,15 @@ class SpeechTrainingDataViewModel
 
   fun getTrainingTopics() = data.getTrainingTopics()
   fun getTrainingTopic(topicId: Long) = data.getTrainingTopicById(topicId)
-
-  fun addTopic(trainingItem: SpeechTrainingItem) {
-    data.addTrainingItem(trainingItem)
+  fun getAvailableTopicId(): Long {
+    return data.items.maxByOrNull { it.topic.id }?.let {
+      it.topic.id + 1
+    } ?: 0
+  }
+  fun addSpeechTrainingItem(topicName: String, topicImageUri: String) {
+    val imageUri = Uri.parse(topicImageUri)
+    val newTopic = Topic(id = getAvailableTopicId(), name = topicName, imageUri = imageUri ?: Uri.EMPTY)
+    data.addTrainingItem(SpeechTrainingItem(lang = "en-US", newTopic, listOf()))
   }
   fun getTrainingPhrases(trainingId: Long) = data.getTrainingPhrases(trainingId)
   fun addTrainingPhrase(topicId: Long, phrase: Phrase) {
