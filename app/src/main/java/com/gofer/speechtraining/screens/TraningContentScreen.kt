@@ -14,8 +14,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -31,7 +33,6 @@ import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -41,7 +42,6 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextIndent
@@ -58,6 +58,7 @@ import com.gofer.speechtraining.getTrainingSpeakIcon
 import com.gofer.speechtraining.src.main.model.Phrase
 import com.gofer.speechtraining.src.main.model.Topic
 import com.gofer.speechtraining.src.main.model.TtsViewModel
+import com.gofer.speechtraining.ui.compose.LazyColumnScrollPosition
 import com.gofer.speechtraining.ui.theme.Pink80
 import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
 
@@ -78,15 +79,13 @@ fun TrainingContentScreen(
   // Scaffold floating button height
   var fabHeight by remember { mutableIntStateOf(0) }
   val heightInDp = with(LocalDensity.current) { fabHeight.toDp() }
-
-  val topBarTitle = stringResource(id = TrainingScreenLabel.TrainingConfiguration.title).plus(trainingTopic.name)
-  val topBarTitleState by remember { mutableStateOf(topBarTitle) }
+  val listState = rememberLazyListState( initialFirstVisibleItemIndex = 0 )
 
   Scaffold(
     topBar = {
       TopAppBar(title = { 
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-          Text(text = topBarTitleState)
+          Text(text = trainingTopic.name)
         }
       },
       colors = topAppBarColors(containerColor = Pink80)
@@ -106,54 +105,58 @@ fun TrainingContentScreen(
     },
     floatingActionButtonPosition = FabPosition.End
   ) { scaffoldContentPadding ->
-    Column(modifier = Modifier
+    Box(modifier = Modifier
       .fillMaxSize()) {
-      LazyColumn(modifier = Modifier
-        .fillMaxWidth()
-        .padding(scaffoldContentPadding),
-        verticalArrangement = Arrangement.Top,
-        contentPadding = PaddingValues(bottom = heightInDp + 16.dp)
-      ) {
-        itemsIndexed(phraseListState.phraseList) { _, phrase ->
-          Box(modifier = Modifier
-            .clip(MaterialTheme.shapes.extraSmall)
-            .border(BorderStroke(1.dp, MaterialTheme.colorScheme.primary))
-           ,contentAlignment = Alignment.CenterStart
-          ) {
-            Column(modifier = Modifier.fillMaxWidth()) {
-              Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = phrase.name,
-                style = TextStyle(textIndent = TextIndent(firstLine = 8.sp)),
-                fontSize = 20.sp,
-                fontWeight = if (phrase.isSelected) FontWeight.Bold else FontWeight.Normal)
-              Row(horizontalArrangement = Arrangement.SpaceBetween) {
-                IconButton(onClick = {
+        LazyColumn(
+          state = listState,
+          modifier = Modifier
+          .fillMaxWidth()
+          .padding(scaffoldContentPadding)
+          .wrapContentHeight(),
+          verticalArrangement = Arrangement.Top,
+          contentPadding = PaddingValues(bottom = heightInDp + 16.dp),
+        ) {
+          itemsIndexed(phraseListState.phraseList) { _, phrase ->
+            Box(modifier = Modifier
+              .clip(MaterialTheme.shapes.extraSmall)
+              .border(BorderStroke(1.dp, MaterialTheme.colorScheme.primary))
+              ,contentAlignment = Alignment.CenterStart
+            ) {
+              Column(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                  modifier = Modifier.fillMaxWidth(),
+                  text = phrase.name,
+                  style = TextStyle(textIndent = TextIndent(firstLine = 8.sp)),
+                  fontSize = 20.sp,
+                  fontWeight = if (phrase.isSelected) FontWeight.Bold else FontWeight.Normal)
+                Row(horizontalArrangement = Arrangement.SpaceBetween) {
+                  IconButton(onClick = {
                     ttsViewModel.onListenTrainingPhrase(phrase, context
                     ) {
                       phrase.toggle()
                       phraseListState.onSelectedPhrase(phrase)
                     }
                   }) {
-                  Icon(
-                    painterResource(id = getTrainingSpeakIcon(isSystemInDarkTheme())),
-                    contentDescription = TrainingScreenLabel.TrainingPhraseSpeech.name) }
-                IconButton(onClick = {
-                  if (onPermissionGranted(NeededPermission.RECORD_AUDIO)) {
-                    navController.navigate("SpeakingPhraseScreen?phrase=${phrase.name}&phraseLang=${phrase.language.language}")
-                  } else {
-                    Toast.makeText(context, "Record audio not availability", Toast.LENGTH_SHORT).show()
+                    Icon(
+                      painterResource(id = getTrainingSpeakIcon(isSystemInDarkTheme())),
+                      contentDescription = TrainingScreenLabel.TrainingPhraseSpeech.name) }
+                  IconButton(onClick = {
+                    if (onPermissionGranted(NeededPermission.RECORD_AUDIO)) {
+                      navController.navigate("SpeakingPhraseScreen?phrase=${phrase.name}&phraseLang=${phrase.language.language}")
+                    } else {
+                      Toast.makeText(context, "Record audio not availability", Toast.LENGTH_SHORT).show()
+                    }
+                  }) {
+                    Icon(
+                      painterResource(id = getTrainingRecordIcon(isSystemInDarkTheme())),
+                      contentDescription = null)
                   }
-                }) {
-                  Icon(
-                    painterResource(id = getTrainingRecordIcon(isSystemInDarkTheme())),
-                    contentDescription = null)
                 }
               }
             }
           }
-        }
-      }
+       }
+       LazyColumnScrollPosition(listState, phraseListState.phraseList)
     }
   }
 }
