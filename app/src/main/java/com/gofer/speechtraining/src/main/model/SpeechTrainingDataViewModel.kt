@@ -16,6 +16,7 @@ class SpeechTrainingDataViewModel
     data.items.asIterable().forEach {
       it.topic.imageUri = resolveImageUriFromResource(it.topic)
     }
+    data.sortTrainingPhrases()
   }
   private fun resolveImageUriFromResource(topic: Topic): Uri? {
     val path = "android.resource://$packageName/drawable"
