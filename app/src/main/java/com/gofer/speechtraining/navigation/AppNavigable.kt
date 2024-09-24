@@ -33,7 +33,14 @@ fun AppNavigation(viewModel: SpeechTrainingDataViewModel) {
             viewModel.addSpeechTrainingItem(topicName = name, topicImageUri = uri)
           }
         }
-        TrainingListsScreen(navController = navHostController, viewModel.getTrainingTopics(), viewModel.availableLanguages) }
+        TrainingListsScreen(
+          navController = navHostController,
+          viewModel.getTrainingTopics(),
+          viewModel.availableLanguages,
+          onFilterTRainingLanguage = {
+            filterLanguage ->  viewModel.filterTrainingLanguage(filterLanguage)
+          })
+      }
       composable("${TrainingScreenLabel.TrainingConfiguration.name}?topicId={topicId}",
         // Navigable view with forward argument
         arguments = listOf(

@@ -29,6 +29,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -41,7 +42,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
@@ -80,8 +80,8 @@ import kotlinx.coroutines.Dispatchers
 internal fun TrainingListsScreen(
   navController: NavController,
   topics: List<Topic>,
-  availableLanguages: List<Language>
-) {
+  availableLanguages: List<Language>,
+  onFilterTRainingLanguage: (Language) -> Unit) {
   val label = stringResource(TrainingScreenLabel.TrainingLanguage.title)
   var selectedLanguage by remember { mutableStateOf(Language(label)) }
 
@@ -146,6 +146,7 @@ internal fun TrainingListsScreen(
         text = stringResource(id = TrainingScreenLabel.TrainingLanguageLabel.title))
       LanguageList(languages = availableLanguages) {
         selectedLanguage = Language(label = it.language, locale = it)
+        onFilterTRainingLanguage(selectedLanguage)
       }
     }
   }
@@ -240,11 +241,11 @@ fun ConversationsTopics(navController: NavController, topics: List<Topic>) {
 
   val loadingCounter = remember { mutableStateOf(topics.size) }
 
-  LaunchedEffect(key1 = topics.size) {}
+  LaunchedEffect(key1 = loadingCounter) {}
 
   Box(contentAlignment = Alignment.Center){
     LazyVerticalGrid(
-      modifier = Modifier.alpha(if (loadingCounter.value > 0) 0f else 1f),
+//      modifier = Modifier.alpha(if (loadingCounter.value > 0) 0f else 1f),
       columns = GridCells.Fixed(2),
       contentPadding = PaddingValues(16.dp)
     ) {
@@ -264,7 +265,8 @@ fun ConversationsTopics(navController: NavController, topics: List<Topic>) {
     if (loadingCounter.value > 0) {
       CircularProgressIndicator(modifier = Modifier
         .fillMaxSize()
-        .scale(0.25f), strokeWidth = 8.dp)
+        .scale(0.25f), strokeWidth = 32.dp,
+        color = ProgressIndicatorDefaults.circularColor)
     }
   }
 }
@@ -281,7 +283,8 @@ internal fun TrainingListsScreenPreview() {
               Topic(name = "Second"),
               Topic(name = "Third"),
               Topic(name = "Fourth")),
-          availableLanguages = listOf()
+          availableLanguages = listOf(),
+          onFilterTRainingLanguage = {}
         )
     }
 }

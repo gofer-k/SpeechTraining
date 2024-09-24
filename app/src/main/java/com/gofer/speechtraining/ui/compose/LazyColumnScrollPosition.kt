@@ -51,7 +51,7 @@ fun LazyColumnScrollPosition(parentListState: LazyListState = rememberLazyListSt
         modifier = Modifier.alpha(0.6f)
       ) {
         val firstVisibleIndex = remember {derivedStateOf { parentListState.firstVisibleItemIndex } }
-        if (firstVisibleIndex.value >= 0) {
+        if (firstVisibleIndex.value >= 0 && listPhrases.isNotEmpty()) {
           Text(
             text = listPhrases.get(firstVisibleIndex.value).name.first().toString(),
             fontWeight = FontWeight.Bold,
