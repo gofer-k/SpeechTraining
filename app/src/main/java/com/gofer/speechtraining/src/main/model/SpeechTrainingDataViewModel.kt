@@ -9,6 +9,7 @@ class SpeechTrainingDataViewModel
   (val packageName: String, var data: SpeechTrainingData): ViewModel() {
   private var _availableLanguages = mutableListOf<Language>()
   val availableLanguages: List<Language> = _availableLanguages
+  private var _filterTrainingLanguage = Language()
 
   private val _permissions = mutableListOf<NeededPermission>()
 
@@ -41,15 +42,19 @@ class SpeechTrainingDataViewModel
   fun addSpeechTrainingItem(topicName: String, topicImageUri: String) {
     val imageUri = Uri.parse(topicImageUri)
     val newTopic = Topic(id = getAvailableTopicId(), name = topicName, imageUri = imageUri ?: Uri.EMPTY)
-    data.addTrainingItem(SpeechTrainingItem(lang = "en-US", newTopic, listOf()))
   }
   fun getTrainingPhrases(trainingId: Long) = data.getTrainingPhrases(trainingId)
+      .filter { it.language.equals(_filterTrainingLanguage.locale) }
+
   fun addTrainingPhrase(topicId: Long, phrase: Phrase) {
     data.addPhraseTmTopic(topicId, phrase)
   }
   fun setAvailableLanguages(availableLanguages: List<Language>) {
     _availableLanguages.clear()
     _availableLanguages.addAll(availableLanguages)
+  }
+  fun filterTrainingLanguage(language: Language) {
+    _filterTrainingLanguage = language
   }
 
   fun setOrChangePermissionState(neededPermission: NeededPermission, state: Boolean) {

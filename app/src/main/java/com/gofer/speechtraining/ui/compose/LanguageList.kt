@@ -36,9 +36,7 @@ import java.util.Locale
 
 @Composable
 fun LanguageList(languages: List<Language>, onSelectedLanguage: (Locale) -> Unit) {
-  var isExtended by remember { mutableStateOf( false) }
   val label = stringResource(TrainingScreenLabel.TrainingLanguage.title)
-  var selectedLanguage by remember { mutableStateOf(Language(label)) }
   val textSize = 20.sp
   val cornerShape = RoundedCornerShape(24.dp)
   val itemHeight = 40.dp//48.dp
@@ -49,6 +47,8 @@ fun LanguageList(languages: List<Language>, onSelectedLanguage: (Locale) -> Unit
     .fillMaxWidth()
     .padding(horizontal = 64.dp))
   {
+    var isExtended by remember { mutableStateOf( false) }
+    var selectedLanguage by remember { mutableStateOf(Language(label)) }
     Row(
       modifier = Modifier
         .fillMaxWidth()
@@ -59,8 +59,6 @@ fun LanguageList(languages: List<Language>, onSelectedLanguage: (Locale) -> Unit
         )
         .clickable {
           isExtended = !isExtended
-          if (!isExtended)
-            onSelectedLanguage(selectedLanguage.locale)
         },
       verticalAlignment = Alignment.CenterVertically,
       horizontalArrangement = Arrangement.SpaceBetween) {
@@ -84,6 +82,7 @@ fun LanguageList(languages: List<Language>, onSelectedLanguage: (Locale) -> Unit
           .height(itemHeight)
           .clickable {
             selectedLanguage = lang
+            onSelectedLanguage(selectedLanguage.locale)
             isExtended = !isExtended
           }) {
           Text(text = lang.label,

@@ -1,7 +1,7 @@
 {
   "SpeechTrainingItems": [
     {
-      "lang": "en-us",
+      "lang": "en",
       "topic":
       {
         "id": 0,
@@ -231,7 +231,7 @@
       ]
     },
     {
-      "lang": "en-us",
+      "lang": "en",
       "topic":
       {
         "id": 1,
@@ -283,11 +283,23 @@
         },
         {
           "name": "NICE TO PLAY WITH YOU"
+        },
+        {
+          "name": "Dzień dobry",
+          "language": "pl_PL"
+        },
+        {
+          "name": "Dzień wieczór",
+          "language": "pl_PL"
+        },
+        {
+          "name": "Dobra noc",
+          "language": "pl_PL"
         }
       ]
     },
     {
-      "lang": "en-us",
+      "lang": "en",
       "topic":
       {
         "id": 5,
@@ -386,7 +398,7 @@
           "name": "Sure. Here you is."
         },
         {
-          "name": "yYs, help yourself"
+          "name": "Yes, help yourself"
         },
         {
           "name": "It's for dine-in"
