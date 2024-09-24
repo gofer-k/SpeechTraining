@@ -106,12 +106,12 @@ fun TrainingContentScreen(
     floatingActionButtonPosition = FabPosition.End
   ) { scaffoldContentPadding ->
     Box(modifier = Modifier
-      .fillMaxSize()) {
+      .fillMaxSize()
+      .padding(scaffoldContentPadding)) {
         LazyColumn(
           state = listState,
           modifier = Modifier
           .fillMaxWidth()
-          .padding(scaffoldContentPadding)
           .wrapContentHeight(),
           verticalArrangement = Arrangement.Top,
           contentPadding = PaddingValues(bottom = heightInDp + 16.dp),

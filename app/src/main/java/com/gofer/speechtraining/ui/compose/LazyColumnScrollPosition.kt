@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,10 +34,10 @@ fun LazyColumnScrollPosition(parentListState: LazyListState = rememberLazyListSt
   val scope = rememberCoroutineScope()
 
   Box(modifier = Modifier.fillMaxSize(),
-    contentAlignment = Alignment.CenterEnd) {
+    contentAlignment = Alignment.Center) {
     Column(modifier = Modifier
       .padding(4.dp)
-      .align(Alignment.CenterEnd),
+      .align(Alignment.TopCenter),
       verticalArrangement = Arrangement.spacedBy(8.dp)) {
       FloatingActionButton(
         onClick = {
@@ -46,7 +47,8 @@ fun LazyColumnScrollPosition(parentListState: LazyListState = rememberLazyListSt
         },
         shape = RoundedCornerShape(32.dp),
         contentColor = Color.DarkGray,
-        elevation = FloatingActionButtonDefaults.elevation()
+        elevation = FloatingActionButtonDefaults.elevation(),
+        modifier = Modifier.alpha(0.6f)
       ) {
         val firstVisibleIndex = remember {derivedStateOf { parentListState.firstVisibleItemIndex } }
         if (firstVisibleIndex.value >= 0) {
@@ -66,6 +68,7 @@ fun LazyColumnScrollPosition(parentListState: LazyListState = rememberLazyListSt
 @Composable
 private fun LazyColumnScrollPositionPreview() {
   val listState = rememberLazyListState( initialFirstVisibleItemIndex = 0 )
-  val phrases = listOf<Phrase>()
+  val phrases = (1.. 20).toList().map { Phrase(it.toString()) }
   LazyColumnScrollPosition(listState, phrases)
 }
+
