@@ -19,4 +19,10 @@ data class SpeechTrainingData(
   fun addPhraseTmTopic(trainingId: Long, phrase: Phrase) {
     items.firstOrNull { it.topic.id == trainingId }?.addPhrase(phrase)
   }
+
+  fun sortTrainingPhrases() {
+    items.forEach {
+      it.phrases = it.phrases.sortedBy { it.name }
+    }
+  }
 }
