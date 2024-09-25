@@ -32,10 +32,9 @@ import androidx.compose.ui.unit.sp
 import com.gofer.speechtraining.Language
 import com.gofer.speechtraining.TrainingScreenLabel
 import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
-import java.util.Locale
 
 @Composable
-fun LanguageList(languages: List<Language>, onSelectedLanguage: (Locale) -> Unit) {
+fun LanguageList(languages: List<Language>, viewModelLanguage: Language, onSelectedLanguage: (Language) -> Unit) {
   val label = stringResource(TrainingScreenLabel.TrainingLanguage.title)
   val textSize = 20.sp
   val cornerShape = RoundedCornerShape(24.dp)
@@ -48,7 +47,8 @@ fun LanguageList(languages: List<Language>, onSelectedLanguage: (Locale) -> Unit
     .padding(horizontal = 64.dp))
   {
     var isExtended by remember { mutableStateOf( false) }
-    var selectedLanguage by remember { mutableStateOf(Language(label)) }
+    var selectedLanguage by remember { mutableStateOf(viewModelLanguage) }
+
     Row(
       modifier = Modifier
         .fillMaxWidth()
@@ -82,7 +82,7 @@ fun LanguageList(languages: List<Language>, onSelectedLanguage: (Locale) -> Unit
           .height(itemHeight)
           .clickable {
             selectedLanguage = lang
-            onSelectedLanguage(selectedLanguage.locale)
+            onSelectedLanguage(lang)
             isExtended = !isExtended
           }) {
           Text(text = lang.label,
@@ -101,6 +101,6 @@ fun LanguageList(languages: List<Language>, onSelectedLanguage: (Locale) -> Unit
 @Composable
 internal fun LanguageList() {
   SpeechTrainingTheme {
-    LanguageList(listOf(), onSelectedLanguage = {})
+    LanguageList(listOf(), Language(), onSelectedLanguage = {})
   }
 }

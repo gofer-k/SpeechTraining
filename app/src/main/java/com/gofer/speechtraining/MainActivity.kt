@@ -32,7 +32,7 @@ class MainActivity : ComponentActivity() {
         val viewModel = viewModel<SpeechTrainingDataViewModel>(
         factory = object : ViewModelProvider.Factory {
           override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return SpeechTrainingDataViewModel(baseContext.packageName, data = trainingData!!) as T
+            return SpeechTrainingDataViewModel(packageName = baseContext.packageName, data = trainingData!!) as T
           }
         })
 

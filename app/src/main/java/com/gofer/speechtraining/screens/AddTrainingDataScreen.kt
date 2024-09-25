@@ -158,10 +158,10 @@ fun AddTrainingDataScreen(
           .fillMaxWidth()
           .padding(vertical = 48.dp)
       )
-      LanguageList(
-        languages = availableLanguages,
-        onSelectedLanguage = { lang: Locale ->
-          phrase = phrase.copy(name = phrase.name, language = lang)
+      LanguageList(languages = availableLanguages,
+        viewModelLanguage = Language(),
+        onSelectedLanguage = { lang: Language ->
+          phrase = phrase.copy(name = phrase.name, language = lang.locale)
         })
     }
   }

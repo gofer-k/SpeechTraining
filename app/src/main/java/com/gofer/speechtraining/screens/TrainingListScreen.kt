@@ -36,10 +36,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -81,9 +79,9 @@ internal fun TrainingListsScreen(
   navController: NavController,
   topics: List<Topic>,
   availableLanguages: List<Language>,
+  selectedLanguage: Language,
   onFilterTRainingLanguage: (Language) -> Unit) {
   val label = stringResource(TrainingScreenLabel.TrainingLanguage.title)
-  var selectedLanguage by remember { mutableStateOf(Language(label)) }
 
   val bottomBarHeight = remember { mutableStateOf(0f) }
   val bottomBarOffsetHeightPx = remember { mutableStateOf(0f) }
@@ -144,9 +142,8 @@ internal fun TrainingListsScreen(
       ConversationsTopics(navController = navController, topics)
       Text(modifier = Modifier.align(Alignment.CenterHorizontally),
         text = stringResource(id = TrainingScreenLabel.TrainingLanguageLabel.title))
-      LanguageList(languages = availableLanguages) {
-        selectedLanguage = Language(label = it.language, locale = it)
-        onFilterTRainingLanguage(selectedLanguage)
+      LanguageList(languages = availableLanguages, viewModelLanguage = selectedLanguage) {
+        onFilterTRainingLanguage(it)
       }
     }
   }
@@ -275,8 +272,8 @@ fun ConversationsTopics(navController: NavController, topics: List<Topic>) {
 @Composable
 internal fun TrainingListsScreenPreview() {
     SpeechTrainingTheme {
-        val navController = rememberNavController()
-        TrainingListsScreen(
+      val navController = rememberNavController()
+      TrainingListsScreen(
           navController = navController,
           topics = listOf(
             Topic(name = "First"),
@@ -284,6 +281,7 @@ internal fun TrainingListsScreenPreview() {
               Topic(name = "Third"),
               Topic(name = "Fourth")),
           availableLanguages = listOf(),
+          selectedLanguage = Language(),
           onFilterTRainingLanguage = {}
         )
     }

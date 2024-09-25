@@ -1,15 +1,23 @@
 package com.gofer.speechtraining.src.main.model
 
 import android.net.Uri
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.gofer.speechtraining.Language
 import com.gofer.speechtraining.NeededPermission
 
 class SpeechTrainingDataViewModel
-  (val packageName: String, var data: SpeechTrainingData): ViewModel() {
+  (private val savedStateHandle: SavedStateHandle = SavedStateHandle(),
+   val packageName: String,
+   var data: SpeechTrainingData): ViewModel() {
+
   private var _availableLanguages = mutableListOf<Language>()
   val availableLanguages: List<Language> = _availableLanguages
-  private var _filterTrainingLanguage = Language()
+
+  private val _filterKey = "filterLanguage"
+  val filterTrainingLanguage = savedStateHandle.getStateFlow(
+    _filterKey,
+    _availableLanguages.firstOrNull() ?: Language())
 
   private val _permissions = mutableListOf<NeededPermission>()
 
@@ -44,7 +52,7 @@ class SpeechTrainingDataViewModel
     val newTopic = Topic(id = getAvailableTopicId(), name = topicName, imageUri = imageUri ?: Uri.EMPTY)
   }
   fun getTrainingPhrases(trainingId: Long) = data.getTrainingPhrases(trainingId)
-      .filter { it.language.equals(_filterTrainingLanguage.locale) }
+      .filter { it.language.equals(filterTrainingLanguage.value.locale) }
 
   fun addTrainingPhrase(topicId: Long, phrase: Phrase) {
     data.addPhraseTmTopic(topicId, phrase)
@@ -52,9 +60,10 @@ class SpeechTrainingDataViewModel
   fun setAvailableLanguages(availableLanguages: List<Language>) {
     _availableLanguages.clear()
     _availableLanguages.addAll(availableLanguages)
+    filterTrainingLanguage(_availableLanguages.firstOrNull() ?: Language())
   }
   fun filterTrainingLanguage(language: Language) {
-    _filterTrainingLanguage = language
+    savedStateHandle[_filterKey] = language
   }
 
   fun setOrChangePermissionState(neededPermission: NeededPermission, state: Boolean) {

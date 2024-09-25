@@ -37,6 +37,7 @@ fun AppNavigation(viewModel: SpeechTrainingDataViewModel) {
           navController = navHostController,
           viewModel.getTrainingTopics(),
           viewModel.availableLanguages,
+          viewModel.filterTrainingLanguage.value,
           onFilterTRainingLanguage = {
             filterLanguage ->  viewModel.filterTrainingLanguage(filterLanguage)
           })
