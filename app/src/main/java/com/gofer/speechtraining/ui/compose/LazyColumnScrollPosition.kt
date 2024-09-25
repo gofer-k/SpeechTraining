@@ -1,6 +1,7 @@
 package com.gofer.speechtraining.ui.compose
 
 import android.content.res.Configuration
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,6 +33,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun LazyColumnScrollPosition(parentListState: LazyListState = rememberLazyListState(), listPhrases: List<Phrase>) {
   val scope = rememberCoroutineScope()
+  val darkMode = isSystemInDarkTheme()
+  val textColor = remember { if (darkMode) Color.White else Color.DarkGray }
 
   Box(modifier = Modifier.fillMaxSize(),
     contentAlignment = Alignment.Center) {
@@ -55,7 +58,8 @@ fun LazyColumnScrollPosition(parentListState: LazyListState = rememberLazyListSt
           Text(
             text = listPhrases.get(firstVisibleIndex.value).name.first().toString(),
             fontWeight = FontWeight.Bold,
-            fontSize = 18.sp
+            fontSize = 18.sp,
+            color = textColor
           )
         }
       }
