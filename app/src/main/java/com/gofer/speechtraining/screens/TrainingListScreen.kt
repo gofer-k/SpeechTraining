@@ -40,6 +40,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
@@ -81,12 +82,9 @@ internal fun TrainingListsScreen(
   availableLanguages: List<Language>,
   selectedLanguage: Language,
   onFilterTRainingLanguage: (Language) -> Unit) {
-  val label = stringResource(TrainingScreenLabel.TrainingLanguage.title)
-
   val bottomBarHeight = remember { mutableStateOf(0f) }
   val bottomBarOffsetHeightPx = remember { mutableStateOf(0f) }
   val showBottomBar = remember { mutableStateOf(true) }
-
   val nestedScrollConnection = remember {
     object : NestedScrollConnection {
       override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
@@ -138,8 +136,8 @@ internal fun TrainingListsScreen(
     }
   ) {paddingValues ->
     Column(modifier = Modifier.padding(paddingValues)) {
-      Spacer(modifier = Modifier.height(24.dp))
       ConversationsTopics(navController = navController, topics)
+      Spacer(modifier = Modifier.height(24.dp))
       Text(modifier = Modifier.align(Alignment.CenterHorizontally),
         text = stringResource(id = TrainingScreenLabel.TrainingLanguageLabel.title))
       LanguageList(languages = availableLanguages, viewModelLanguage = selectedLanguage) {
@@ -153,12 +151,47 @@ internal fun TrainingListsScreen(
 @Composable
 fun TopicItem(navController: NavController,
               topic: Topic,
-              onSelectedTopic: (Topic) -> Unit,
-              onImageLoading: (Boolean) -> Unit) {
+              onSelectedTopic: (Topic) -> Unit) {
   val navUri = remember {
     "${TrainingScreenLabel.TrainingConfiguration.name}?topicId=${topic.id}"
   }
   val topicUri = remember { topic.imageUri }
+  val itemLoaded = remember { mutableStateOf(false) }
+
+  val listener = object : ImageRequest.Listener {
+    override fun onStart(request: ImageRequest) {
+      super.onStart(request)
+      itemLoaded.value = false
+    }
+    override fun onError(request: ImageRequest, result: ErrorResult) {
+      super.onError(request, result)
+      itemLoaded.value = true
+    }
+
+    override fun onSuccess(request: ImageRequest, result: SuccessResult) {
+      super.onSuccess(request, result)
+      itemLoaded.value = true
+    }
+  }
+  val uriString  = remember { topicUri?.toString() }
+  val placeholder = remember { getDefaultTopicIcon() }
+  val context = LocalContext.current
+  val imageRequest = remember {
+    ImageRequest.Builder(context)
+      .data(topicUri)
+      .listener(listener)
+      .dispatcher(Dispatchers.IO)
+      .memoryCacheKey(uriString)
+      .diskCacheKey(uriString)
+      .placeholder(placeholder)
+      .error(placeholder)
+      .fallback(placeholder)
+      .diskCachePolicy(CachePolicy.ENABLED)
+      .memoryCachePolicy(CachePolicy.ENABLED)
+      .build()
+  }
+
+  LaunchedEffect(key1 = topic.id) {}
 
   Card(
         modifier = Modifier
@@ -175,31 +208,6 @@ fun TopicItem(navController: NavController,
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-          // Build an ImageRequest with Coil
-          val listener = object : ImageRequest.Listener {
-            override fun onError(request: ImageRequest, result: ErrorResult) {
-              super.onError(request, result)
-            }
-
-            override fun onSuccess(request: ImageRequest, result: SuccessResult) {
-              super.onSuccess(request, result)
-            }
-          }
-          val uriString = topicUri?.toString()
-          val placeholder =getDefaultTopicIcon()
-          val imageRequest = ImageRequest.Builder(LocalContext.current)
-              .data(topicUri)
-              .listener(listener)
-              .dispatcher(Dispatchers.IO)
-              .memoryCacheKey(uriString)
-              .diskCacheKey(uriString)
-              .placeholder(placeholder)
-              .error(placeholder)
-              .fallback(placeholder)
-              .diskCachePolicy(CachePolicy.ENABLED)
-              .memoryCachePolicy(CachePolicy.ENABLED)
-              .build()
-
           Text(
             modifier = Modifier.align(Alignment.CenterHorizontally),
             text = topic.name,
@@ -217,18 +225,20 @@ fun TopicItem(navController: NavController,
             contentDescription = stringResource(id = TrainingScreenLabel.TrainingTopicImage.title),
             modifier = Modifier
               .align(Alignment.CenterHorizontally)
-              .padding(horizontal = 8.dp, vertical = 4.dp),
-            onLoading = {
-              onImageLoading(true)
-            },
-            onSuccess = {
-              onImageLoading(false)
-            })
+              .padding(horizontal = 8.dp, vertical = 4.dp)
+          )
           Spacer(modifier = Modifier
             .fillMaxWidth()
             .height(4.dp))
         }
     }
+  CircularProgressIndicator(
+    modifier = Modifier
+      .fillMaxSize()
+      .scale(0.25f)
+      .alpha(if (itemLoaded.value) 0.0f else 1.0f), strokeWidth = 8.dp,
+    color = ProgressIndicatorDefaults.circularColor
+  )
 }
 
 @Composable
@@ -236,13 +246,8 @@ fun ConversationsTopics(navController: NavController, topics: List<Topic>) {
   val topicListState = remember { TopicDataState() }
   topicListState.setTopicList(topics)
 
-  val loadingCounter = remember { mutableStateOf(topics.size) }
-
-  LaunchedEffect(key1 = loadingCounter) {}
-
   Box(contentAlignment = Alignment.Center){
     LazyVerticalGrid(
-//      modifier = Modifier.alpha(if (loadingCounter.value > 0) 0f else 1f),
       columns = GridCells.Fixed(2),
       contentPadding = PaddingValues(16.dp)
     ) {
@@ -250,20 +255,9 @@ fun ConversationsTopics(navController: NavController, topics: List<Topic>) {
         TopicItem(
           navController = navController,
           topic,
-          onSelectedTopic = topicListState::onSelectedTopic,
-          onImageLoading = { loadingState ->
-            if (loadingState == false) {
-              --loadingCounter.value
-            }
-          }
+          onSelectedTopic = topicListState::onSelectedTopic
         )
       }
-    }
-    if (loadingCounter.value > 0) {
-      CircularProgressIndicator(modifier = Modifier
-        .fillMaxSize()
-        .scale(0.25f), strokeWidth = 32.dp,
-        color = ProgressIndicatorDefaults.circularColor)
     }
   }
 }
