@@ -24,23 +24,19 @@ import androidx.compose.material.icons.rounded.AddCircle
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
@@ -60,9 +56,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
-import coil.request.ErrorResult
 import coil.request.ImageRequest
-import coil.request.SuccessResult
 import com.gofer.speechtraining.Language
 import com.gofer.speechtraining.TopicDataState
 import com.gofer.speechtraining.TrainingScreenLabel
@@ -158,28 +152,13 @@ fun TopicItem(navController: NavController,
   val topicUri = remember { topic.imageUri }
   val itemLoaded = remember { mutableStateOf(false) }
 
-  val listener = object : ImageRequest.Listener {
-    override fun onStart(request: ImageRequest) {
-      super.onStart(request)
-      itemLoaded.value = false
-    }
-    override fun onError(request: ImageRequest, result: ErrorResult) {
-      super.onError(request, result)
-      itemLoaded.value = true
-    }
-
-    override fun onSuccess(request: ImageRequest, result: SuccessResult) {
-      super.onSuccess(request, result)
-      itemLoaded.value = true
-    }
-  }
   val uriString  = remember { topicUri?.toString() }
   val placeholder = remember { getDefaultTopicIcon() }
   val context = LocalContext.current
   val imageRequest = remember {
     ImageRequest.Builder(context)
       .data(topicUri)
-      .listener(listener)
+      .crossfade(true)
       .dispatcher(Dispatchers.IO)
       .memoryCacheKey(uriString)
       .diskCacheKey(uriString)
@@ -190,8 +169,6 @@ fun TopicItem(navController: NavController,
       .memoryCachePolicy(CachePolicy.ENABLED)
       .build()
   }
-
-  LaunchedEffect(key1 = topic.id) {}
 
   Card(
         modifier = Modifier
@@ -225,20 +202,22 @@ fun TopicItem(navController: NavController,
             contentDescription = stringResource(id = TrainingScreenLabel.TrainingTopicImage.title),
             modifier = Modifier
               .align(Alignment.CenterHorizontally)
-              .padding(horizontal = 8.dp, vertical = 4.dp)
+              .padding(horizontal = 8.dp, vertical = 4.dp),
+            onLoading = {
+              itemLoaded.value = false
+            },
+            onError = {
+              itemLoaded.value = true
+            },
+            onSuccess = {
+              itemLoaded.value = true
+            }
           )
           Spacer(modifier = Modifier
             .fillMaxWidth()
             .height(4.dp))
         }
     }
-  CircularProgressIndicator(
-    modifier = Modifier
-      .fillMaxSize()
-      .scale(0.25f)
-      .alpha(if (itemLoaded.value) 0.0f else 1.0f), strokeWidth = 8.dp,
-    color = ProgressIndicatorDefaults.circularColor
-  )
 }
 
 @Composable
