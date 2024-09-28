@@ -1,7 +1,6 @@
 {
   "SpeechTrainingItems": [
     {
-      "lang": "en",
       "topic":
       {
         "id": 0,
@@ -231,7 +230,6 @@
       ]
     },
     {
-      "lang": "en",
       "topic":
       {
         "id": 1,
@@ -299,10 +297,9 @@
       ]
     },
     {
-      "lang": "en",
       "topic":
       {
-        "id": 5,
+        "id": 2,
         "name": "At a restaurant",
         "imageUri": "topic_at_a_restaurant"
       },
@@ -415,6 +412,38 @@
         {
           "name": "Yes, follow me."
         }
+      ]
+    },
+    {
+      "topic":
+      {
+        "id": 3,
+        "name": "Hard words",
+        "imageUri": "topic_hard_words"
+      },
+      "phrases": [
+      ]
+    },
+    {
+      "topic":
+      {
+        "id": 4,
+        "name": "Daily routings",
+        "imageUri": "topic_daily_routings"
+      },
+      "phrases": [
+
+      ]
+    },
+    {
+      "topic":
+      {
+        "id": 5,
+        "name": "Shopping",
+        "imageUri": "topic_shopping"
+      },
+      "phrases": [
+
       ]
     }
   ]

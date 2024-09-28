@@ -35,8 +35,9 @@ class SpeechTrainingDataViewModel
       "Work" -> "topic_work"
       "Hobby" -> "topic_hobby"
       "Greetings" -> "topic_greetings"
-      "Hard word" -> "topic_hard_words"
+      "Hard words" -> "topic_hard_words"
       "Daily routings" -> "topic_daily_routings"
+      "Shopping" -> "topic_shopping"
       else -> "topic_default"
     }
     return Uri.parse("$path/$fileUrl")
@@ -52,6 +53,7 @@ class SpeechTrainingDataViewModel
   fun addSpeechTrainingItem(topicName: String, topicImageUri: String) {
     val imageUri = Uri.parse(topicImageUri)
     val newTopic = Topic(id = getAvailableTopicId(), name = topicName, imageUri = imageUri ?: Uri.EMPTY)
+    data.addTrainingItem(trainingItem = SpeechTrainingItem(topic = newTopic, phrases = listOf()))
   }
   fun getTrainingPhrases(trainingId: Long) = data.getTrainingPhrases(trainingId)
       .filter { it.language.equals(filterTrainingLanguage.value.locale) }
