@@ -150,7 +150,6 @@ fun TopicItem(navController: NavController,
     "${TrainingScreenLabel.TrainingConfiguration.name}?topicId=${topic.id}"
   }
   val topicUri = remember { topic.imageUri }
-  val itemLoaded = remember { mutableStateOf(false) }
 
   val uriString  = remember { topicUri?.toString() }
   val placeholder = remember { getDefaultTopicIcon() }
@@ -202,17 +201,7 @@ fun TopicItem(navController: NavController,
             contentDescription = stringResource(id = TrainingScreenLabel.TrainingTopicImage.title),
             modifier = Modifier
               .align(Alignment.CenterHorizontally)
-              .padding(horizontal = 8.dp, vertical = 4.dp),
-            onLoading = {
-              itemLoaded.value = false
-            },
-            onError = {
-              itemLoaded.value = true
-            },
-            onSuccess = {
-              itemLoaded.value = true
-            }
-          )
+              .padding(horizontal = 8.dp, vertical = 4.dp))
           Spacer(modifier = Modifier
             .fillMaxWidth()
             .height(4.dp))
