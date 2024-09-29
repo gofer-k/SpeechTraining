@@ -2,11 +2,11 @@ package com.gofer.speechtraining.ui.compose
 
 import android.content.res.Configuration
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,35 +32,38 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LazyColumnScrollPosition(parentListState: LazyListState = rememberLazyListState(), listPhrases: List<Phrase>) {
-  val scope = rememberCoroutineScope()
-  val darkMode = isSystemInDarkTheme()
-  val textColor = remember { if (darkMode) Color.White else Color.DarkGray }
-
-  Box(modifier = Modifier.fillMaxSize(),
-    contentAlignment = Alignment.Center) {
-    Column(modifier = Modifier
-      .padding(4.dp)
-      .align(Alignment.TopCenter),
-      verticalArrangement = Arrangement.spacedBy(8.dp)) {
-      FloatingActionButton(
-        onClick = {
-          scope.launch {
-            parentListState.animateScrollToItem(10)
-          }
-        },
-        shape = RoundedCornerShape(32.dp),
-        contentColor = Color.DarkGray,
-        elevation = FloatingActionButtonDefaults.elevation(),
-        modifier = Modifier.alpha(0.6f)
+  if (listPhrases.isNotEmpty()) {
+    val scope = rememberCoroutineScope()
+    val darkMode = isSystemInDarkTheme()
+    Box(modifier = Modifier.fillMaxSize(),
+      contentAlignment = Alignment.Center) {
+      Column(
+        modifier = Modifier
+          .padding(4.dp)
+          .align(Alignment.TopCenter)
       ) {
-        val firstVisibleIndex = remember {derivedStateOf { parentListState.firstVisibleItemIndex } }
-        if (firstVisibleIndex.value >= 0 && listPhrases.isNotEmpty()) {
-          Text(
-            text = listPhrases.get(firstVisibleIndex.value).name.first().toString(),
-            fontWeight = FontWeight.Bold,
-            fontSize = 18.sp,
-            color = textColor
-          )
+        FloatingActionButton(
+          onClick = {
+            scope.launch {
+              parentListState.animateScrollToItem(10)
+            }
+          },
+          shape = RoundedCornerShape(16.dp),
+          contentColor = Color.DarkGray,
+          elevation = FloatingActionButtonDefaults.elevation(),
+          modifier = Modifier.alpha(0.6f).size(40.dp)
+        ) {
+          val firstVisibleIndex =
+            remember { derivedStateOf { parentListState.firstVisibleItemIndex } }
+          val textColor = remember { if (darkMode) Color.White else Color.DarkGray }
+          if (firstVisibleIndex.value >= 0) {
+            Text(
+              text = listPhrases.get(firstVisibleIndex.value).name.first().toString(),
+              fontWeight = FontWeight.Bold,
+              fontSize = 20.sp,
+              color = textColor
+            )
+          }
         }
       }
     }

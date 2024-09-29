@@ -119,7 +119,7 @@ fun TrainingContentScreen(
           itemsIndexed(phraseListState.phraseList) { _, phrase ->
             Box(modifier = Modifier
               .clip(MaterialTheme.shapes.extraSmall)
-              .border(BorderStroke(1.dp, MaterialTheme.colorScheme.primary))
+              .border(BorderStroke(1.dp, MaterialTheme.colorScheme.inverseOnSurface))
               ,contentAlignment = Alignment.CenterStart
             ) {
               Column(modifier = Modifier.fillMaxWidth()) {
