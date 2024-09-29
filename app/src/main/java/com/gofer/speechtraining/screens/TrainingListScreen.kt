@@ -39,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -98,7 +99,10 @@ internal fun TrainingListsScreen(
       TopAppBar(
         title = {
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                Text(text = stringResource(id = TrainingScreenLabel.TrainingList.title))
+                Text(
+                  text = stringResource(id = TrainingScreenLabel.TrainingList.title),
+                  color = Color.DarkGray
+                )
             }
         },
         colors = topAppBarColors(containerColor = PurpleGrey80)

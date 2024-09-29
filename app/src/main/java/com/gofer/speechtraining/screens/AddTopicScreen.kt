@@ -32,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -59,7 +60,9 @@ fun AddTopicScreen(navController: NavController) {
          Box(
            modifier = Modifier.fillMaxWidth(),
            contentAlignment = Alignment.Center) {
-           Text(text = stringResource(TrainingScreenLabel.TrainingAddTopic.title))
+           Text(
+             text = stringResource(TrainingScreenLabel.TrainingAddTopic.title),
+             color = Color.White)
          }
        },
        colors = TopAppBarDefaults.topAppBarColors(containerColor = Purple40)

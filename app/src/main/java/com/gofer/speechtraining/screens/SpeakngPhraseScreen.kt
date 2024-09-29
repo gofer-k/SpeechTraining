@@ -77,7 +77,9 @@ fun SpeakingPhraseScreen(phrase: Phrase, navController: NavHostController) {
         modifier = Modifier.onGloballyPositioned { topBarHeight = it.size.height },
         title = {
           Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-            Text(text = stringResource(id = TrainingScreenLabel.TrainingSpeakingPhrase.title))
+            Text(
+              text = stringResource(id = TrainingScreenLabel.TrainingSpeakingPhrase.title),
+              color = Color.White)
           }
         },
         colors = TopAppBarDefaults.topAppBarColors(containerColor = Purple40)

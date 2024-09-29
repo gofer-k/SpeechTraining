@@ -38,6 +38,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -59,7 +60,7 @@ import com.gofer.speechtraining.src.main.model.Phrase
 import com.gofer.speechtraining.src.main.model.Topic
 import com.gofer.speechtraining.src.main.model.TtsViewModel
 import com.gofer.speechtraining.ui.compose.LazyColumnScrollPosition
-import com.gofer.speechtraining.ui.theme.Pink80
+import com.gofer.speechtraining.ui.theme.BlueTrainingTopBarr
 import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -85,10 +86,10 @@ fun TrainingContentScreen(
     topBar = {
       TopAppBar(title = { 
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-          Text(text = trainingTopic.name)
+          Text(text = trainingTopic.name, color = Color.White)
         }
       },
-      colors = topAppBarColors(containerColor = Pink80)
+      colors = topAppBarColors(containerColor = BlueTrainingTopBarr)
       )
     },
     floatingActionButton = {
