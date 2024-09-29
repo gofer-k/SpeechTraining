@@ -129,8 +129,10 @@ fun TrainingContentScreen(
                   style = TextStyle(textIndent = TextIndent(firstLine = 8.sp)),
                   fontSize = 20.sp,
                   fontWeight = if (phrase.isSelected) FontWeight.Bold else FontWeight.Normal)
-                Row(horizontalArrangement = Arrangement.SpaceBetween) {
-                  IconButton(onClick = {
+                Row(modifier = Modifier.fillMaxWidth(),
+                  horizontalArrangement = Arrangement.Absolute.SpaceBetween) {
+                  IconButton(modifier = Modifier.padding(start = 40.dp),
+                    onClick = {
                     ttsViewModel.onListenTrainingPhrase(phrase, context
                     ) {
                       phrase.toggle()
@@ -139,8 +141,10 @@ fun TrainingContentScreen(
                   }) {
                     Icon(
                       painterResource(id = getTrainingSpeakIcon(isSystemInDarkTheme())),
-                      contentDescription = TrainingScreenLabel.TrainingPhraseSpeech.name) }
-                  IconButton(onClick = {
+                      contentDescription = TrainingScreenLabel.TrainingPhraseSpeech.name)
+                  }
+                  IconButton(modifier = Modifier.padding(end = 40.dp),
+                    onClick = {
                     if (onPermissionGranted(NeededPermission.RECORD_AUDIO)) {
                       navController.navigate("SpeakingPhraseScreen?phrase=${phrase.name}&phraseLang=${phrase.language.language}")
                     } else {
