@@ -109,6 +109,7 @@ fun SpeakingPhraseScreen(phrase: Phrase, navController: NavHostController) {
         )
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, phrase.language)
         intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Go on then, say something.")
+        intent.putExtra(RecognizerIntent.EXTRA_ENABLE_LANGUAGE_SWITCH, phrase.language)
 
         launcher.launch(intent)
       }) {
