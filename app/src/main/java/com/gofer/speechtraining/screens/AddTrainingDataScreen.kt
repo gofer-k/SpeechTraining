@@ -97,6 +97,7 @@ fun AddTrainingDataScreen(
                   navController.previousBackStackEntry?.savedStateHandle?.set("topicId", topicId)
                   navController.previousBackStackEntry?.savedStateHandle?.set("addPhrase", phrase.name)
                   navController.previousBackStackEntry?.savedStateHandle?.set("phraseLang", phrase.language.language)
+                  navController.previousBackStackEntry?.savedStateHandle?.set("phraseCountry", phrase.language.country)
                   // To prevent cyclist between previous and the current view
                   navController.popBackStack()
                 }.onFailure {

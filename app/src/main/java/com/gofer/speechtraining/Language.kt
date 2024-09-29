@@ -26,9 +26,9 @@ data class Language(val label: String = "", val locale: Locale = Locale.US) : Pa
   }
 }
 
-fun toLocale(lang: String): Locale? {
+fun toLocale(lang: String, country: String? = null): Locale? {
   return try {
-    Locale(lang)
+    country?.let { Locale(lang, it) } ?: Locale(lang)
   } catch(e: NullPointerException) {
     null
   }

@@ -2,6 +2,7 @@ package com.gofer.speechtraining.navigation
 
 import TrainingListsScreen
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -28,6 +29,8 @@ fun AppNavigation(viewModel: SpeechTrainingDataViewModel) {
         backStackEntry.savedStateHandle.remove<String>("addTopic")
         backStackEntry.savedStateHandle.remove<String>("addTopic")
 
+        val filterLanguage = viewModel.filterTrainingLanguage.collectAsState()
+
         newTopicName?.let { name ->
           newTopicImageUri?.let { uri ->
             viewModel.addSpeechTrainingItem(topicName = name, topicImageUri = uri)
@@ -37,9 +40,9 @@ fun AppNavigation(viewModel: SpeechTrainingDataViewModel) {
           navController = navHostController,
           viewModel.getTrainingTopics(),
           viewModel.availableLanguages,
-          viewModel.filterTrainingLanguage.value,
+          selectedLanguage = filterLanguage.value,
           onFilterTRainingLanguage = {
-            filterLanguage ->  viewModel.filterTrainingLanguage(filterLanguage)
+            changedFilterLanguage ->  viewModel.filterTrainingLanguage(changedFilterLanguage)
           })
       }
       composable("${TrainingScreenLabel.TrainingConfiguration.name}?topicId={topicId}",
@@ -57,10 +60,11 @@ fun AppNavigation(viewModel: SpeechTrainingDataViewModel) {
         // Navigable previous view (add phrase view)
         val addPhraseText = backStackEntry.savedStateHandle.get<String>("addPhrase")
         val phraseLang = backStackEntry.savedStateHandle.get<String>("phraseLang")
+        val phraseCountry = backStackEntry.savedStateHandle.get<String>("phraseCountry")
 
         addPhraseText?.run {
-          phraseLang?.let {
-            toLocale(it)
+          phraseLang?.let {language ->
+            toLocale(lang = language, country = phraseCountry)
           }?.let {
             viewModel.addTrainingPhrase(topicId, Phrase(name = addPhraseText, language = it))
           }
@@ -88,7 +92,7 @@ fun AppNavigation(viewModel: SpeechTrainingDataViewModel) {
 
       topic?.let {  AddTrainingDataScreen(navController = navHostController, it, viewModel.availableLanguages) }
     }
-    composable("SpeakingPhraseScreen?phrase={phrase}&phraseLang={phraseLang}",
+    composable("SpeakingPhraseScreen?phrase={phrase}&phraseLang={phraseLang}&phraseCountry={phraseCountry",
       arguments = listOf(
         navArgument("phrase"){
           type = NavType.StringType
@@ -97,16 +101,21 @@ fun AppNavigation(viewModel: SpeechTrainingDataViewModel) {
         navArgument("phraseLang") {
           type = NavType.StringType
           defaultValue = ""
+        },
+        navArgument("phraseCountry") {
+          type = NavType.StringType
+          defaultValue = ""
         }
       )
     ) { backStackEntry ->
       backStackEntry.arguments?.let {
         val name = it.getString("phrase")
         val lang = it.getString("phraseLang")
+        val country = it.getString("phraseCountry")
 
         name?.let { namePhrase ->
           lang?.let {
-            toLocale(it)
+            toLocale(lang = it, country)
           }?.let { locale ->
             SpeakingPhraseScreen(
               navController = navHostController,
