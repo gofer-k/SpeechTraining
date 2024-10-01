@@ -5,11 +5,17 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.gofer.speechtraining.Language
 import com.gofer.speechtraining.NeededPermission
+import kotlinx.coroutines.flow.StateFlow
 
 class SpeechTrainingDataViewModel
   (private val savedStateHandle: SavedStateHandle = SavedStateHandle(),
-   val packageName: String,
-   var data: SpeechTrainingData): ViewModel() {
+   initialData: SpeechTrainingData = SpeechTrainingData(listOf()),
+   private val packageName: String): ViewModel() {
+
+  private val _modelDataKey = "modelDataKey"
+//  private val _data = MutableStateFlow(initialData)
+  val data: StateFlow<SpeechTrainingData> = savedStateHandle.getStateFlow(
+    _modelDataKey, initialData)
 
   private var _availableLanguages = mutableListOf<Language>()
   val availableLanguages: List<Language> = _availableLanguages
@@ -22,11 +28,16 @@ class SpeechTrainingDataViewModel
   private val _permissions = mutableListOf<NeededPermission>()
 
   init {
-    data.items.asIterable().forEach {
+    initDataModel()
+  }
+
+  private fun initDataModel() {
+    data.value.items.asIterable().forEach {
       it.topic.imageUri = resolveImageUriFromResource(it.topic)
     }
-    data.sortTrainingPhrases()
+    data.value.sortTrainingPhrases()
   }
+
   private fun resolveImageUriFromResource(topic: Topic): Uri? {
     val path = "android.resource://$packageName/drawable"
     val fileUrl = when (topic.name) {
@@ -43,23 +54,28 @@ class SpeechTrainingDataViewModel
     return Uri.parse("$path/$fileUrl")
   }
 
-  fun getTrainingTopics() = data.getTrainingTopics()
-  fun getTrainingTopic(topicId: Long) = data.getTrainingTopicById(topicId)
+  fun getTrainingTopics() = data.value.getTrainingTopics()
+  fun getTrainingTopic(topicId: Long) = data.value.getTrainingTopicById(topicId)
   fun getAvailableTopicId(): Long {
-    return data.items.maxByOrNull { it.topic.id }?.let {
+    return data.value.items.maxByOrNull { it.topic.id }?.let {
       it.topic.id + 1
     } ?: 0
   }
+  fun removeTopic(topicId: Long) {
+    val item = data.value.items.filter { it.topic.id == topicId }.firstOrNull()
+    item?.let { data.value.items = data.value.items.minus(item) }
+  }
+
   fun addSpeechTrainingItem(topicName: String, topicImageUri: String) {
     val imageUri = Uri.parse(topicImageUri)
     val newTopic = Topic(id = getAvailableTopicId(), name = topicName, imageUri = imageUri ?: Uri.EMPTY)
-    data.addTrainingItem(trainingItem = SpeechTrainingItem(topic = newTopic, phrases = listOf()))
+    data.value.addTrainingItem(trainingItem = SpeechTrainingItem(topic = newTopic, phrases = listOf()))
   }
-  fun getTrainingPhrases(trainingId: Long) = data.getTrainingPhrases(trainingId)
+  fun getTrainingPhrases(trainingId: Long) = data.value.getTrainingPhrases(trainingId)
       .filter { it.language.equals(filterTrainingLanguage.value.locale) }
 
   fun addTrainingPhrase(topicId: Long, phrase: Phrase) {
-    data.addPhraseTmTopic(topicId, phrase)
+    data.value.addPhraseTmTopic(topicId, phrase)
   }
   fun setAvailableLanguages(availableLanguages: List<Language>) {
     _availableLanguages.clear()

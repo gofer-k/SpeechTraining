@@ -18,21 +18,25 @@ import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
 
 //class MainActivity : ComponentActivity() {
 class MainActivity : ComponentActivity() {
-  private var trainingData: SpeechTrainingData? = null
   private val jsonManager = JsonManager()
+
+  lateinit var viewModel: SpeechTrainingDataViewModel
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     enableEdgeToEdge()
     val path = baseContext.resources.getString(R.string.app_data_source)
-    trainingData = jsonManager.readDataFromSource(baseContext, path, SpeechTrainingData::class.java)
+    val trainingData: SpeechTrainingData =
+      jsonManager.readDataFromSource(baseContext, path, SpeechTrainingData::class.java)
 
     setContent {
       SpeechTrainingTheme {
-        val viewModel = viewModel<SpeechTrainingDataViewModel>(
+        viewModel = viewModel<SpeechTrainingDataViewModel>(
         factory = object : ViewModelProvider.Factory {
           override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return SpeechTrainingDataViewModel(packageName = baseContext.packageName, data = trainingData!!) as T
+            return SpeechTrainingDataViewModel(
+              packageName = baseContext.packageName,
+              initialData = trainingData) as T
           }
         })
 
@@ -49,9 +53,7 @@ class MainActivity : ComponentActivity() {
 
   override fun onStop() {
     super.onStop()
-    trainingData?.let {
       val path = baseContext.resources.getString(R.string.app_data_source)
-      jsonManager.saveSpeakingTrainingDataToFile<SpeechTrainingData>(baseContext, path, it)
-    }
+      jsonManager.saveSpeakingTrainingDataToFile<SpeechTrainingData>(baseContext, path, viewModel.data.value)
   }
 }

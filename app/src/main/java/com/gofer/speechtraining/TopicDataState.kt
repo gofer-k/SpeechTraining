@@ -24,4 +24,8 @@ class TopicDataState {
     fun setTopicList(inputTopicsList: List<Topic>) {
         topicsList = inputTopicsList.toMutableStateList()
     }
+
+    fun removeTopic(topic: Topic) {
+        topicsList.remove(topic)
+    }
 }
