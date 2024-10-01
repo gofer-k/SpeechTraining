@@ -43,6 +43,9 @@ fun AppNavigation(viewModel: SpeechTrainingDataViewModel) {
           selectedLanguage = filterLanguage.value,
           onFilterTRainingLanguage = {
             changedFilterLanguage ->  viewModel.filterTrainingLanguage(changedFilterLanguage)
+          },
+          onRemoveTopic = { topicId ->
+            viewModel.removeTopic(topicId)
           })
       }
       composable("${TrainingScreenLabel.TrainingConfiguration.name}?topicId={topicId}",

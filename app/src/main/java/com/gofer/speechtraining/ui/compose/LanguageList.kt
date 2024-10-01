@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.List
@@ -44,7 +45,7 @@ fun LanguageList(languages: List<Language>, viewModelLanguage: Language, onSelec
 
   Column(modifier = Modifier
     .fillMaxWidth()
-    .padding(horizontal = 64.dp))
+    .padding(horizontal = 64.dp).wrapContentHeight(unbounded = true))
   {
     var isExtended by remember { mutableStateOf( false) }
     var selectedLanguage by remember { mutableStateOf(viewModelLanguage) }

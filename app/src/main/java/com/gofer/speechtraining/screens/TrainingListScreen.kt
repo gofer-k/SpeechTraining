@@ -5,9 +5,12 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,14 +19,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.rounded.AddCircle
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -33,8 +40,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -76,7 +85,9 @@ internal fun TrainingListsScreen(
   topics: List<Topic>,
   availableLanguages: List<Language>,
   selectedLanguage: Language,
-  onFilterTRainingLanguage: (Language) -> Unit) {
+  onFilterTRainingLanguage: (Language) -> Unit,
+  onRemoveTopic: (Long) -> Unit
+) {
   val bottomBarHeight = remember { mutableStateOf(0f) }
   val bottomBarOffsetHeightPx = remember { mutableStateOf(0f) }
   val showBottomBar = remember { mutableStateOf(true) }
@@ -133,8 +144,13 @@ internal fun TrainingListsScreen(
       }
     }
   ) {paddingValues ->
-    Column(modifier = Modifier.padding(paddingValues)) {
-      ConversationsTopics(navController = navController, topics)
+    Column(modifier = Modifier
+      .padding(paddingValues)
+    ) {
+      ConversationsTopics(
+        navController = navController,
+        topics,
+        onRemoveTopic = { onRemoveTopic(it.id) })
       Spacer(modifier = Modifier.height(24.dp))
       Text(modifier = Modifier.align(Alignment.CenterHorizontally),
         text = stringResource(id = TrainingScreenLabel.TrainingLanguageLabel.title))
@@ -145,11 +161,14 @@ internal fun TrainingListsScreen(
   }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalStdlibApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalStdlibApi::class,
+  ExperimentalFoundationApi::class
+)
 @Composable
 fun TopicItem(navController: NavController,
               topic: Topic,
-              onSelectedTopic: (Topic) -> Unit) {
+              onSelectedTopic: (Topic) -> Unit,
+              onMenuClick: (topic: Topic) -> Unit) {
   val navUri = remember {
     "${TrainingScreenLabel.TrainingConfiguration.name}?topicId=${topic.id}"
   }
@@ -173,18 +192,23 @@ fun TopicItem(navController: NavController,
       .build()
   }
 
+  var showMenu by remember { mutableStateOf(false) }
   Card(
         modifier = Modifier
           .size(width = 100.dp, height = 150.dp)
-          .padding(8.dp),
+          .padding(8.dp)
+          .combinedClickable(
+            onClick = {
+              onSelectedTopic(topic.copy(isSelected = topic.isSelected.not()))
+              navController.navigate(navUri)
+            },
+            onLongClick = { showMenu = true }
+          ),
         colors = CardDefaults.cardColors(),
         elevation =
         CardDefaults.elevatedCardElevation(
             defaultElevation = 12.dp,
-            pressedElevation = 18.dp),
-        onClick = {
-          onSelectedTopic(topic.copy(isSelected = topic.isSelected.not()))
-          navController.navigate(navUri) }) {
+            pressedElevation = 18.dp)) {
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
@@ -194,7 +218,7 @@ fun TopicItem(navController: NavController,
             style = TextStyle(
                 textIndent = TextIndent(firstLine = 8.sp),
                 color = MaterialTheme.colorScheme.primary),
-            fontSize = 18.sp,
+            fontSize = 16.sp,
             fontWeight = FontWeight.Bold)
           Spacer(modifier = Modifier
             .fillMaxWidth()
@@ -209,26 +233,46 @@ fun TopicItem(navController: NavController,
           Spacer(modifier = Modifier
             .fillMaxWidth()
             .height(4.dp))
+       }
+    DropdownMenu(
+      modifier = Modifier.wrapContentSize(),
+      expanded = showMenu,
+      onDismissRequest = { showMenu = false }
+    ) {
+      DropdownMenuItem(
+        text = {
+          Row {
+            Icon(imageVector = Icons.Default.Delete, "Delete training")
+            Text(text = "Delete training") }
+               },
+        onClick = {
+          showMenu = false
+          onMenuClick(topic)
         }
+      )
     }
+  }
 }
 
 @Composable
-fun ConversationsTopics(navController: NavController, topics: List<Topic>) {
-  val topicListState = remember { TopicDataState() }
+fun ConversationsTopics(navController: NavController, topics: List<Topic>, onRemoveTopic: (topic: Topic) -> Unit) {
+  var topicListState = remember { TopicDataState() }
   topicListState.setTopicList(topics)
 
-  Box(contentAlignment = Alignment.Center){
+  Box(modifier = Modifier.height(500.dp)){
     LazyVerticalGrid(
-      columns = GridCells.Fixed(2),
+      columns = GridCells.Adaptive(120.dp),
       contentPadding = PaddingValues(16.dp)
     ) {
       itemsIndexed(topicListState.topicsList) { index, topic ->
         TopicItem(
           navController = navController,
           topic,
-          onSelectedTopic = topicListState::onSelectedTopic
-        )
+          onSelectedTopic = topicListState::onSelectedTopic,
+          onMenuClick = {
+            topicListState.removeTopic(topic)
+            onRemoveTopic(topic)
+          })
       }
     }
   }
@@ -240,16 +284,22 @@ internal fun TrainingListsScreenPreview() {
     SpeechTrainingTheme {
       val navController = rememberNavController()
       TrainingListsScreen(
-          navController = navController,
-          topics = listOf(
-            Topic(name = "First"),
-              Topic(name = "Second"),
-              Topic(name = "Third"),
-              Topic(name = "Fourth")),
-          availableLanguages = listOf(),
-          selectedLanguage = Language(),
-          onFilterTRainingLanguage = {}
-        )
+        navController = navController,
+        topics = listOf(
+          Topic(name = "First"),
+          Topic(name = "Second"),
+          Topic(name = "Third"),
+          Topic(name = "Fourth"),
+          Topic(name = "Fifth"),
+          Topic(name = "Sixth"),
+          Topic(name = "Seventh"),
+          Topic(name = "Eighth"),
+          Topic(name = "Ninth")),
+        availableLanguages = listOf(),
+        selectedLanguage = Language(),
+        onFilterTRainingLanguage = {},
+        onRemoveTopic = {}
+      )
     }
 }
 
