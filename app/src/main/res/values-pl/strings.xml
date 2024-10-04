@@ -15,4 +15,7 @@
     <string name="topic_image">Ikona tematu</string>
     <string name="topic_custom_image">Wybierz ikone</string>
     <string name="trainings_language_label">Jezyk treningow</string>
+    <string name="speak_default_text">Mow wybierza fraze</string>
+    <string name="delete_phrase">Usun fraze</string>
+    <string name="delete_traiining">Usun trening</string>
 </resources>

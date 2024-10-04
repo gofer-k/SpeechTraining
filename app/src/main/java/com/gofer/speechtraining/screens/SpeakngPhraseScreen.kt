@@ -69,6 +69,8 @@ fun SpeakingPhraseScreen(phrase: Phrase, navController: NavHostController) {
   var topBarHeight by remember { mutableIntStateOf(0) }
   val textSize = 20.sp
 
+  val defaultTextLabel = stringResource(id = TrainingScreenLabel.TrainingSpeakDefaultText.title)
+
   Scaffold(
     topBar = {
       TopAppBar(
@@ -96,7 +98,9 @@ fun SpeakingPhraseScreen(phrase: Phrase, navController: NavHostController) {
     }
   ){contentPadding ->
     Column(
-      modifier = Modifier.fillMaxSize().padding(contentPadding),
+      modifier = Modifier
+        .fillMaxSize()
+        .padding(contentPadding),
       horizontalAlignment = Alignment.CenterHorizontally,
     ) {
       Text(modifier = Modifier.padding(vertical = 20.dp),
@@ -107,8 +111,10 @@ fun SpeakingPhraseScreen(phrase: Phrase, navController: NavHostController) {
           RecognizerIntent.EXTRA_LANGUAGE_MODEL,
           RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
         )
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, phrase.language)
+        intent.putExtra(RecognizerIntent.EXTRA_ONLY_RETURN_LANGUAGE_PREFERENCE, phrase.language);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, phrase.language)
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Go on then, say something.")
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, defaultTextLabel)
         intent.putExtra(RecognizerIntent.EXTRA_ENABLE_LANGUAGE_SWITCH, phrase.language)
 
         launcher.launch(intent)

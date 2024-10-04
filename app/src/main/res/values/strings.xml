@@ -17,4 +17,7 @@
     <string name="topic_image">Topic image</string>
     <string name="topic_custom_image">Choose custom icon</string>
     <string name="trainings_language_label">Trainings language</string>
+    <string name="speak_default_text">Say the selected phrase</string>
+    <string name="delete_phrase">Delete phrase</string>
+    <string name="delete_traiining">Delete training</string>
 </resources>

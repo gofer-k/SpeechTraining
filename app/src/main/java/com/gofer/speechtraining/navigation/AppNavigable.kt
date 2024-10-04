@@ -80,7 +80,10 @@ fun AppNavigation(viewModel: SpeechTrainingDataViewModel) {
             viewModel.getTrainingPhrases(topicId),
             it,
             onPermissionGranted = { neededPermission ->
-              viewModel.isPermissionGranted(neededPermission) })
+              viewModel.isPermissionGranted(neededPermission) },
+            onDeletePhrase = {topic, phrase ->
+              viewModel.removeTrainingPhrase(topic, phrase)
+            })
         }
     }
     composable("${TrainingAddPhrase.name}?topicId={topicId}",

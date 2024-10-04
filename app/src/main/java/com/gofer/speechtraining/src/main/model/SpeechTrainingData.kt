@@ -16,10 +16,13 @@ data class SpeechTrainingData(
   }
 
   fun getTrainingTopics() = items.map { it.topic }
-  fun addPhraseTmTopic(trainingId: Long, phrase: Phrase) {
+  fun addPhraseToTopic(trainingId: Long, phrase: Phrase) {
     items.firstOrNull { it.topic.id == trainingId }?.addPhrase(phrase)
   }
-
+  fun removePhrase(topic: Topic, phrase: Phrase) {
+    val item = items.filter { it.topic.id == topic.id }.firstOrNull()
+    item?.let { it.phrases = it.phrases.minus(phrase) }
+  }
   fun sortTrainingPhrases() {
     items.forEach {
       it.phrases = it.phrases.sortedBy { it.name }
