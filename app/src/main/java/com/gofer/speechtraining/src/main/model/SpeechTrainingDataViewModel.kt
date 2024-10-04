@@ -76,6 +76,7 @@ class SpeechTrainingDataViewModel
 
   fun addTrainingPhrase(topicId: Long, phrase: Phrase) {
     data.value.addPhraseTmTopic(topicId, phrase)
+    data.value.sortTrainingPhrases(topicId)
   }
   fun setAvailableLanguages(availableLanguages: List<Language>) {
     _availableLanguages.clear()

@@ -25,4 +25,9 @@ data class SpeechTrainingData(
       it.phrases = it.phrases.sortedBy { it.name }
     }
   }
+  fun sortTrainingPhrases(topicId: Long) {
+    items.filter {it.topic.id == topicId}.forEach {
+      it.phrases = it.phrases.sortedBy { it.name }
+    }
+  }
 }
