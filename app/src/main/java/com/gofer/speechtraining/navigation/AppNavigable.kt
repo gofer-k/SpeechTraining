@@ -41,7 +41,7 @@ fun AppNavigation(viewModel: SpeechTrainingDataViewModel) {
           viewModel.getTrainingTopics(),
           viewModel.availableLanguages,
           selectedLanguage = filterLanguage.value,
-          onFilterTRainingLanguage = {
+          onFilterTrainingLanguage = {
             changedFilterLanguage ->  viewModel.filterTrainingLanguage(changedFilterLanguage)
           },
           onRemoveTopic = { topicId ->
