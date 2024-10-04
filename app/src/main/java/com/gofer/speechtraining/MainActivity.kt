@@ -1,9 +1,9 @@
 package com.gofer.speechtraining
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.text.intl.LocaleList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -15,9 +15,7 @@ import com.gofer.speechtraining.src.main.model.SpeechTrainingDataViewModel
 import com.gofer.speechtraining.ui.theme.ConfiguredLanguage
 import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
 
-
-//class MainActivity : ComponentActivity() {
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
   private val jsonManager = JsonManager()
 
   lateinit var viewModel: SpeechTrainingDataViewModel

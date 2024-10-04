@@ -1,6 +1,7 @@
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
@@ -62,6 +63,7 @@ import androidx.compose.ui.text.style.TextIndent
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.os.LocaleListCompat
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
@@ -85,7 +87,7 @@ internal fun TrainingListsScreen(
   topics: List<Topic>,
   availableLanguages: List<Language>,
   selectedLanguage: Language,
-  onFilterTRainingLanguage: (Language) -> Unit,
+  onFilterTrainingLanguage: (Language) -> Unit,
   onRemoveTopic: (Long) -> Unit
 ) {
   val bottomBarHeight = remember { mutableStateOf(0f) }
@@ -154,8 +156,10 @@ internal fun TrainingListsScreen(
       Spacer(modifier = Modifier.height(24.dp))
       Text(modifier = Modifier.align(Alignment.CenterHorizontally),
         text = stringResource(id = TrainingScreenLabel.TrainingLanguageLabel.title))
-      LanguageList(languages = availableLanguages, viewModelLanguage = selectedLanguage) {
-        onFilterTRainingLanguage(it)
+      LanguageList(languages = availableLanguages, viewModelLanguage = selectedLanguage) { language ->
+        onFilterTrainingLanguage(language)
+        AppCompatDelegate.setApplicationLocales(
+          LocaleListCompat.forLanguageTags(language.locale.language))
       }
     }
   }
@@ -297,7 +301,7 @@ internal fun TrainingListsScreenPreview() {
           Topic(name = "Ninth")),
         availableLanguages = listOf(),
         selectedLanguage = Language(),
-        onFilterTRainingLanguage = {},
+        onFilterTrainingLanguage = {},
         onRemoveTopic = {}
       )
     }
