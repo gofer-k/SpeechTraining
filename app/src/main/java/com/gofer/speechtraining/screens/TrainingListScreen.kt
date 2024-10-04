@@ -90,6 +90,8 @@ internal fun TrainingListsScreen(
   onFilterTrainingLanguage: (Language) -> Unit,
   onRemoveTopic: (Long) -> Unit
 ) {
+  val context = LocalContext.current
+
   val bottomBarHeight = remember { mutableStateOf(0f) }
   val bottomBarOffsetHeightPx = remember { mutableStateOf(0f) }
   val showBottomBar = remember { mutableStateOf(true) }
@@ -158,6 +160,7 @@ internal fun TrainingListsScreen(
         text = stringResource(id = TrainingScreenLabel.TrainingLanguageLabel.title))
       LanguageList(languages = availableLanguages, viewModelLanguage = selectedLanguage) { language ->
         onFilterTrainingLanguage(language)
+
         AppCompatDelegate.setApplicationLocales(
           LocaleListCompat.forLanguageTags(language.locale.language))
       }
@@ -196,6 +199,7 @@ fun TopicItem(navController: NavController,
       .build()
   }
 
+  val deleteTrainingText = stringResource(id = TrainingScreenLabel.TrainingDelete.title)
   var showMenu by remember { mutableStateOf(false) }
   Card(
         modifier = Modifier
@@ -238,23 +242,22 @@ fun TopicItem(navController: NavController,
             .fillMaxWidth()
             .height(4.dp))
        }
-    DropdownMenu(
-      modifier = Modifier.wrapContentSize(),
-      expanded = showMenu,
-      onDismissRequest = { showMenu = false }
-    ) {
-      DropdownMenuItem(
-        text = {
-          Row {
-            Icon(imageVector = Icons.Default.Delete, "Delete training")
-            Text(text = "Delete training") }
-               },
-        onClick = {
-          showMenu = false
-          onMenuClick(topic)
-        }
-      )
-    }
+      DropdownMenu(
+          modifier = Modifier.wrapContentSize(),
+          expanded = showMenu,
+          onDismissRequest = { showMenu = false }
+      ) {
+        DropdownMenuItem(
+          text = {
+            Row {
+              Icon(imageVector = Icons.Default.Delete, deleteTrainingText)
+              Text(text = "Delete training") }
+                 },
+          onClick = {
+            showMenu = false
+            onMenuClick(topic)
+          })
+      }
   }
 }
 

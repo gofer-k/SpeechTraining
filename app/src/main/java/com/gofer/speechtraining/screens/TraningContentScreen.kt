@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,12 +16,15 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
@@ -33,6 +38,7 @@ import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -43,6 +49,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextIndent
@@ -64,13 +71,14 @@ import com.gofer.speechtraining.ui.theme.BlueTrainingTopBarr
 import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun TrainingContentScreen(
   navController: NavController,
   phrases: List<Phrase>,
   trainingTopic: Topic,
   onPermissionGranted: (NeededPermission) -> Boolean,
+  onDeletePhrase: (Topic, Phrase) -> Unit,
   ttsViewModel: TtsViewModel = TtsViewModel()
 ) {
   val context = LocalContext.current
@@ -81,6 +89,8 @@ fun TrainingContentScreen(
   var fabHeight by remember { mutableIntStateOf(0) }
   val heightInDp = with(LocalDensity.current) { fabHeight.toDp() }
   val listState = rememberLazyListState( initialFirstVisibleItemIndex = 0 )
+
+  val deletePhraseText = stringResource(id = TrainingScreenLabel.TrainingDeletePhrase.title)
 
   Scaffold(
     topBar = {
@@ -111,19 +121,24 @@ fun TrainingContentScreen(
       .padding(scaffoldContentPadding)) {
         LazyColumn(
           state = listState,
-          modifier = Modifier
-          .fillMaxWidth()
-          .wrapContentHeight(),
+          modifier = Modifier.fillMaxWidth(),
           verticalArrangement = Arrangement.Top,
           contentPadding = PaddingValues(bottom = heightInDp + 16.dp),
         ) {
           itemsIndexed(phraseListState.phraseList) { _, phrase ->
+            var showMenu by remember { mutableStateOf(false) }
             Box(modifier = Modifier
               .clip(MaterialTheme.shapes.extraSmall)
               .border(BorderStroke(1.dp, MaterialTheme.colorScheme.inverseOnSurface))
+              .combinedClickable(
+                onClick = {},
+                onLongClick = {
+                  showMenu = true
+                }
+              )
               ,contentAlignment = Alignment.CenterStart
             ) {
-              Column(modifier = Modifier.fillMaxWidth()) {
+              Column(modifier = Modifier.fillMaxSize()) {
                 Text(
                   modifier = Modifier.fillMaxWidth(),
                   text = phrase.name,
@@ -157,8 +172,27 @@ fun TrainingContentScreen(
                       contentDescription = null)
                   }
                 }
+                DropdownMenu(
+                  modifier = Modifier.wrapContentSize(),
+                  expanded = showMenu,
+                  onDismissRequest = { showMenu = false }
+                ) {
+                  DropdownMenuItem(
+                    text = {
+                      Row {
+                        Icon(imageVector = Icons.Default.Delete, deletePhraseText)
+                        Text(text = deletePhraseText) }
+                    },
+                    onClick = {
+                      showMenu = false
+                      phraseListState.phraseList.remove(phrase)
+                      onDeletePhrase(trainingTopic, phrase)
+                    }
+                  )
+                }
               }
             }
+
           }
        }
        LazyColumnScrollPosition(listState, phraseListState.phraseList)
@@ -176,6 +210,9 @@ private fun TrainingContentScreenPreview() {
       list.add(Phrase("item $i"))
     }
     TrainingContentScreen(navController = navController,
-      list, Topic(name = "Topic"), onPermissionGranted = {false})
+      list,
+      Topic(name = "Topic"),
+      onPermissionGranted = { false },
+      onDeletePhrase = { _, _ ->})
   }
 }

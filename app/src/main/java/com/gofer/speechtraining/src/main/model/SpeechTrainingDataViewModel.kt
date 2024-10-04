@@ -75,9 +75,13 @@ class SpeechTrainingDataViewModel
       .filter { it.language.equals(filterTrainingLanguage.value.locale) }
 
   fun addTrainingPhrase(topicId: Long, phrase: Phrase) {
-    data.value.addPhraseTmTopic(topicId, phrase)
+    data.value.addPhraseToTopic(topicId, phrase)
     data.value.sortTrainingPhrases(topicId)
   }
+  fun removeTrainingPhrase(topic: Topic, phrase: Phrase) {
+    data.value.removePhrase(topic, phrase)
+  }
+
   fun setAvailableLanguages(availableLanguages: List<Language>) {
     _availableLanguages.clear()
     _availableLanguages.addAll(availableLanguages)
