@@ -137,7 +137,7 @@ fun SpeakingPhraseScreen(phrase: Phrase, navController: NavHostController) {
           RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
         )
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, phrase.language)
-        intent.putExtra(RecognizerIntent.EXTRA_ONLY_RETURN_LANGUAGE_PREFERENCE, phrase.language);
+        intent.putExtra(RecognizerIntent.EXTRA_ONLY_RETURN_LANGUAGE_PREFERENCE, phrase.language)
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, phrase.language)
         intent.putExtra(RecognizerIntent.EXTRA_PROMPT, defaultTextLabel)
         intent.putExtra(RecognizerIntent.EXTRA_ENABLE_LANGUAGE_SWITCH, phrase.language)
