@@ -8,11 +8,11 @@ import android.net.Uri
 import android.speech.RecognizerIntent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -39,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -49,6 +50,7 @@ import androidx.navigation.compose.rememberNavController
 import com.gofer.speechtraining.R
 import com.gofer.speechtraining.TrainingScreenLabel
 import com.gofer.speechtraining.src.main.model.Phrase
+import com.gofer.speechtraining.ui.theme.PhraseString
 import com.gofer.speechtraining.ui.theme.Purple40
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -56,7 +58,8 @@ import com.gofer.speechtraining.ui.theme.Purple40
 @Composable
 fun SpeakingPhraseScreen(phrase: Phrase, navController: NavHostController) {
   val initialText = remember { mutableStateOf(true) }
-  val speechText = remember { mutableStateOf("Your speech will appear here.") }
+  val speechDefaultText = remember { mutableStateOf("Your speech will appear here.") }
+  val speechText = speechDefaultText
   val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
     if (it.resultCode == Activity.RESULT_OK) {
       val data = it.data
@@ -68,8 +71,7 @@ fun SpeakingPhraseScreen(phrase: Phrase, navController: NavHostController) {
     }
   }
 
-  val originPhrase = phrase.name.lowercase().replaceFirstChar { if (it.isLowerCase()) it.titlecase(phrase.language) else it.toString() }
-  val withoutSuffixedOriginText = filterSuffixCharacters(originPhrase, listOf('.', ',', '?', '!'))
+  val withoutSuffixedOriginText = filterSuffixCharacters(phrase.name.trim().lowercase(), listOf('.', ',', '?', '!'))
 
   // Scaffold floating button height
   var topBarHeight by remember { mutableIntStateOf(0) }
@@ -110,13 +112,14 @@ fun SpeakingPhraseScreen(phrase: Phrase, navController: NavHostController) {
       horizontalAlignment = Alignment.CenterHorizontally,
     ) {
       Text(
-        modifier = Modifier.padding(top = 20.dp),
-        text = phrase.name, color = Color.Blue, fontSize = textSize)
+        modifier = Modifier.padding(top = 40.dp),
+        text = phrase.name, color = PhraseString, fontSize = textSize)
+      val ctx = LocalContext.current
       Button(onClick = {
         val url = Uri.parse(
           "https://www.diki.pl/slownik-angielskiego?q=" + Uri.encode(phrase.name))
-        val intent = Intent(Intent.ACTION_VIEW, url)
-        launcher.launch(intent)
+        val c = CustomTabsIntent.Builder().build()
+        c.launchUrl(ctx, url)
       }) {
         Row(verticalAlignment = Alignment.CenterVertically,
           horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -127,7 +130,7 @@ fun SpeakingPhraseScreen(phrase: Phrase, navController: NavHostController) {
           Text(text = "Open description")
         }
       }
-      Button(modifier = Modifier.padding(vertical = 80.dp), onClick = {
+      Button(modifier = Modifier.padding(top = 80.dp, bottom = 12.dp), onClick = {
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
         intent.putExtra(
           RecognizerIntent.EXTRA_LANGUAGE_MODEL,
@@ -143,12 +146,12 @@ fun SpeakingPhraseScreen(phrase: Phrase, navController: NavHostController) {
       }) {
         Text("Start speech recognition")
       }
-      Spacer(modifier = Modifier.padding(16.dp))
-      Text(speechText.value,
+      Text(
+        text = if (initialText.value) speechDefaultText.value else speechText.value,
         fontSize = textSize,
         color =
           if (initialText.value
-            || withoutSuffixedOriginText.equals(speechText.value)) {
+            || withoutSuffixedOriginText.equals(speechText.value.lowercase())) {
           Color.Green
         } else Color.Red)
     }
@@ -160,7 +163,7 @@ fun filterSuffixCharacters(word: String, suffixes: List<Char>): String {
 }
 
 @Composable
-@Preview(showBackground = true, name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(showBackground = true, name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_NO)
 fun SpeakingPhraseScreen() {
   val navController = rememberNavController()
   SpeakingPhraseScreen(phrase = Phrase(name = "Sample"), navController = navController)
