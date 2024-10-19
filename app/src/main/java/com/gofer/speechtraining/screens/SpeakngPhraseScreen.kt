@@ -4,19 +4,24 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.res.Configuration
+import android.net.Uri
 import android.speech.RecognizerIntent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBarItem
@@ -34,12 +39,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.gofer.speechtraining.R
 import com.gofer.speechtraining.TrainingScreenLabel
 import com.gofer.speechtraining.src.main.model.Phrase
 import com.gofer.speechtraining.ui.theme.Purple40
@@ -60,7 +67,6 @@ fun SpeakingPhraseScreen(phrase: Phrase, navController: NavHostController) {
       speechText.value = "[Speech recognition failed.]"
     }
   }
-
 
   val originPhrase = phrase.name.lowercase().replaceFirstChar { if (it.isLowerCase()) it.titlecase(phrase.language) else it.toString() }
   val withoutSuffixedOriginText = filterSuffixCharacters(originPhrase, listOf('.', ',', '?', '!'))
@@ -103,8 +109,24 @@ fun SpeakingPhraseScreen(phrase: Phrase, navController: NavHostController) {
         .padding(contentPadding),
       horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-      Text(modifier = Modifier.padding(vertical = 20.dp),
-        text = phrase.name, color = Color.Gray, fontSize = textSize)
+      Text(
+        modifier = Modifier.padding(top = 20.dp),
+        text = phrase.name, color = Color.Blue, fontSize = textSize)
+      Button(onClick = {
+        val url = Uri.parse(
+          "https://www.diki.pl/slownik-angielskiego?q=" + Uri.encode(phrase.name))
+        val intent = Intent(Intent.ACTION_VIEW, url)
+        launcher.launch(intent)
+      }) {
+        Row(verticalAlignment = Alignment.CenterVertically,
+          horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+          Icon(
+            modifier = Modifier.size(ButtonDefaults.IconSize),
+            painter = painterResource(id = R.drawable.icon_baseline_description),
+            contentDescription = null)
+          Text(text = "Open description")
+        }
+      }
       Button(modifier = Modifier.padding(vertical = 80.dp), onClick = {
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
         intent.putExtra(
@@ -134,7 +156,7 @@ fun SpeakingPhraseScreen(phrase: Phrase, navController: NavHostController) {
 }
 
 fun filterSuffixCharacters(word: String, suffixes: List<Char>): String {
-    return word.filterNot { char -> suffixes.any { char == it } }
+    return word.trim().filterNot { char -> suffixes.any { char == it } }
 }
 
 @Composable
