@@ -2,6 +2,7 @@ package com.gofer.speechtraining.screens
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
@@ -112,23 +113,22 @@ fun SpeakingPhraseScreen(phrase: Phrase, navController: NavHostController) {
       horizontalAlignment = Alignment.CenterHorizontally,
     ) {
       Text(
-        modifier = Modifier.padding(top = 40.dp),
+        modifier = Modifier.padding(top = 40.dp, bottom = 12.dp),
         text = phrase.name, color = PhraseString, fontSize = textSize)
-      val ctx = LocalContext.current
-      Button(onClick = {
-        val url = Uri.parse(
-          "https://www.diki.pl/slownik-angielskiego?q=" + Uri.encode(phrase.name))
-        val c = CustomTabsIntent.Builder().build()
-        c.launchUrl(ctx, url)
-      }) {
-        Row(verticalAlignment = Alignment.CenterVertically,
-          horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-          Icon(
-            modifier = Modifier.size(ButtonDefaults.IconSize),
-            painter = painterResource(id = R.drawable.icon_baseline_description),
-            contentDescription = null)
-          Text(text = "Open description")
-        }
+      Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        val ctx = LocalContext.current
+        val encodePhraseName = Uri.encode(phrase.name)
+        val urlDiki =
+          Uri.parse("https://www.diki.pl/slownik-angielskiego?q=${encodePhraseName}")
+        LinkButton(ctx, "Diki", urlDiki)
+
+        val urlTranslate =
+          Uri.parse("https://translate.google.com/?sl=pl&tl=en&text=${encodePhraseName}&op=translate")
+        LinkButton(ctx, "Translate", urlTranslate)
+
+        val thesaurusUri =
+          Uri.parse("https://dictionary.cambridge.org/thesaurus/${encodePhraseName}")
+        LinkButton(ctx, "Thesaurus", thesaurusUri)
       }
       Button(modifier = Modifier.padding(top = 80.dp, bottom = 12.dp), onClick = {
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
@@ -158,6 +158,25 @@ fun SpeakingPhraseScreen(phrase: Phrase, navController: NavHostController) {
   }
 }
 
+@Composable
+fun LinkButton(context: Context, buttonLabel: String, link: Uri) {
+  Button(onClick = {
+    val c = CustomTabsIntent.Builder().build()
+    c.launchUrl(context, link)
+  }) {
+    Column(
+      horizontalAlignment = Alignment.CenterHorizontally,
+      verticalArrangement = Arrangement.Center
+    )
+    {
+      Icon(
+        modifier = Modifier.size(ButtonDefaults.IconSize),
+        painter = painterResource(id = R.drawable.icon_baseline_description),
+        contentDescription = null)
+      Text(text = buttonLabel)
+    }
+  }
+}
 fun filterSuffixCharacters(word: String, suffixes: List<Char>): String {
     return word.trim().filterNot { char -> suffixes.any { char == it } }
 }
