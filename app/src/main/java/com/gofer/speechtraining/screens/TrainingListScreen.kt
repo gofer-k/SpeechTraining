@@ -111,11 +111,13 @@ internal fun TrainingListsScreen(
     modifier = Modifier.nestedScroll(nestedScrollConnection),
     contentWindowInsets = WindowInsets.safeDrawing,
     topBar = {
+      val titleRes = stringResource(id = TrainingScreenLabel.TrainingList.title)
+      val title = remember { """$titleRes(${topics.size})""" }
       TopAppBar(
         title = {
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                 Text(
-                  text = stringResource(id = TrainingScreenLabel.TrainingList.title),
+                  text = title,
                   color = Color.DarkGray
                 )
             }
