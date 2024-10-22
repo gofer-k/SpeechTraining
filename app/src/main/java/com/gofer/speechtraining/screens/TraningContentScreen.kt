@@ -94,9 +94,10 @@ fun TrainingContentScreen(
 
   Scaffold(
     topBar = {
+      val title = """${trainingTopic.name}(${phrases.size})"""
       TopAppBar(title = { 
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-          Text(text = trainingTopic.name, color = Color.White)
+          Text(text = title, color = Color.White)
         }
       },
       colors = topAppBarColors(containerColor = BlueTrainingTopBarr)
