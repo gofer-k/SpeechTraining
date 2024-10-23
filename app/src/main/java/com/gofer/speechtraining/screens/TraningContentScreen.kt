@@ -10,12 +10,12 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -62,10 +62,8 @@ import com.gofer.speechtraining.NeededPermission
 import com.gofer.speechtraining.PhraseState
 import com.gofer.speechtraining.TrainingScreenLabel
 import com.gofer.speechtraining.getTrainingRecordIcon
-import com.gofer.speechtraining.getTrainingSpeakIcon
 import com.gofer.speechtraining.src.main.model.Phrase
 import com.gofer.speechtraining.src.main.model.Topic
-import com.gofer.speechtraining.src.main.model.TtsViewModel
 import com.gofer.speechtraining.ui.compose.LazyColumnScrollPosition
 import com.gofer.speechtraining.ui.theme.BlueTrainingTopBarr
 import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
@@ -78,10 +76,8 @@ fun TrainingContentScreen(
   phrases: List<Phrase>,
   trainingTopic: Topic,
   onPermissionGranted: (NeededPermission) -> Boolean,
-  onDeletePhrase: (Topic, Phrase) -> Unit,
-  ttsViewModel: TtsViewModel = TtsViewModel()
+  onDeletePhrase: (Topic, Phrase) -> Unit
 ) {
-  val context = LocalContext.current
   val phraseListState = remember { PhraseState() }
   phraseListState.setPhraseList(phrases)
 
@@ -128,51 +124,36 @@ fun TrainingContentScreen(
         ) {
           itemsIndexed(phraseListState.phraseList) { _, phrase ->
             var showMenu by remember { mutableStateOf(false) }
+            val context = LocalContext.current
             Box(modifier = Modifier
               .clip(MaterialTheme.shapes.extraSmall)
               .border(BorderStroke(1.dp, MaterialTheme.colorScheme.inverseOnSurface))
               .combinedClickable(
-                onClick = {},
+                onClick = {
+                  if (onPermissionGranted(NeededPermission.RECORD_AUDIO)) {
+                    navController.navigate("SpeakingPhraseScreen?phrase=${phrase.name}&phraseLang=${phrase.language.language}")
+                  } else {
+                    Toast.makeText(context, "Record audio not availability", Toast.LENGTH_SHORT).show()
+                  }
+                },
                 onLongClick = {
                   showMenu = true
                 }
               )
               ,contentAlignment = Alignment.CenterStart
             ) {
-              Column(modifier = Modifier.fillMaxSize()) {
+              Row(modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                  modifier = Modifier.size(40.dp),
+                  painter = painterResource(id = getTrainingRecordIcon(isSystemInDarkTheme())),
+                  contentDescription = null)
                 Text(
-                  modifier = Modifier.fillMaxWidth(),
                   text = phrase.name,
                   style = TextStyle(textIndent = TextIndent(firstLine = 8.sp)),
                   fontSize = 20.sp,
-                  fontWeight = if (phrase.isSelected) FontWeight.Bold else FontWeight.Normal)
-                Row(modifier = Modifier.fillMaxWidth(),
-                  horizontalArrangement = Arrangement.Absolute.SpaceBetween) {
-                  IconButton(modifier = Modifier.padding(start = 40.dp),
-                    onClick = {
-                    ttsViewModel.onListenTrainingPhrase(phrase, context
-                    ) {
-                      phrase.toggle()
-                      phraseListState.onSelectedPhrase(phrase)
-                    }
-                  }) {
-                    Icon(
-                      painterResource(id = getTrainingSpeakIcon(isSystemInDarkTheme())),
-                      contentDescription = TrainingScreenLabel.TrainingPhraseSpeech.name)
-                  }
-                  IconButton(modifier = Modifier.padding(end = 40.dp),
-                    onClick = {
-                    if (onPermissionGranted(NeededPermission.RECORD_AUDIO)) {
-                      navController.navigate("SpeakingPhraseScreen?phrase=${phrase.name}&phraseLang=${phrase.language.language}")
-                    } else {
-                      Toast.makeText(context, "Record audio not availability", Toast.LENGTH_SHORT).show()
-                    }
-                  }) {
-                    Icon(
-                      painterResource(id = getTrainingRecordIcon(isSystemInDarkTheme())),
-                      contentDescription = null)
-                  }
-                }
+                  fontWeight = FontWeight.Normal)
                 DropdownMenu(
                   modifier = Modifier.wrapContentSize(),
                   expanded = showMenu,
