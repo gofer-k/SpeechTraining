@@ -10,14 +10,18 @@ import android.speech.RecognizerIntent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.BottomAppBar
@@ -38,6 +42,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
@@ -50,7 +56,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.gofer.speechtraining.R
 import com.gofer.speechtraining.TrainingScreenLabel
+import com.gofer.speechtraining.getTrainingRecordIcon
+import com.gofer.speechtraining.getTrainingSpeakIcon
 import com.gofer.speechtraining.src.main.model.Phrase
+import com.gofer.speechtraining.src.main.model.TtsViewModel
 import com.gofer.speechtraining.ui.theme.PhraseString
 import com.gofer.speechtraining.ui.theme.Purple40
 
@@ -58,27 +67,9 @@ import com.gofer.speechtraining.ui.theme.Purple40
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SpeakingPhraseScreen(phrase: Phrase, navController: NavHostController) {
-  val initialText = remember { mutableStateOf(true) }
-  val speechDefaultText = remember { mutableStateOf("Your speech will appear here.") }
-  val speechText = speechDefaultText
-  val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-    if (it.resultCode == Activity.RESULT_OK) {
-      val data = it.data
-      val result = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
-      speechText.value = result?.get(0) ?: "No speech detected."
-      initialText.value = false
-    } else {
-      speechText.value = "[Speech recognition failed.]"
-    }
-  }
-
-  val withoutSuffixedOriginText = filterSuffixCharacters(phrase.name.trim().lowercase(), listOf('.', ',', '?', '!'))
-
   // Scaffold floating button height
   var topBarHeight by remember { mutableIntStateOf(0) }
   val textSize = 20.sp
-
-  val defaultTextLabel = stringResource(id = TrainingScreenLabel.TrainingSpeakDefaultText.title)
 
   Scaffold(
     topBar = {
@@ -130,32 +121,78 @@ fun SpeakingPhraseScreen(phrase: Phrase, navController: NavHostController) {
           Uri.parse("https://dictionary.cambridge.org/thesaurus/${encodePhraseName}")
         LinkButton(ctx, "Thesaurus", thesaurusUri)
       }
-      Button(modifier = Modifier.padding(top = 80.dp, bottom = 12.dp), onClick = {
-        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-        intent.putExtra(
-          RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-          RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
-        )
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, phrase.language)
-        intent.putExtra(RecognizerIntent.EXTRA_ONLY_RETURN_LANGUAGE_PREFERENCE, phrase.language)
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, phrase.language)
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, defaultTextLabel)
-        intent.putExtra(RecognizerIntent.EXTRA_ENABLE_LANGUAGE_SWITCH, phrase.language)
-
-        launcher.launch(intent)
-      }) {
-        Text("Start speech recognition")
-      }
-      Text(
-        text = if (initialText.value) speechDefaultText.value else speechText.value,
-        fontSize = textSize,
-        color =
-          if (initialText.value
-            || withoutSuffixedOriginText.equals(speechText.value.lowercase())) {
-          Color.Green
-        } else Color.Red)
+      Spacer(modifier = Modifier.height(100.dp))
+      val context = LocalContext.current
+      ListenButton(context, phrase)
+      Spacer(modifier = Modifier.height(100.dp))
+      SpeechButton(phrase = phrase)
     }
   }
+}
+
+@Composable
+fun ListenButton(context: Context, phrase:Phrase, ttsViewModel: TtsViewModel = TtsViewModel()) {
+
+  Button(modifier = Modifier
+    .clip(CircleShape)
+    .size(90.dp), onClick = {
+    ttsViewModel.onListenTrainingPhrase(phrase, context){
+
+    }
+  }) {
+    Icon(painterResource(id = getTrainingSpeakIcon(isSystemInDarkTheme())),
+      modifier = Modifier.scale(2.0f),
+      contentDescription = "Start listening")
+  }
+}
+@Composable
+fun SpeechButton(phrase: Phrase) {
+  val initialText = remember { mutableStateOf(true) }
+  val speechDefaultText = remember { mutableStateOf("Your speech will appear here.") }
+  val speechText = speechDefaultText
+  val defaultTextLabel = stringResource(id = TrainingScreenLabel.TrainingSpeakDefaultText.title)
+  val textSize = 20.sp
+  val withoutSuffixedOriginText = filterSuffixCharacters(phrase.name.trim().lowercase(), listOf('.', ',', '?', '!'))
+
+  val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+    if (it.resultCode == Activity.RESULT_OK) {
+      val data = it.data
+      val result = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+      speechText.value = result?.get(0) ?: "No speech detected."
+      initialText.value = false
+    } else {
+      speechText.value = "[Speech recognition failed.]"
+    }
+  }
+
+  Button(modifier = Modifier
+    .clip(CircleShape)
+    .size(90.dp), onClick = {
+    val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+    intent.putExtra(
+      RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+      RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+    )
+    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, phrase.language)
+    intent.putExtra(RecognizerIntent.EXTRA_ONLY_RETURN_LANGUAGE_PREFERENCE, phrase.language)
+    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, phrase.language)
+    intent.putExtra(RecognizerIntent.EXTRA_PROMPT, defaultTextLabel)
+    intent.putExtra(RecognizerIntent.EXTRA_ENABLE_LANGUAGE_SWITCH, phrase.language)
+
+    launcher.launch(intent)
+  }) {
+    Icon(painterResource(id = getTrainingRecordIcon(isSystemInDarkTheme())),
+      modifier = Modifier.scale(2.0f),
+      contentDescription = "Start speech")
+  }
+  Text(
+    text = if (initialText.value) speechDefaultText.value else speechText.value,
+    fontSize = textSize,
+    color =
+    if (initialText.value
+      || withoutSuffixedOriginText.equals(speechText.value.lowercase())) {
+      Color.Green
+    } else Color.Red)
 }
 
 @Composable
