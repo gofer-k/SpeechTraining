@@ -21,10 +21,13 @@ enum class TrainingScreenLabel(@StringRes val title: Int)  {
   TrainingLanguageLabel(R.string.trainings_language_label),
   TrainingSpeakDefaultText(R.string.speak_default_text),
   TrainingDeletePhrase(R.string.delete_phrase),
-  TrainingDelete(R.string.delete_traiining)
+  TrainingDelete(R.string.delete_traiining),
+  TrainingAppConfig(R.string.config_app),
+  TrainingExportAppData(R.string.upload_data)
 }
 
 fun getTrainingSpeakIcon(isDarkTheme: Boolean) = if (isDarkTheme) R.drawable.ic_outline_volume_up_24 else R.drawable.ic_outline_volume_up_24_light
 fun getTrainingRecordIcon(isDarkTheme: Boolean) = R.drawable.ic_speak_phrase_foreground
-
 fun getDefaultTopicIcon(): Int = R.drawable.topic_default
+
+fun getUploadDataIcon(isDarkTheme: Boolean) = R.drawable.ic_upload_data

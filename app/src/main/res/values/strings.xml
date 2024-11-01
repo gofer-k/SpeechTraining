@@ -20,4 +20,6 @@
     <string name="speak_default_text">Say the selected phrase</string>
     <string name="delete_phrase">Delete phrase</string>
     <string name="delete_traiining">Delete training</string>
+    <string name="config_app">Configuration</string>
+    <string name="upload_data">Export app data</string>
 </resources>

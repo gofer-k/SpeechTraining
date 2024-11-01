@@ -1,6 +1,7 @@
 package com.gofer.speechtraining.navigation
 
 import TrainingListsScreen
+import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.navigation.NavType
@@ -13,6 +14,7 @@ import com.gofer.speechtraining.TrainingScreenLabel.TrainingAddPhrase
 import com.gofer.speechtraining.TrainingScreenLabel.TrainingList
 import com.gofer.speechtraining.screens.AddTopicScreen
 import com.gofer.speechtraining.screens.AddTrainingDataScreen
+import com.gofer.speechtraining.screens.ConfigScreen
 import com.gofer.speechtraining.screens.SpeakingPhraseScreen
 import com.gofer.speechtraining.screens.TrainingContentScreen
 import com.gofer.speechtraining.src.main.model.Phrase
@@ -20,8 +22,9 @@ import com.gofer.speechtraining.src.main.model.SpeechTrainingDataViewModel
 import com.gofer.speechtraining.toLocale
 
 @Composable
-fun AppNavigation(viewModel: SpeechTrainingDataViewModel) {
+fun AppNavigation(viewModel: SpeechTrainingDataViewModel, onExportAppData: (uri: Uri?) -> Unit) {
   val navHostController = rememberNavController()
+
   NavHost(navController = navHostController, startDestination = TrainingList.name) {
       composable(TrainingList.name) {backStackEntry ->
         val newTopicName = backStackEntry.savedStateHandle.get<String>("addTopic")
@@ -132,6 +135,9 @@ fun AppNavigation(viewModel: SpeechTrainingDataViewModel) {
     }
     composable("AddTrainingTopic") {
       AddTopicScreen(navController = navHostController)
+    }
+    composable("ConfigAppScreen") {
+      ConfigScreen(navController = navHostController, omExportAppData = onExportAppData)
     }
   }
 }

@@ -146,7 +146,7 @@ fun TrainingContentScreen(
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically) {
                 Icon(
-                  modifier = Modifier.size(40.dp),
+                  modifier = Modifier.size(44.dp),
                   painter = painterResource(id = getTrainingRecordIcon(isSystemInDarkTheme())),
                   contentDescription = null)
                 Text(
