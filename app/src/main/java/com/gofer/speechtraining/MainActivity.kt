@@ -1,5 +1,6 @@
 package com.gofer.speechtraining
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -44,11 +45,20 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.setAvailableLanguages(availableLangs)
         viewModel.setOrChangePermissionState(NeededPermission.RECORD_AUDIO, true)
-        AppNavigation(viewModel)
+        AppNavigation(viewModel, onExportAppData = {
+          exportAppData(it)
+        })
       }
     }
   }
 
+  fun exportAppData(uri: Uri?) {
+    uri?.let { it
+      if (it.isAbsolute && it.scheme != null && it.host != null) {
+        jsonManager.saveSpeakingTrainingDataToFile<SpeechTrainingData>(baseContext, it, viewModel.data.value)
+      }
+    }
+  }
   override fun onStop() {
     super.onStop()
       val path = baseContext.resources.getString(R.string.app_data_source)

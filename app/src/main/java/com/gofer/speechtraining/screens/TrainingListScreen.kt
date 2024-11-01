@@ -26,6 +26,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.rounded.AddCircle
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
@@ -34,12 +35,12 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -75,7 +76,6 @@ import com.gofer.speechtraining.TrainingScreenLabel
 import com.gofer.speechtraining.getDefaultTopicIcon
 import com.gofer.speechtraining.src.main.model.Topic
 import com.gofer.speechtraining.ui.compose.LanguageList
-import com.gofer.speechtraining.ui.theme.PurpleGrey80
 import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
 import kotlinx.coroutines.Dispatchers
 
@@ -122,7 +122,13 @@ internal fun TrainingListsScreen(
                 )
             }
         },
-        colors = topAppBarColors(containerColor = PurpleGrey80)
+        actions = {
+          IconButton(onClick = {
+            navController.navigate("ConfigAppScreen")
+          }) {
+            Icon(imageVector = Icons.Default.Settings, contentDescription = null)
+          }
+        }
     )},
     bottomBar = {
       AnimatedVisibility(

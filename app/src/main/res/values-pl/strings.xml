@@ -18,4 +18,6 @@
     <string name="speak_default_text">Mow wybierza fraze</string>
     <string name="delete_phrase">Usun fraze</string>
     <string name="delete_traiining">Usun trening</string>
+    <string name="config_app">Konfiguracja</string>
+    <string name="upload_data">Eksportuj danych</string>
 </resources>
