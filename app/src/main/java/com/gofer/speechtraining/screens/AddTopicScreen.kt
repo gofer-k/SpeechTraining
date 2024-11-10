@@ -42,8 +42,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.gofer.speechtraining.ImagePicker
 import com.gofer.speechtraining.TrainingScreenLabel
+import com.gofer.speechtraining.ui.ImagePicker
 import com.gofer.speechtraining.ui.theme.Purple40
 import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
 

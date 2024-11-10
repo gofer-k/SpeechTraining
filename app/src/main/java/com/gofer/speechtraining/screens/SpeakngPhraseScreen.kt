@@ -12,12 +12,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -60,6 +58,7 @@ import com.gofer.speechtraining.getTrainingRecordIcon
 import com.gofer.speechtraining.getTrainingSpeakIcon
 import com.gofer.speechtraining.src.main.model.Phrase
 import com.gofer.speechtraining.src.main.model.TtsViewModel
+import com.gofer.speechtraining.ui.TopBarTitle
 import com.gofer.speechtraining.ui.theme.PhraseString
 import com.gofer.speechtraining.ui.theme.Purple40
 
@@ -76,11 +75,9 @@ fun SpeakingPhraseScreen(phrase: Phrase, navController: NavHostController) {
       TopAppBar(
         modifier = Modifier.onGloballyPositioned { topBarHeight = it.size.height },
         title = {
-          Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-            Text(
-              text = stringResource(id = TrainingScreenLabel.TrainingSpeakingPhrase.title),
-              color = Color.White)
-          }
+          TopBarTitle(navController = navController,
+            title = TrainingScreenLabel.TrainingSpeakingPhrase,
+            color=  Color.White)
         },
         colors = TopAppBarDefaults.topAppBarColors(containerColor = Purple40)
       )

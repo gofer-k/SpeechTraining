@@ -45,10 +45,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.gofer.speechtraining.Language
 import com.gofer.speechtraining.TrainingScreenLabel
 import com.gofer.speechtraining.src.main.model.Phrase
 import com.gofer.speechtraining.src.main.model.Topic
+import com.gofer.speechtraining.ui.compose.Language
 import com.gofer.speechtraining.ui.compose.LanguageList
 import com.gofer.speechtraining.ui.theme.Purple40
 import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme

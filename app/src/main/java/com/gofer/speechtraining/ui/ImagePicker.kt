@@ -1,4 +1,4 @@
-package com.gofer.speechtraining
+package com.gofer.speechtraining.ui
 
 import android.content.res.Configuration
 import android.net.Uri
@@ -22,6 +22,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.gofer.speechtraining.TrainingScreenLabel
+import com.gofer.speechtraining.getDefaultTopicIcon
 
 
 @Composable

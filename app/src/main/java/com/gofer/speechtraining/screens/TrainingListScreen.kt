@@ -70,11 +70,11 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
-import com.gofer.speechtraining.Language
-import com.gofer.speechtraining.TopicDataState
 import com.gofer.speechtraining.TrainingScreenLabel
 import com.gofer.speechtraining.getDefaultTopicIcon
 import com.gofer.speechtraining.src.main.model.Topic
+import com.gofer.speechtraining.ui.TopicDataState
+import com.gofer.speechtraining.ui.compose.Language
 import com.gofer.speechtraining.ui.compose.LanguageList
 import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
 import kotlinx.coroutines.Dispatchers
@@ -90,8 +90,6 @@ internal fun TrainingListsScreen(
   onFilterTrainingLanguage: (Language) -> Unit,
   onRemoveTopic: (Long) -> Unit
 ) {
-  val context = LocalContext.current
-
   val bottomBarHeight = remember { mutableStateOf(0f) }
   val bottomBarOffsetHeightPx = remember { mutableStateOf(0f) }
   val showBottomBar = remember { mutableStateOf(true) }
@@ -271,7 +269,7 @@ fun TopicItem(navController: NavController,
 
 @Composable
 fun ConversationsTopics(navController: NavController, topics: List<Topic>, onRemoveTopic: (topic: Topic) -> Unit) {
-  var topicListState = remember { TopicDataState() }
+  val topicListState = remember { TopicDataState() }
   topicListState.setTopicList(topics)
 
   Box(modifier = Modifier.height(500.dp)){
@@ -279,7 +277,7 @@ fun ConversationsTopics(navController: NavController, topics: List<Topic>, onRem
       columns = GridCells.Adaptive(120.dp),
       contentPadding = PaddingValues(16.dp)
     ) {
-      itemsIndexed(topicListState.topicsList) { index, topic ->
+      itemsIndexed(topicListState.topicsList) { _, topic ->
         TopicItem(
           navController = navController,
           topic,
