@@ -1,4 +1,4 @@
-package com.gofer.speechtraining
+package com.gofer.speechtraining.ui
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.toMutableStateList

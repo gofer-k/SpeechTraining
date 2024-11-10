@@ -26,17 +26,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.gofer.speechtraining.Language
-import com.gofer.speechtraining.TrainingScreenLabel
 import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
 
 @Composable
 fun LanguageList(languages: List<Language>, viewModelLanguage: Language, onSelectedLanguage: (Language) -> Unit) {
-  val label = stringResource(TrainingScreenLabel.TrainingLanguage.title)
   val textSize = 20.sp
   val cornerShape = RoundedCornerShape(24.dp)
   val itemHeight = 40.dp//48.dp

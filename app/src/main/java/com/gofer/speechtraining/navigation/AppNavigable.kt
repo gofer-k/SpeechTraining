@@ -19,7 +19,7 @@ import com.gofer.speechtraining.screens.SpeakingPhraseScreen
 import com.gofer.speechtraining.screens.TrainingContentScreen
 import com.gofer.speechtraining.src.main.model.Phrase
 import com.gofer.speechtraining.src.main.model.SpeechTrainingDataViewModel
-import com.gofer.speechtraining.toLocale
+import com.gofer.speechtraining.ui.compose.toLocale
 
 @Composable
 fun AppNavigation(viewModel: SpeechTrainingDataViewModel, onExportAppData: (uri: Uri?) -> Unit) {

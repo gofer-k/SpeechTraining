@@ -1,4 +1,4 @@
-package com.gofer.speechtraining
+package com.gofer.speechtraining.ui.compose
 
 import android.os.Parcel
 import android.os.Parcelable

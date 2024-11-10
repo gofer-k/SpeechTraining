@@ -3,7 +3,7 @@ package com.gofer.speechtraining.src.main.model
 import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.gofer.speechtraining.Language
+import com.gofer.speechtraining.ui.compose.Language
 import com.gofer.speechtraining.NeededPermission
 import kotlinx.coroutines.flow.StateFlow
 
@@ -23,7 +23,8 @@ class SpeechTrainingDataViewModel
   private val _filterKey = "filterLanguage"
   val filterTrainingLanguage = savedStateHandle.getStateFlow(
     _filterKey,
-    _availableLanguages.firstOrNull() ?: Language())
+    _availableLanguages.firstOrNull() ?: Language()
+  )
 
   private val _permissions = mutableListOf<NeededPermission>()
 

@@ -9,7 +9,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -40,6 +39,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.gofer.speechtraining.TrainingScreenLabel
 import com.gofer.speechtraining.getUploadDataIcon
+import com.gofer.speechtraining.ui.TopBarTitle
 import com.gofer.speechtraining.ui.theme.PurpleGrey80
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -51,12 +51,9 @@ fun ConfigScreen(navController: NavController, omExportAppData: (uri: Uri) -> Un
       TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(containerColor = PurpleGrey80),
         title = {
-        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-          Text(
-            text = stringResource(id = TrainingScreenLabel.TrainingAppConfig.title),
-            color = Color.DarkGray
-          )
-        }
+          TopBarTitle(navController = navController,
+            TrainingScreenLabel.TrainingAppConfig,
+            color = Color.DarkGray)
       })
     }
   ) { paddingValues ->
@@ -66,7 +63,7 @@ fun ConfigScreen(navController: NavController, omExportAppData: (uri: Uri) -> Un
         .padding(paddingValues),
       horizontalAlignment = Alignment.CenterHorizontally,
       verticalArrangement = Arrangement.Center) {
-        FilePickerButton(){ exportedFileUri ->
+        FilePickerButton { exportedFileUri ->
           omExportAppData(exportedFileUri)
         }
     }
@@ -74,7 +71,7 @@ fun ConfigScreen(navController: NavController, omExportAppData: (uri: Uri) -> Un
 }
 
 @Composable
-fun FilePickerButton(modifier: Modifier = Modifier, content: (fileUri: Uri) -> Unit) {
+fun FilePickerButton(content: (fileUri: Uri) -> Unit) {
   var pickedUri by remember { mutableStateOf<Uri?>(null) }
 
   val launcher = rememberLauncherForActivityResult(

@@ -1,4 +1,4 @@
-package com.gofer.speechtraining
+package com.gofer.speechtraining.ui
 
 import android.Manifest
 import android.content.res.Configuration

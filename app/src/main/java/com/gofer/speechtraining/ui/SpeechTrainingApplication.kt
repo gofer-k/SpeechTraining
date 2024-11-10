@@ -1,4 +1,4 @@
-package com.gofer.speechtraining
+package com.gofer.speechtraining.ui
 
 import android.app.Application
 import coil.ImageLoader

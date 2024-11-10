@@ -59,11 +59,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.gofer.speechtraining.NeededPermission
-import com.gofer.speechtraining.PhraseState
 import com.gofer.speechtraining.TrainingScreenLabel
 import com.gofer.speechtraining.getTrainingRecordIcon
 import com.gofer.speechtraining.src.main.model.Phrase
 import com.gofer.speechtraining.src.main.model.Topic
+import com.gofer.speechtraining.ui.PhraseState
+import com.gofer.speechtraining.ui.TopBarTitle
 import com.gofer.speechtraining.ui.compose.LazyColumnScrollPosition
 import com.gofer.speechtraining.ui.theme.BlueTrainingTopBarr
 import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
@@ -91,10 +92,8 @@ fun TrainingContentScreen(
   Scaffold(
     topBar = {
       val title = """${trainingTopic.name}(${phrases.size})"""
-      TopAppBar(title = { 
-        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-          Text(text = title, color = Color.White)
-        }
+      TopAppBar(title = {
+        TopBarTitle(navController = navController, title = title, color = Color.White)
       },
       colors = topAppBarColors(containerColor = BlueTrainingTopBarr)
       )
@@ -133,7 +132,9 @@ fun TrainingContentScreen(
                   if (onPermissionGranted(NeededPermission.RECORD_AUDIO)) {
                     navController.navigate("SpeakingPhraseScreen?phrase=${phrase.name}&phraseLang=${phrase.language.language}")
                   } else {
-                    Toast.makeText(context, "Record audio not availability", Toast.LENGTH_SHORT).show()
+                    Toast
+                      .makeText(context, "Record audio not availability", Toast.LENGTH_SHORT)
+                      .show()
                   }
                 },
                 onLongClick = {
