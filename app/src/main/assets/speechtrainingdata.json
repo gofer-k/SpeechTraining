@@ -9,13 +9,16 @@
       },
       "phrases": [
         {
-          "name": "SHEILA NEEDs"
+          "name": "SHEILA NEEDs",
+          "pron": "Szi-la nidz"
         },
         {
-          "name": "SHEENA LEADS"
+          "name": "SHEENA LEADS",
+          "pron": "Szi-na lids"
         },
         {
-          "name": "SHE SEES CHEESE"
+          "name": "SHE SEES CHEESE",
+          "pron": "Szi siz cziz"
         },
         {
           "name": "DID YOU TELL HIM"
