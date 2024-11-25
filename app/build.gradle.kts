@@ -18,6 +18,9 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        buildConfigField("String", "OPENAI_ORG", "\"${project.property("OPENAI_ORG")}\"")
+        buildConfigField("String", "OPENAI_PROJECT_SPEECH_TRAINING", "\"${project.property("OPENAI_PROJECT_SPEECH_TRAINING")}\"")
+        buildConfigField("String", "OPENAI_KEY", "\"${project.property("OPENAI_KHOF_KEY")}\"")
     }
 
     buildTypes {
@@ -38,6 +41,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -79,9 +83,11 @@ dependencies {
 
     implementation("androidx.browser:browser:1.8.0")
 
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose-android:2.8.6")
-    implementation("androidx.navigation:navigation-fragment-compose:2.8.3")
-    implementation("com.google.code.gson:gson:2.10.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose-android:2.8.7")
+    implementation("androidx.navigation:navigation-fragment-compose:2.8.4")
+    implementation("com.google.code.gson:gson:2.11.0")
     implementation("com.google.accompanist:accompanist-permissions:0.36.0")
     implementation("io.coil-kt:coil-compose:2.7.0")
+    //Jetpack security, for file encryption
+    implementation("androidx.security:security-crypto:1.0.0")
 }
