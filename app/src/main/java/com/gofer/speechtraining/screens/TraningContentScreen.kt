@@ -130,7 +130,7 @@ fun TrainingContentScreen(
               .combinedClickable(
                 onClick = {
                   if (onPermissionGranted(NeededPermission.RECORD_AUDIO)) {
-                    navController.navigate("SpeakingPhraseScreen?phrase=${phrase.name}&phraseLang=${phrase.language.language}")
+                    navController.navigate("SpeakingPhraseScreen?phrase=${phrase.name}&pron=${phrase.pron}&phraseLang=${phrase.language.language}")
                   } else {
                     Toast
                       .makeText(context, "Record audio not availability", Toast.LENGTH_SHORT)
