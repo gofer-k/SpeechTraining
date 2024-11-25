@@ -59,6 +59,8 @@ import com.gofer.speechtraining.getTrainingSpeakIcon
 import com.gofer.speechtraining.src.main.model.Phrase
 import com.gofer.speechtraining.src.main.model.TtsViewModel
 import com.gofer.speechtraining.ui.TopBarTitle
+import com.gofer.speechtraining.ui.theme.PhrasePronString
+import com.gofer.speechtraining.ui.theme.PhrasePronStringDark
 import com.gofer.speechtraining.ui.theme.PhraseString
 import com.gofer.speechtraining.ui.theme.PhraseStringDark
 import com.gofer.speechtraining.ui.theme.Purple40
@@ -102,9 +104,13 @@ fun SpeakingPhraseScreen(phrase: Phrase, navController: NavHostController) {
       horizontalAlignment = Alignment.CenterHorizontally,
     ) {
       val textColor = if (isSystemInDarkTheme()) PhraseStringDark else PhraseString
+      val pronColor = if (isSystemInDarkTheme()) PhrasePronStringDark else PhrasePronString
       Text(
         modifier = Modifier.padding(top = 40.dp, bottom = 12.dp),
         text = phrase.name, color = textColor, fontSize = textSize)
+      Text(
+        modifier = Modifier.padding(top = 4.dp, bottom = 12.dp),
+        text = phrase.pron, color = pronColor, fontSize = textSize)
       Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         val ctx = LocalContext.current
         val encodePhraseName = Uri.encode(phrase.name)
@@ -221,5 +227,5 @@ fun filterSuffixCharacters(word: String, suffixes: List<Char>): String {
 @Preview(showBackground = true, name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_NO)
 fun SpeakingPhraseScreen() {
   val navController = rememberNavController()
-  SpeakingPhraseScreen(phrase = Phrase(name = "Sample"), navController = navController)
+  SpeakingPhraseScreen(phrase = Phrase(name = "Sample", pron = "sam-pl"), navController = navController)
 }
