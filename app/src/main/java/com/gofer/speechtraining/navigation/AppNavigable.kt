@@ -101,9 +101,13 @@ fun AppNavigation(viewModel: SpeechTrainingDataViewModel, onExportAppData: (uri:
 
       topic?.let {  AddTrainingDataScreen(navController = navHostController, it, viewModel.availableLanguages) }
     }
-    composable("SpeakingPhraseScreen?phrase={phrase}&phraseLang={phraseLang}&phraseCountry={phraseCountry",
+    composable("SpeakingPhraseScreen?phrase={phrase}&pron={pron}&phraseLang={phraseLang}&phraseCountry={phraseCountry",
       arguments = listOf(
         navArgument("phrase"){
+          type = NavType.StringType
+          defaultValue = ""
+        },
+        navArgument("pron"){
           type = NavType.StringType
           defaultValue = ""
         },
@@ -119,16 +123,19 @@ fun AppNavigation(viewModel: SpeechTrainingDataViewModel, onExportAppData: (uri:
     ) { backStackEntry ->
       backStackEntry.arguments?.let {
         val name = it.getString("phrase")
+        val pron = it.getString("pron")
         val lang = it.getString("phraseLang")
         val country = it.getString("phraseCountry")
 
         name?.let { namePhrase ->
-          lang?.let {
-            toLocale(lang = it, country)
-          }?.let { locale ->
-            SpeakingPhraseScreen(
-              navController = navHostController,
-              phrase = Phrase(name = namePhrase, language = locale))
+          pron?.let { phrasePron ->
+            lang?.let {
+              toLocale(lang = it, country)
+            }?.let { locale ->
+              SpeakingPhraseScreen(
+                navController = navHostController,
+                phrase = Phrase(name = namePhrase, pron = phrasePron, language = locale))
+            }
           }
         }
       }
