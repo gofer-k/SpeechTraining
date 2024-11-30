@@ -50,6 +50,7 @@ class MainActivity : AppCompatActivity() {
           projNameValue = BuildConfig.OPENAI_PROJECT_SPEECH_TRAINING,
           apiKeyValue = BuildConfig.OPENAI_KEY)
         configViewModel.validateApi()
+        configViewModel.sentRequest("put pronunciation the word for Polish users: 'Identifier'")
 
         viewModel.setAvailableLanguages(availableLangs)
         viewModel.setOrChangePermissionState(NeededPermission.RECORD_AUDIO, true)
