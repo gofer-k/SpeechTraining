@@ -2,21 +2,11 @@ package com.gofer.speechtraining.src.main.model
 
 import android.app.Application
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.io.BufferedReader
-import java.io.InputStream
-import java.io.InputStreamReader
-import java.net.HttpURLConnection
-import java.net.URL
 
 
 class ConfigViewModel(
@@ -73,81 +63,19 @@ class ConfigViewModel(
   private var _myLiveData = MutableLiveData<String>()
   val myLiveData: LiveData<String> = _myLiveData
 
-  private fun sentRequest(url: String, headers: Map<String, String>): Boolean {
+  fun sentRequest(prompt: String): Boolean {
+      val client = OpenAIClient(readFromSharedPrefs(_apiName))
+      val listener = OnMessageReceivedListener()
 
-    viewModelScope.launch(Dispatchers.IO) {
-      var connection: HttpURLConnection? = null
-      try {
-        connection = URL(url).openConnection() as HttpURLConnection
-        connection.requestMethod = "POST" //"GET" // Or "POST", "PUT", etc.
-        connection.doOutput = true // Enable output for POST requests
-
-        for ((key, value) in headers) {
-          connection.setRequestProperty(key, value)
-        }
-
-        val bodyRequest = """
-          {
-            "model": "gpt-4o-mini","
-            "messages": [
-              {
-                "role": "user","
-                "content": "put pronunciation the word for Polish users: 'Indentifier'"
-              }
-            ],
-            "temperature": 0.7"+
-          }""".trimIndent()
-
-        val outputStream = connection.outputStream
-        outputStream.write(bodyRequest.toByteArray())
-        outputStream.flush()
-        outputStream.close()
-
-
-        val inputStream: InputStream = connection.inputStream
-        val reader = BufferedReader(InputStreamReader(inputStream))
-        val stringBuilder = StringBuilder()
-        var line: String?
-        while (reader.readLine().also { line = it } != null) {
-          stringBuilder.append(line)
-        }
-        reader.close()
-        inputStream.close()
-
-        withContext(Dispatchers.Main) {
-          _myLiveData.value = stringBuilder.toString()
-        }
-
-        Log.d("SpeechTraining", "Response: ${_myLiveData.toString()}")
-      }
-      catch (e: Throwable) {
-        Log.d("SpeechTraining", "Error: ${e.toString()}")
-        connection?.run { disconnect() }
-      }
-      finally {
-        connection?.disconnect()
-      }
-    }
+       client.sendMessage(
+        input = prompt,
+        listener = listener)
     return true
   }
 
   fun validateApi() : Boolean {
-    val api = readFromSharedPrefs(_apiName)
-    val org = readFromSharedPrefs(_orgName)
-    val proj = readFromSharedPrefs(_projName)
-    var res = false
-    api?.run {
-      org?.run {
-        proj?.run {
-          val url = "https://api.openai.com/v1/chat/completions" //"https://api.openai.com/v1/models"
-          val headers = mapOf(
-            Pair("Content-Type:", "application/json"),
-            Pair("Authorization: Bearer", api))
-          // ... (Read response from connection) ...
-          res= sentRequest(url, headers)
-        }
-      }
-    }
-    return res
+    val apiKey = readFromSharedPrefs(_apiName)
+
+    return apiKey?.isNotBlank() == true
   }
 }
