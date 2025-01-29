@@ -32,35 +32,13 @@ data class OpenAiResponse(val choices: List<OpenAiResponseChoice>? = null) {
 
 class AuthInterceptor(private val apiKey: String) : Interceptor {
   override fun intercept(chain: Interceptor.Chain): Response {
-    // Use a constant for the header name
-    val requestBuilder = chain.request().newBuilder()
-    requestBuilder.header(HEADER_AUTHORIZATION, "$AUTH_SCHEME $apiKey")
-
-    // Consider adding a check for an empty API key
-    if (apiKey.isBlank()) {
-      // Handle the case where the API key is missing or invalid.
-      // You might want to log an error, throw an exception, or return a specific response.
-      // For this example, we'll just proceed without the header.
-      println("Warning: API key is empty or blank. Request will be made without authorization.")
-    } else {
-      requestBuilder.header(HEADER_AUTHORIZATION, "$AUTH_SCHEME $apiKey")
-    }
-
-    // Build the request only once
-    val request = requestBuilder.build()
-
-    // Consider logging the request for debugging
-//    println("Request URL: ${request.url}")
-//    println("Request Headers: ${request.headers}")
+    val request = chain.request().newBuilder()
+      .header("Authorization", "Bearer $apiKey")
+      .build()
     return chain.proceed(request)
   }
-
-  companion object {
-    // 1. Use a constant for the header name
-    private const val HEADER_AUTHORIZATION = "Authorization"
-    private const val AUTH_SCHEME = "Bearer"
-  }
 }
+
 interface OpenAPI {
   @Headers("Content-Type: application/json")
   @POST("chat/completions")
@@ -77,74 +55,46 @@ class OnMessageReceivedListener {
 }
 
 class OpenAIClient(val api_key: String?) {
-  // Make the Retrofit instance a singleton
-  companion object {
-    private var retrofit: Retrofit? = null
-    fun getRetrofitInstance(apiKey: String): Retrofit {
-      if (retrofit == null) {
-        val okHttpClient = OkHttpClient.Builder()
-          .addInterceptor(AuthInterceptor(apiKey))
-          .build()
-
-        retrofit = Retrofit.Builder()
-          .client(okHttpClient)
-          .baseUrl("https://api.openai.com/v1/")
-          .addConverterFactory(GsonConverterFactory.create())
-          .build()
-      }
-      return retrofit!!
-    }
-  }
-
-  private val openAiApi: OpenAPI by lazy {
-    if (api_key == null) {
-      throw IllegalStateException("API key is null. Please provide a valid API key.")
-    }
-    getRetrofitInstance(api_key).create(OpenAPI::class.java)
-  }
-
   fun sendMessage(input: String?, listener: OnMessageReceivedListener) {
-    if (api_key == null) {
-      listener.onMessageReceived("API key is not set.")
-      return
-    }
-    if (input.isNullOrBlank()) {
-      listener.onMessageReceived("Input message is empty.")
-      return
-    }
+    api_key?.let {
+      // Create the Retrofit instance with the interceptor
+      val okHttpClient = OkHttpClient.Builder()
+        .addInterceptor(AuthInterceptor(apiKey = it))
+        .build()
 
-    val prompt = OpenAIPrompt(content = input)
-    val request = OpenAIRequest(messages = listOf(prompt))
+      val retrofit = Retrofit.Builder()
+        .client(okHttpClient)
+        .baseUrl("https://api.openai.com/v1/")
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
 
-    val call = openAiApi.createCompletion(authorization = "Bearer $api_key", request = request)
-
-    call?.runCatching {
-      enqueue(object : Callback<OpenAiResponse?> {
-        override fun onResponse(
-          call: Call<OpenAiResponse?>,
-          response: retrofit2.Response<OpenAiResponse?>
-        ) {
-          if (response.isSuccessful) {
-            val choices = response.body()?.choices
-            if (!choices.isNullOrEmpty()) {
-              val responseText = choices[0].text
-              listener.onMessageReceived(responseText)
+      val openAiApi = retrofit.create(OpenAPI::class.java)
+      val request = OpenAIRequest(messages = listOf(OpenAIPrompt(content =  "type\": \"text\", \"text\": ${input}")), temperature = 0.7) // You can adjust the temperature and maxTokens as needed
+      val call = openAiApi.createCompletion(authorization = "Bearer ${api_key}", request = request)
+      call?.runCatching {
+        enqueue(object : Callback<OpenAiResponse?> {
+          override fun onResponse(
+            call: Call<OpenAiResponse?>,
+            response: retrofit2.Response<OpenAiResponse?>
+          ) {
+            if (response.isSuccessful) {
+              val choices: List<OpenAiResponseChoice>? = response.body()!!.choices
+              if (choices != null && choices.size > 0) {
+                val responseText = choices[0].text
+                listener.onMessageReceived(responseText)
+              } else {
+                listener.onMessageReceived("OpenAIClient: No response received.")
+              }
             } else {
-              listener.onMessageReceived("OpenAIClient: No response received.")
+              listener.onMessageReceived("OpenAIClient error: ${response.message()}")
             }
-          } else {
-            listener.onMessageReceived(
-              "OpenAIClient error: ${
-                response.errorBody()?.string() ?: response.message()
-              }"
-            )
           }
-        }
 
-        override fun onFailure(call: Call<OpenAiResponse?>, t: Throwable) {
-          listener.onMessageReceived("Request failed: ${t.message ?: "Unknown error"}")
-        }
-      })
+          override fun onFailure(call: Call<OpenAiResponse?>, t: Throwable) {
+            listener.onMessageReceived("Request failed: ${t.message}")
+          }
+        })
+      }
     }
   }
 }
