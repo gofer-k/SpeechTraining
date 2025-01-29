@@ -7,7 +7,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -148,7 +147,7 @@ fun TrainingContentScreen(
                 verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                   modifier = Modifier.size(44.dp),
-                  painter = painterResource(id = getTrainingRecordIcon(isSystemInDarkTheme())),
+                  painter = painterResource(id = getTrainingRecordIcon()),
                   contentDescription = null)
                 Text(
                   text = phrase.name,

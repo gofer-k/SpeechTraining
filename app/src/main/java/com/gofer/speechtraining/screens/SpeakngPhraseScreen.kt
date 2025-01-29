@@ -64,6 +64,7 @@ import com.gofer.speechtraining.ui.theme.PhrasePronStringDark
 import com.gofer.speechtraining.ui.theme.PhraseString
 import com.gofer.speechtraining.ui.theme.PhraseStringDark
 import com.gofer.speechtraining.ui.theme.Purple40
+import androidx.core.net.toUri
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -115,16 +116,12 @@ fun SpeakingPhraseScreen(phrase: Phrase, navController: NavHostController) {
         val ctx = LocalContext.current
         val encodePhraseName = Uri.encode(phrase.name)
         val urlDiki =
-          Uri.parse("https://www.diki.pl/slownik-angielskiego?q=${encodePhraseName}")
+            "https://www.diki.pl/slownik-angielskiego?q=${encodePhraseName}".toUri()
         LinkButton(ctx, "Diki", urlDiki)
 
         val urlTranslate =
-          Uri.parse("https://translate.google.com/?sl=pl&tl=en&text=${encodePhraseName}&op=translate")
+            "https://translate.google.com/?sl=pl&tl=en&text=${encodePhraseName}&op=translate".toUri()
         LinkButton(ctx, "Translate", urlTranslate)
-
-        val thesaurusUri =
-          Uri.parse("https://dictionary.cambridge.org/thesaurus/${encodePhraseName}")
-        LinkButton(ctx, "Thesaurus", thesaurusUri)
       }
       Spacer(modifier = Modifier.height(100.dp))
       val context = LocalContext.current
@@ -186,7 +183,7 @@ fun SpeechButton(phrase: Phrase) {
 
     launcher.launch(intent)
   }) {
-    Icon(painterResource(id = getTrainingRecordIcon(isSystemInDarkTheme())),
+    Icon(painterResource(id = getTrainingRecordIcon()),
       modifier = Modifier.scale(2.0f),
       contentDescription = "Start speech")
   }
