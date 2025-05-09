@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -62,6 +63,7 @@ import com.gofer.speechtraining.TrainingScreenLabel
 import com.gofer.speechtraining.getTrainingRecordIcon
 import com.gofer.speechtraining.src.main.model.Phrase
 import com.gofer.speechtraining.src.main.model.Topic
+import com.gofer.speechtraining.ui.SearchBar
 import com.gofer.speechtraining.ui.PhraseState
 import com.gofer.speechtraining.ui.TopBarTitle
 import com.gofer.speechtraining.ui.compose.LazyColumnScrollPosition
@@ -88,14 +90,36 @@ fun TrainingContentScreen(
 
   val deletePhraseText = stringResource(id = TrainingScreenLabel.TrainingDeletePhrase.title)
 
+  var showSearchBar by remember { mutableStateOf(false) }
+  var searchQuery by remember { mutableStateOf("") }
+  val filterPhrases = remember(phrases, searchQuery) {
+    phrases.filter { phrase ->
+      phrase.name.contains(searchQuery, ignoreCase = true)
+    }.toMutableList()
+  }
+
   Scaffold(
     topBar = {
       val title = """${trainingTopic.name}(${phrases.size})"""
       TopAppBar(title = {
-        TopBarTitle(navController = navController, title = title, color = Color.White)
+        if (showSearchBar) {
+          SearchBar(backgroundColor = BlueTrainingTopBarr,
+            onQueryChanged = {searchQuery = it },
+            onSearchDone = { showSearchBar = it})
+        } else {
+          TopBarTitle(navController = navController, title = title, color = Color.White)
+        }
       },
-      colors = topAppBarColors(containerColor = BlueTrainingTopBarr)
-      )
+      actions = {
+        IconButton(onClick = {
+          showSearchBar = !showSearchBar
+          if (showSearchBar) {
+            searchQuery = ""
+          }}) {
+          Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
+        }
+      },
+      colors = topAppBarColors(containerColor = BlueTrainingTopBarr))
     },
     floatingActionButton = {
       FloatingActionButton(
@@ -120,7 +144,7 @@ fun TrainingContentScreen(
           verticalArrangement = Arrangement.Top,
           contentPadding = PaddingValues(bottom = heightInDp + 16.dp),
         ) {
-          itemsIndexed(phraseListState.phraseList) { _, phrase ->
+            itemsIndexed(filterPhrases) { _, phrase ->
             var showMenu by remember { mutableStateOf(false) }
             val context = LocalContext.current
             Box(modifier = Modifier
