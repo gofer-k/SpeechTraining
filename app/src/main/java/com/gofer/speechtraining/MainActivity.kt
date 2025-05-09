@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.gofer.speechtraining.navigation.AppNavigation
+import com.gofer.speechtraining.src.main.model.ConfigViewModel
 import com.gofer.speechtraining.src.main.model.JsonManager
 import com.gofer.speechtraining.src.main.model.SpeechTrainingData
 import com.gofer.speechtraining.src.main.model.SpeechTrainingDataViewModel
@@ -19,7 +20,7 @@ import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
 class MainActivity : AppCompatActivity() {
   private val jsonManager = JsonManager()
 
-  lateinit var viewModel: SpeechTrainingDataViewModel
+  private lateinit var viewModel: SpeechTrainingDataViewModel
 //  lateinit var configViewModel: ConfigViewModel
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,10 +61,10 @@ class MainActivity : AppCompatActivity() {
     }
   }
 
-  fun exportAppData(uri: Uri?) {
-    uri?.let { it ->
+  private fun exportAppData(uri: Uri?) {
+    uri?.let {
       if (it.isAbsolute && it.scheme != null && it.host != null) {
-        jsonManager.saveSpeakingTrainingDataToFile<SpeechTrainingData>(baseContext, it, viewModel.data.value)
+        jsonManager.saveSpeakingTrainingDataToFile(baseContext, it, viewModel.data.value)
       }
     }
   }

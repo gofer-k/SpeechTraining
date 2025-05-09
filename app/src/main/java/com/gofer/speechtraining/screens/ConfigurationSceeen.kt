@@ -7,7 +7,6 @@ import android.content.res.Configuration
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -103,7 +102,7 @@ fun FilePickerButton(content: (fileUri: Uri) -> Unit) {
       ) {
         Icon(
           modifier = Modifier.size(width = 50.dp, height = 50.dp),
-          painter = painterResource(id = getUploadDataIcon(isSystemInDarkTheme())),
+          painter = painterResource(id = getUploadDataIcon()),
           contentDescription = null
         )
         Text(

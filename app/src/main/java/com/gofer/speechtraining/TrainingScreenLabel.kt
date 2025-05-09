@@ -22,7 +22,7 @@ enum class TrainingScreenLabel(@StringRes val title: Int)  {
 }
 
 fun getTrainingSpeakIcon(isDarkTheme: Boolean) = if (isDarkTheme) R.drawable.ic_outline_volume_up_24 else R.drawable.ic_outline_volume_up_24_light
-fun getTrainingRecordIcon(isDarkTheme: Boolean) = R.drawable.ic_speak_phrase_foreground
+fun getTrainingRecordIcon() = R.drawable.ic_speak_phrase_foreground
 fun getDefaultTopicIcon(): Int = R.drawable.topic_default
 
-fun getUploadDataIcon(isDarkTheme: Boolean) = R.drawable.ic_upload_data
+fun getUploadDataIcon() = R.drawable.ic_upload_data
