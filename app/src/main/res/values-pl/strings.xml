@@ -20,4 +20,5 @@
     <string name="delete_traiining">Usun trening</string>
     <string name="config_app">Konfiguracja</string>
     <string name="upload_data">Eksportuj danych</string>
+    <string name="download_data">Importuj danych</string>
 </resources>

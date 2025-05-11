@@ -10,13 +10,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.gofer.speechtraining.navigation.AppNavigation
-import com.gofer.speechtraining.src.main.model.ConfigViewModel
 import com.gofer.speechtraining.src.main.model.JsonManager
 import com.gofer.speechtraining.src.main.model.SpeechTrainingData
 import com.gofer.speechtraining.src.main.model.SpeechTrainingDataViewModel
 import com.gofer.speechtraining.ui.theme.ConfiguredLanguage
 import com.gofer.speechtraining.ui.theme.SpeechTrainingTheme
 
+@Suppress("UNCHECKED_CAST")
 class MainActivity : AppCompatActivity() {
   private val jsonManager = JsonManager()
 
@@ -54,9 +54,11 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.setAvailableLanguages(availableLangs)
         viewModel.setOrChangePermissionState(NeededPermission.RECORD_AUDIO, true)
-        AppNavigation(viewModel, onExportAppData = {
-          exportAppData(it)
-        })
+        AppNavigation(
+          viewModel,
+          onExportAppData = { exportAppData(it) },
+          onImportAppData = { importAppData(it) }
+        )
       }
     }
   }
@@ -65,6 +67,16 @@ class MainActivity : AppCompatActivity() {
     uri?.let {
       if (it.isAbsolute && it.scheme != null && it.host != null) {
         jsonManager.saveSpeakingTrainingDataToFile(baseContext, it, viewModel.data.value)
+      }
+    }
+  }
+
+  private fun importAppData(uri: Uri?) {
+    uri?.let {
+      if (it.isAbsolute && it.scheme != null && it.host != null) {
+        val importedTrainingData: SpeechTrainingData =
+          jsonManager.readDataFromSource(baseContext, it, SpeechTrainingData::class.java)
+        viewModel.data.value.mergeTrainingData(importedTrainingData)
       }
     }
   }

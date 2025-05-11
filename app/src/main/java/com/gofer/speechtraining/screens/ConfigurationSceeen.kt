@@ -10,8 +10,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
@@ -23,6 +25,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -37,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.gofer.speechtraining.TrainingScreenLabel
+import com.gofer.speechtraining.getDownloadDataIcon
 import com.gofer.speechtraining.getUploadDataIcon
 import com.gofer.speechtraining.ui.TopBarTitle
 import com.gofer.speechtraining.ui.theme.PurpleGrey80
@@ -44,7 +48,9 @@ import com.gofer.speechtraining.ui.theme.PurpleGrey80
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun ConfigScreen(navController: NavController, omExportAppData: (uri: Uri) -> Unit) {
+fun ConfigScreen(navController: NavController,
+                 onExportFile: ((uri: Uri) -> Unit)? = null,
+                 onImportFile: ((uri: Uri) -> Unit)? = null) {
   Scaffold(
     topBar = {
       TopAppBar(
@@ -62,15 +68,15 @@ fun ConfigScreen(navController: NavController, omExportAppData: (uri: Uri) -> Un
         .padding(paddingValues),
       horizontalAlignment = Alignment.CenterHorizontally,
       verticalArrangement = Arrangement.Center) {
-        FilePickerButton { exportedFileUri ->
-          omExportAppData(exportedFileUri)
-        }
+        FilePickerButton(true) { onImportFile?.invoke(it) }
+        Spacer(Modifier.height(64.dp))
+        FilePickerButton(false) { onExportFile?.invoke(it) }
     }
   }
 }
 
 @Composable
-fun FilePickerButton(content: (fileUri: Uri) -> Unit) {
+fun FilePickerButton(load: Boolean = false, onPickFile: ((fileUri: Uri) -> Unit)?) {
   var pickedUri by remember { mutableStateOf<Uri?>(null) }
 
   val launcher = rememberLauncherForActivityResult(
@@ -88,11 +94,18 @@ fun FilePickerButton(content: (fileUri: Uri) -> Unit) {
         .padding(start = 64.dp, end = 64.dp)
         .align(Alignment.CenterHorizontally),
       onClick = {
-        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
-          type = "application/json"
-          putExtra(Intent.EXTRA_TITLE, "export_data.json")
-          addCategory(Intent.CATEGORY_OPENABLE)
-        }
+        val intent = if (load) {
+            Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+              type = "application/json"
+              addCategory(Intent.CATEGORY_OPENABLE)
+            }
+          } else {
+            Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+              type = "application/json"
+              putExtra(Intent.EXTRA_TITLE, "export_data.json")
+              addCategory(Intent.CATEGORY_OPENABLE)
+            }
+          }
         launcher.launch(intent)
       }) {
       Row(
@@ -100,19 +113,28 @@ fun FilePickerButton(content: (fileUri: Uri) -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
       ) {
+        val iconRes by remember { mutableIntStateOf(
+          if (load) getUploadDataIcon() else getDownloadDataIcon()
+        ) }
+        val labelText by remember { mutableIntStateOf(
+          if (load) {
+            TrainingScreenLabel.TrainingImportAppData.title
+          } else {
+            TrainingScreenLabel.TrainingExportAppData.title
+          }) }
+
         Icon(
           modifier = Modifier.size(width = 50.dp, height = 50.dp),
-          painter = painterResource(id = getUploadDataIcon()),
+          painter = painterResource(id = iconRes),
           contentDescription = null
         )
         Text(
-          text = stringResource(id = TrainingScreenLabel.TrainingExportAppData.title),
-          fontSize = 20.sp
+          text = stringResource(id = labelText), fontSize = 20.sp
         )
       }
     }
   }
-  content(pickedUri ?: Uri.EMPTY)
+  onPickFile?.invoke(pickedUri ?: Uri.EMPTY)
 }
 
 
@@ -120,5 +142,5 @@ fun FilePickerButton(content: (fileUri: Uri) -> Unit) {
 @Composable
 fun ConfigScreenPreview() {
   val navController = rememberNavController()
-  ConfigScreen(navController, { })
+  ConfigScreen(navController = navController)
 }

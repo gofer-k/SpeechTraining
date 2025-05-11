@@ -33,4 +33,10 @@ data class SpeechTrainingData(
       it.phrases = it.phrases.sortedBy { it.name }
     }
   }
+
+  fun mergeTrainingData(importedTrainingData: SpeechTrainingData) {
+    // implementation merge logic
+    items = items.plus(importedTrainingData.items)
+
+  }
 }

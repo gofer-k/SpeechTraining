@@ -7,7 +7,9 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -43,6 +45,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -50,6 +53,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
@@ -90,15 +94,15 @@ internal fun TrainingListsScreen(
   onFilterTrainingLanguage: (Language) -> Unit,
   onRemoveTopic: (Long) -> Unit
 ) {
-  val bottomBarHeight = remember { mutableStateOf(0f) }
-  val bottomBarOffsetHeightPx = remember { mutableStateOf(0f) }
+  val bottomBarHeight = remember { mutableFloatStateOf(0f) }
+  val bottomBarOffsetHeightPx = remember { mutableFloatStateOf(0f) }
   val showBottomBar = remember { mutableStateOf(true) }
   val nestedScrollConnection = remember {
     object : NestedScrollConnection {
       override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
         val delta = available.y
-        val newOffset = bottomBarOffsetHeightPx.value + delta
-        bottomBarOffsetHeightPx.value = newOffset.coerceIn(-bottomBarHeight.value, 0f)
+        val newOffset = bottomBarOffsetHeightPx.floatValue + delta
+        bottomBarOffsetHeightPx.floatValue = newOffset.coerceIn(-bottomBarHeight.floatValue, 0f)
         showBottomBar.value = newOffset >= 0f
         return Offset.Zero
       }
@@ -106,7 +110,8 @@ internal fun TrainingListsScreen(
   }
 
   Scaffold(
-    modifier = Modifier.nestedScroll(nestedScrollConnection),
+    modifier = Modifier
+      .nestedScroll(nestedScrollConnection),
     contentWindowInsets = WindowInsets.safeDrawing,
     topBar = {
       val titleRes = stringResource(id = TrainingScreenLabel.TrainingList.title)
@@ -116,7 +121,7 @@ internal fun TrainingListsScreen(
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                 Text(
                   text = title,
-                  color = Color.DarkGray
+                  color = if (isSystemInDarkTheme()) Color.LightGray else Color.DarkGray
                 )
             }
         },
@@ -140,7 +145,7 @@ internal fun TrainingListsScreen(
         BottomAppBar {
           NavigationBarItem(
             modifier = Modifier.onGloballyPositioned { coordinates ->
-                bottomBarHeight.value = coordinates.size.height.toFloat()},
+                bottomBarHeight.floatValue = coordinates.size.height.toFloat()},
             selected = false,
             onClick = {
               navController.navigate("AddTrainingTopic")
@@ -154,8 +159,7 @@ internal fun TrainingListsScreen(
       }
     }
   ) {paddingValues ->
-    Column(modifier = Modifier
-      .padding(paddingValues)
+    Column(modifier = Modifier.padding(paddingValues)
     ) {
       ConversationsTopics(
         navController = navController,
@@ -174,7 +178,7 @@ internal fun TrainingListsScreen(
   }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalStdlibApi::class,
+@OptIn(
   ExperimentalFoundationApi::class
 )
 @Composable

@@ -22,7 +22,8 @@ import com.gofer.speechtraining.src.main.model.SpeechTrainingDataViewModel
 import com.gofer.speechtraining.ui.compose.toLocale
 
 @Composable
-fun AppNavigation(viewModel: SpeechTrainingDataViewModel, onExportAppData: (uri: Uri?) -> Unit) {
+fun AppNavigation(viewModel: SpeechTrainingDataViewModel, onExportAppData: ((uri: Uri?) -> Unit)?,
+                  onImportAppData: ((uri: Uri?) -> Unit)?) {
   val navHostController = rememberNavController()
 
   NavHost(navController = navHostController, startDestination = TrainingList.name) {
@@ -144,7 +145,10 @@ fun AppNavigation(viewModel: SpeechTrainingDataViewModel, onExportAppData: (uri:
       AddTopicScreen(navController = navHostController)
     }
     composable("ConfigAppScreen") {
-      ConfigScreen(navController = navHostController, omExportAppData = onExportAppData)
+      ConfigScreen(
+        navController = navHostController,
+        onExportFile = onExportAppData,
+        onImportFile = onImportAppData)
     }
   }
 }

@@ -22,4 +22,5 @@
     <string name="delete_traiining">Delete training</string>
     <string name="config_app">Configuration</string>
     <string name="upload_data">Export app data</string>
+    <string name="download_data">Import data</string>
 </resources>

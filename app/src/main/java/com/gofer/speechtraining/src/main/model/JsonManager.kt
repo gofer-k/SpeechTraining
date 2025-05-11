@@ -47,6 +47,26 @@ class JsonManager {
     return gson.fromJson(result, classType)
   }
 
+  fun <T> readDataFromSource(context: Context, uri: Uri, classType: Class <T>): T {
+    var result = String.toString()
+
+    context.runCatching {
+      contentResolver.openInputStream(uri).use { inputStream ->
+        inputStream.runCatching {
+          val bufferedReader = BufferedReader(InputStreamReader(this))
+          val stringBuilder = StringBuilder()
+          bufferedReader.useLines { lines ->
+            lines.forEach {
+              stringBuilder.append(it)
+            }
+          }
+          result = stringBuilder.toString()
+        }
+      }
+    }
+    return gson.fromJson(result, classType)
+  }
+
   fun<T> saveSpeakingTrainingDataToFile(context: Context, uri: Uri, data: T) {
     val json = gson.toJson(data)
     context.runCatching {
