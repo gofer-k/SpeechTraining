@@ -214,7 +214,21 @@ fun SpeechButton(phrase: Phrase) {
 fun LinkButton(context: Context, buttonLabel: String, link: Uri) {
   Button(onClick = {
     val c = CustomTabsIntent.Builder().build()
-    c.launchUrl(context, link)
+    c.intent.setPackage("com.android.chrome")
+    try {
+      c.launchUrl(context, link)
+    }
+    catch (e: Exception) {
+      // Handle cases where Chrome is not installed or there are other issues
+      // Fallback to standard browser intent
+      val browserIntent = Intent(Intent.ACTION_VIEW, link)
+      if (browserIntent.resolveActivity(context.packageManager) != null) {
+        context.startActivity(browserIntent)
+      } else {
+        Toast.makeText(context, "No browser available", Toast.LENGTH_SHORT).show()
+      }
+    }
+
   }) {
     Column(
       horizontalAlignment = Alignment.CenterHorizontally,
