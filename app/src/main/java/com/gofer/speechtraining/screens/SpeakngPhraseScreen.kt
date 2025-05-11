@@ -7,6 +7,8 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
 import android.speech.RecognizerIntent
+ import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.browser.customtabs.CustomTabsIntent
@@ -65,6 +67,7 @@ import com.gofer.speechtraining.ui.theme.PhraseString
 import com.gofer.speechtraining.ui.theme.PhraseStringDark
 import com.gofer.speechtraining.ui.theme.Purple40
 import androidx.core.net.toUri
+import java.util.Locale
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -73,6 +76,15 @@ fun SpeakingPhraseScreen(phrase: Phrase, navController: NavHostController) {
   // Scaffold floating button height
   var topBarHeight by remember { mutableIntStateOf(0) }
   val textSize = 20.sp
+  val destLang = when(phrase.language.language) {
+    "en" -> "pl"
+    "us" -> "pl"
+    "pl" -> "us"
+    else -> {
+      Toast.makeText(LocalContext.current, "Unsupported language: ${phrase.language.language}", Toast.LENGTH_SHORT).show()
+      return
+    }
+  }
 
   Scaffold(
     topBar = {
@@ -106,6 +118,7 @@ fun SpeakingPhraseScreen(phrase: Phrase, navController: NavHostController) {
     ) {
       val textColor = if (isSystemInDarkTheme()) PhraseStringDark else PhraseString
       val pronColor = if (isSystemInDarkTheme()) PhrasePronStringDark else PhrasePronString
+
       Text(
         modifier = Modifier.padding(top = 40.dp, bottom = 12.dp),
         text = phrase.name, color = textColor, fontSize = textSize)
@@ -118,9 +131,9 @@ fun SpeakingPhraseScreen(phrase: Phrase, navController: NavHostController) {
         val urlDiki =
             "https://www.diki.pl/slownik-angielskiego?q=${encodePhraseName}".toUri()
         LinkButton(ctx, "Diki", urlDiki)
-
         val urlTranslate =
-            "https://translate.google.com/?sl=pl&tl=en&text=${encodePhraseName}&op=translate".toUri()
+            "https://translate.google.com/?sl=${phrase.language}&tl=${destLang}&text=${encodePhraseName}".toUri()
+        Log.d("SpeakingPhraseScreen", "urlTranslate: $urlTranslate")
         LinkButton(ctx, "Translate", urlTranslate)
       }
       Spacer(modifier = Modifier.height(100.dp))
