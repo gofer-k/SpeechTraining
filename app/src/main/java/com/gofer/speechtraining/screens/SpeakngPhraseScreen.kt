@@ -67,7 +67,6 @@ import com.gofer.speechtraining.ui.theme.PhraseString
 import com.gofer.speechtraining.ui.theme.PhraseStringDark
 import com.gofer.speechtraining.ui.theme.Purple40
 import androidx.core.net.toUri
-import java.util.Locale
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
